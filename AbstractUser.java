@@ -13,31 +13,37 @@ public class AbstractUser {
     private String myPhone;
     private String myAddress;
     private String myUserName;
+    private String myEmail;
     
-    public void setName(String s){
+    public void setName(String s) {
         myName = s;
     }
-    public void setPhone(String s){
+    public void setPhone(String s) {
         myPhone = s;
     }
-    public void setAddress(String s){
+    public void setAddress(String s) {
         myAddress = s;
     }
-    public void setUserName(String s){
+    public void setUserName(String s) {
         myUserName = s;
     }
+    public void setEmail(String s) {
+        myEmail = s;
+    }
     
-    public String getName(){
+    public String getName() {
         return myName;
     }
-    public String getPhone(){
+    public String getPhone() {
         return myPhone;
     }
-    public String getAddress(){
+    public String getAddress() {
         return myAddress;
     }
-    public String getUserName(){
+    public String getUserName() {
         return myUserName;
     }
-    
+    public String getEmail() {
+        return myEmail;
+    }
 }

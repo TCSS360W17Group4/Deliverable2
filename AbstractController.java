@@ -28,6 +28,7 @@ public class AbstractController {
         while (iterator.hasNext()) {
             job = iterator.next();
             if (job.getJobID() == theJobID) {
+                // check whether the job is pending 
                 list.add(job);       
             }
         }

@@ -1,1 +1,5 @@
-public class Volunteer extends AbstractUser {}
+public class Volunteer extends AbstractUser {
+    
+    private Boolean myBlackballStatus = false;
+    
+}
