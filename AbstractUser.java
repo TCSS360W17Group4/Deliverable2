@@ -1,3 +1,13 @@
+/*
+ * Stub for AbstractUser 
+ * everyone feel free to use, fix, enhance, whatever
+ * 
+ * @author Christopher Hall
+ * @Winter Quarter 2017
+ * 
+ */
+
+
 public class AbstractUser {
     private String myName;
     private String myPhone;
@@ -29,4 +39,5 @@ public class AbstractUser {
     public String getUserName(){
         return myUserName;
     }
+    
 }
