@@ -3,10 +3,16 @@ import java.util.List;
 
 public class VolunteerController extends AbstractController {
     
-    public List<Job> getMyJobs(){
-        return  new ArrayList<Job>();
+    private Volunteer myVolunteer;
+    
+    public VolunteerController(Volunteer theVolunteer) {
+        myVolunteer = theVolunteer;
         
     }
     
+    public int[] getMyJobs() {
+        return myVolunteer.getMyVolunteerJobs();
+        
+    }
     
 }

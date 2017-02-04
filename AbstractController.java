@@ -10,15 +10,19 @@ import java.util.Iterator;
 import java.util.List;
 
 /* 
- * @author Christopher Hall
+ * @authors Christopher Hall, Dereje Bireda, Tony Richardson, Brian Hess
  * @Winter Quarter 2017
  * 
  */
 
 
 public class AbstractController {
+    protected AbstractUser myUser;
+    public AbstractController(){}
+    
     public String viewMyJobs(String userName) {
         return "foo";
+        
     }
     
     public List<Job> getVolunteerJobs(int theJobID) {
@@ -31,8 +35,14 @@ public class AbstractController {
                 // check whether the job is pending 
                 list.add(job);       
             }
+            
         }
         return list;
+        
+    }
+    
+    public List<Volunteer> getVolunteerListFromJob() { //to be implemented later
+        return new ArrayList<Volunteer>();
     }
 
 }

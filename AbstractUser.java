@@ -2,18 +2,23 @@
  * Stub for AbstractUser 
  * everyone feel free to use, fix, enhance, whatever
  * 
- * @author Christopher Hall
+ * @authors Christopher Hall, Dereje Bireda, Tony Richardson, Brian Hess
  * @Winter Quarter 2017
  * 
  */
 
 
 public class AbstractUser {
+    
+    private int myUserId;
     private String myName;
     private String myPhone;
     private String myAddress;
+    private UserTypes myType;
     private String myUserName;
     private String myEmail;
+    
+    public enum UserTypes {Volunteer, Manager, Staff}
     
     public void setName(String s) {
         myName = s;
