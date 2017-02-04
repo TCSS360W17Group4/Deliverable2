@@ -1,5 +1,5 @@
 public class Volunteer extends AbstractUser {
-    
-    private Boolean myBlackballStatus = false;
+    private int myVolunteerJobs[];
+    private boolean myBlackballStatus = false;
     
 }

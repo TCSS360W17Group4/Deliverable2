@@ -21,7 +21,7 @@ public class AbstractController {
         return "foo";
     }
     
-    public List<Job> FindMyJobs(int theJobID) {
+    public List<Job> getVolunteerJobs(int theJobID) {
         List<Job> list = new ArrayList<Job>();
         Iterator<Job> iterator = list.iterator();
         Job job;
