@@ -1,31 +1,28 @@
-import java.sql.Time;
+
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
-public class Job {
+
 /**
  * 
  * 
  */
-	private int jobId;
-	public void setJobId(int jobId) {
-	this.jobId = jobId;
-}
+public class Job {
 
-
-
+	private int myJobId;
 	private Date myCreationDate;
 	private Park myPark;
 	private LocalDate myStartDate;
 	private LocalDate myEndDate;
-	private Time myTime;
+	private LocalTime myTime;
 	private String myDescription;
 	private int myLightVolunteerNumber;
 	private int myMediumVolunteerNumber;
     private int myHeavyVolunteerNumber;
     private int myJobManagerId;
-    private boolean isMyJobPending;
-    private boolean isMyJobPast;//if enddate a job < currentdate make sure to set this to true
+    private boolean myJobIsPending;
+    private boolean myJobIsPast;//if enddate a job < currentdate make sure to set this to true
 	
 	
 	
@@ -36,7 +33,21 @@ public class Job {
 
 
 	public Date getMyCreationDate() {
-		return myCreationDate;
+		return this.myCreationDate;
+	}
+
+	public int getMyJobId(){
+		return this.myJobId;
+	}
+
+	public void setMyJobPending(boolean theJobPending) {
+		this.myJobIsPending = theJobPending;
+	}
+
+
+
+	public void setMyJobPast(boolean theJobPast) {
+		this.myJobIsPast = theJobPast;
 	}
 
 
@@ -59,7 +70,7 @@ public class Job {
 
 
 
-	public Time getMyTime() {
+	public LocalTime getMyTime() {
 		return myTime;
 	}
 
@@ -96,16 +107,18 @@ public class Job {
 
 
 	public boolean isMyJobPending() {
-		return isMyJobPending;
+		return myJobIsPending;
 	}
 
 
 
 	public boolean isMyJobIsPast() {
-		return isMyJobPast;
+		return myJobIsPast;
 	}
 
-
+	public void setMyJobId(int theJobId) {
+		this.myJobId = theJobId;
+	}
 
 	public void setMyCreationDate(Date theCreationDate) {
 		this.myCreationDate = theCreationDate;
@@ -131,7 +144,7 @@ public class Job {
 
 
 
-	public void setMyTime(Time theTime) {
+	public void setMyTime(LocalTime theTime) {
 		this.myTime = theTime;
 	}
 
@@ -168,12 +181,12 @@ public class Job {
 
 
 	public void setMyJobIsPending(boolean theJobIsPending) {
-		this.isMyJobPending = theJobIsPending;
+		this.myJobIsPending = theJobIsPending;
 	}
 
 
 
 	public void setMyJobIsPast(boolean theJobIsPast) {
-		this.isMyJobPast = theJobIsPast;
+		this.myJobIsPast = theJobIsPast;
 	}
 }
