@@ -1,5 +1,7 @@
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class JobController {
 	
 	private List<Job> myJobs = new ArrayList<Job>(); 
 	
+
 	
 	public JobController(List<Job> theJobs) {
 		myJobs = theJobs;
@@ -87,7 +90,16 @@ public class JobController {
 		
 
 	}
-	public void addTime(String theTime) {
+	
+	public void addTime(Job theJob, String theTime) {
+		LocalTime time = convertStringToTime(theTime);
+		if(time!=null){
+			theJob.setMyTime(time);
+		}
+	}
+	
+	public void addJobDescription(Job theJob, String theDescription) {
+		theJob.setMyDescription(theDescription);
 		
 	}
 	public void addNumOfLightVolunteer(Job theJob, int theNum) {
@@ -117,7 +129,7 @@ public class JobController {
 
 	//set Job ID
 	public void addJob(Job theJob, List<Job>theJobs){
-		theJob.setJobId(theJobs.size());
+		theJob.setMyJobId(theJobs.size());
 		//add Job
 		theJobs.add(theJob);
 	}
@@ -166,6 +178,7 @@ public class JobController {
 					if(sameEndDate >= MAX_JOBS_PER_DAY_PER_MANAGER){
 						
 						dateHasPassed = false;
+						break;//no need to look for more
 					} 
 				}
 				
@@ -261,11 +274,39 @@ public class JobController {
     
 	 
 	/**Helper methods **/
-	//format string 
+	 //format time string to Time
+	 public static LocalTime convertStringToTime(String timeString)
+	 {
+		 //possible user time input formats
+		String[] formats = {"Hmm", "HH:mm","HHmm","H:mm"};
+		
+	   LocalTime time = null;
+	   for (int i = 0; i < formats.length; i++)
+	   {
+	     String format = formats[i];
+	     Locale locale = Locale.US;
+	     DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( format ).withLocale (locale);
+
+	     try
+	     {
+	       time = LocalTime.parse(timeString, formatter);
+	   
+	       break;
+	     }
+	     catch(DateTimeParseException e)
+	     {
+	       
+	     }
+	   }
+
+	   return time;
+	 }
+	 
+	//format string date to LocalDate
 	public static LocalDate convertStringToDate(String theDate) {
 	
 		Locale locale = Locale.US;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "MM/dd/yyyy" ).withLocale (locale);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "MM/dd/yy" ).withLocale (locale);
 		LocalDate localDate = LocalDate.parse ( theDate , formatter );
 
 		return localDate;
@@ -280,5 +321,5 @@ public class JobController {
 	    return  ChronoUnit.DAYS.between(firstDate,secondDate);
 	}
 	 
-   
+	
 }
