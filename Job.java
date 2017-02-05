@@ -1,4 +1,5 @@
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Job {
@@ -6,11 +7,17 @@ public class Job {
  * 
  * 
  */
-	
+	private int jobId;
+	public void setJobId(int jobId) {
+	this.jobId = jobId;
+}
+
+
+
 	private Date myCreationDate;
 	private Park myPark;
-	private Date myStartDate;
-	private Date myEndDate;
+	private LocalDate myStartDate;
+	private LocalDate myEndDate;
 	private Time myTime;
 	private String myDescription;
 	private int myLightVolunteerNumber;
@@ -40,13 +47,13 @@ public class Job {
 
 
 
-	public Date getMyStartDate() {
+	public LocalDate getMyStartDate() {
 		return myStartDate;
 	}
 
 
 
-	public Date getMyEndDate() {
+	public LocalDate getMyEndDate() {
 		return myEndDate;
 	}
 
@@ -112,13 +119,13 @@ public class Job {
 
 
 
-	public void setMyStartDate(Date theStartDate) {
+	public void setMyStartDate(LocalDate theStartDate) {
 		this.myStartDate = theStartDate;
 	}
 
 
 
-	public void setMyEndDate(Date theEndDate) {
+	public void setMyEndDate(LocalDate theEndDate) {
 		this.myEndDate = theEndDate;
 	}
 

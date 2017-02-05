@@ -1,12 +1,16 @@
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+/**
+ * 
+ * @author Dereje
+ * 
+ *
+ */
 public class JobController {
 
 	
@@ -16,32 +20,25 @@ public class JobController {
 	private static final int MAX_JOB_LENGTH_IN_DAYS = 2;
 	private static final int MAX_JOBS_PER_DAY_PER_MANAGER = 2;
 	private static final int MIN_JOB_POST_DAY_LENGTH = 3; 
+	private static final int ONE_DAY_OFFSET = 1;
 	
 	private List<Job> myJobs = new ArrayList<Job>(); 
 	
-	private Job myJob = new Job(new Park());
 	
-	
-	public static void main(String[] args) {
-		Date d1 = convertStringToDate("02/8/2017");
-		Date d2 = convertStringToDate("02/04/2017");
-		Date d3 = Calendar.getInstance().getTime();
-		System.out.println(betweenDates(d2,d1));
-		System.out.println(d3);
-		//start date and end date difference 1 or 2?? how could you tell 
+	public JobController(List<Job> theJobs) {
+		myJobs = theJobs;
 	}
+
+	 //new jobs not accepted BR: 2A
+	 public boolean isNewJobAccepted(List<Job> theJobs) {
+		 List<Job> pendingJobs = getMyPendingJobs(theJobs);
+		 
+		 return pendingJobs.size() < MAX_NUM_PENDING_JOBS;
+	 }
 	
-	public int createJob(int theUserId) {
-		//theJob = new Job(new Park());
-		if (myJobs.isEmpty()) {
-			return 0;//job is full
-		} else {
-			//form with Manager Id
-			myJob.setMyJobManagerId(theUserId);
-		}
-	
-		
-		return 0;
+	public void initJobForm(int theUserId, Job theJob) {
+			theJob.setMyJobManagerId(theUserId);
+			
 	}
 	
 	
@@ -54,13 +51,13 @@ public class JobController {
 	}
 	
 	public void addStartDate(String theDate, Job theJob) {
-		//convert String to date
-		Date jobStartDate = convertStringToDate(theDate);
+		
 		//check the job is future, minus -current 3 days//assumption based on BR volunteer
-		Date currentDate = Calendar.getInstance().getTime();
+		LocalDate jobStartDate = convertStringToDate(theDate);
+		LocalDate currentDate = LocalDate.now();
 		 //BR: C & E
-		if (betweenDates(jobStartDate,currentDate)>= MIN_JOB_POST_DAY_LENGTH && 
-				betweenDates(jobStartDate,currentDate)<= MAX_DAYS_FOR_FUTURE_JOB_DATE ){
+		if (betweenDates(currentDate,jobStartDate)>= MIN_JOB_POST_DAY_LENGTH && 
+				betweenDates(currentDate,jobStartDate)<= MAX_DAYS_FOR_FUTURE_JOB_DATE){
 			//BR:D
 			if(isDuplicateStartDatePassed(jobStartDate, theJob.getMyJobManagerId())) {
 				theJob.setMyStartDate(jobStartDate);
@@ -71,72 +68,97 @@ public class JobController {
 		
 	}
 	
-	public void addEndDate(String theDate, Job theJob) {
-		//convert String to date
-		Date jobEndDate = convertStringToDate(theDate);
-		//check the job is future, minus -current 3 days//assumption based on BR volunteer
-		Date currentDate = Calendar.getInstance().getTime();
-	    if(betweenDates(theJob.getMyStartDate(),jobEndDate) >= 0 && 
-	    		betweenDates(theJob.getMyStartDate(),jobEndDate)<=2){
-	    	
-	    }
+	public void addEndDate(int theDuration, Job theJob) {
+		//accept user input duration of the job/ 2 is MAX=> 1 or 2 only option
+		
+		if(theDuration <= 0 || theDuration > MAX_JOB_LENGTH_IN_DAYS) {
+			//the LocalDate cant be added 
+			
+		} 
+		
+		//add duration to startDate
+		LocalDate endDate = theJob.getMyStartDate().plusDays(theDuration);
+		//check for duplicates
+		if(isDuplicateEndDatePassed(endDate, theJob.getMyJobManagerId(),theDuration)) {
+			theJob.setMyEndDate(endDate);
+		} else {
+			//cant be added
+		}
+		
+
 	}
 	public void addTime(String theTime) {
 		
 	}
-	public void addNumOfLightVolunteer(int theNum) {
-		
+	public void addNumOfLightVolunteer(Job theJob, int theNum) {
+		if(theNum <=30 && theNum >=0) {
+			theJob.setMyLightVolunteerNumber(theNum);
+		}
 	}
 	
-	public void addNumOfMediumVolunteer(int theNum) {
+	public void addNumOfMediumVolunteer(Job theJob, int theNum) {
+		int currentTotal = theJob.getMyLightVolunteerNumber() + theNum;
 		
+		if(currentTotal >=0 && currentTotal <=30 ) {
+			theJob.setMyMediumVolunteerNumber(theNum);
+		} else {
+			//error cant be added
+		}
 	}
-	public void addNumOfHeavyVolunteer(int theNum) {
-		
+	public void addNumOfHeavyVolunteer(Job theJob, int theNum) {
+		int currentTotal = theJob.getMyLightVolunteerNumber() + theJob.getMyMediumVolunteerNumber() + theNum;
+		if(currentTotal > 0 && currentTotal <=30 ) {
+			theJob.setMyHeavyVolunteerNumber(theNum);
+		} else {
+			//error 
+		}
 	}
 	
-	public boolean isJobAdded(boolean theValue) {
-		
-		
-		return true;//if job is added
+
+	//set Job ID
+	public void addJob(Job theJob, List<Job>theJobs){
+		theJob.setJobId(theJobs.size());
+		//add Job
+		theJobs.add(theJob);
 	}
-	
-	
-	//check manager has add limited job per day
-	 public boolean isDuplicateStartDatePassed(Date theStartDate, int managerId) {
-		//check job with the same manager exists same date more than twice
+	//BR:2D
+	//check manager job limit per day
+	 public boolean isDuplicateStartDatePassed(LocalDate theStartDate, int managerId) {
+		//check job with the same manager exists same LocalDate more than twice
 		 
-		 
-		 boolean dateHasPassed = true;
+		// boolean dateHasPassed = true;
 			int sameStartDate = 0;
 			for (int i = 0; i < myJobs.size(); i++) {
 				if(myJobs.get(i).getMyJobManagerId()== managerId){
-					if(myJobs.get(i).getMyStartDate() == theStartDate ||
-							myJobs.get(i).getMyEndDate() == theStartDate){
-						sameStartDate += 1;
+					if(myJobs.get(i).getMyStartDate() == theStartDate){
+						sameStartDate += ONE_DAY_OFFSET;
 					}
 				}
 				
 				//check if count is at least 2, exit . With current job it will be 3 jobs, not allowed
 				if(sameStartDate >= MAX_JOBS_PER_DAY_PER_MANAGER){
 					
-					dateHasPassed = false;
+					//dateHasPassed = false;
+					return false;
 				} 
 			}
 			
-			return dateHasPassed;
+			return true;
 	 }
-		 
-	 public boolean isDuplicateEndDatePassed(Date theEndDate, int managerId) {
+		 //BR:2D
+	 public boolean isDuplicateEndDatePassed(LocalDate theEndDate, int managerId, int theDuration) {
 		 
 		 boolean dateHasPassed = true;
-			//check job with the same manager exists same date more than twice
+		 if(theDuration == 1) {
+			 //no need to check already passed in checking start date
+			 return dateHasPassed;
+		 }
+			//check job with the same manager exists same LocalDate more than twice
 				int sameEndDate = 0;
 				for (int i = 0; i < myJobs.size(); i++) {
 					if(myJobs.get(i).getMyJobManagerId()== managerId){
-						if(myJobs.get(i).getMyStartDate() == theEndDate ||
-								myJobs.get(i).getMyEndDate() == theEndDate){
-							sameEndDate += 1;
+						if(myJobs.get(i).getMyEndDate() == theEndDate){
+							sameEndDate += ONE_DAY_OFFSET;
 						}
 					}
 					
@@ -150,9 +172,7 @@ public class JobController {
 				return dateHasPassed;
 		 }	
 
-	 public boolean isMyJobOpen(){
-		 return false;
-	 }
+
 	 
 	 //Volunteer BR: 6C
 	 public boolean isSignUpDayPassed(Job theJob) {
@@ -187,11 +207,10 @@ public class JobController {
 	 
 	 //check if job is past
 	 public boolean isMyJobPast(Job theJob){
-		 Date currentDate = Calendar.getInstance().getTime();
+		 LocalDate currentDate = LocalDate.now();
 		 //-ve means past,true
 		 return (betweenDates(currentDate,theJob.getMyEndDate()) < 0);
 			 
-	
 	 }
 	 
 	 public void updateJobPastStatus(Job theJob){
@@ -202,7 +221,7 @@ public class JobController {
 		 }
 	 }
 	 
-	 //get pending jobs
+	 //get pending jobs(open for sign up + is not full)
 	 public List<Job> getMyPendingJobs(List<Job> theJobs) {
 		 List<Job> pendingJobs = new ArrayList<Job>(); 
 		 
@@ -222,53 +241,43 @@ public class JobController {
 		 return pendingJobs;
 	 }
 	 
-	 //new jobs not accepted BR: 2A
-	 public boolean isNewJobAccepted(List<Job> theJobs) {
-		 List<Job> pendingJobs = getMyPendingJobs(theJobs);
-		 
-		 return pendingJobs.size() < MAX_NUM_PENDING_JOBS;
-	 }
 	 
-     public List<Job> getJobsByManagerId(List<Job> theJobs, int theManagerId) {
-    	 List<Job> myJobs = new ArrayList<Job>(); 
-    	
+	 //get upcoming jobs(job not in the past)
+	 public List<Job> getUpcomingJobs(List<Job> theJobs) {
+		 List<Job> upcomingJobs = new ArrayList<Job>(); 
 		 
 		 for (int i = 0; i < theJobs.size(); i++) {
-			 	
+			 	Job jobChecked = theJobs.get(i);
+				if(!jobChecked.isMyJobIsPast()) {
+						//add it to pending
+						upcomingJobs.add(jobChecked);
+					
+				}
 				
 			}
 		 
-		 return myJobs;
-     }
+		 return upcomingJobs;
+	 }
+    
 	 
 	/**Helper methods **/
 	//format string 
-	public static Date convertStringToDate(String theDate) {
-		String expectedPattern = "MM/dd/yyyy";
-		try {
-		SimpleDateFormat dateFormater = new SimpleDateFormat(expectedPattern);
-		Date date = dateFormater.parse(theDate);
-		return date;
-		} catch (ParseException e) {
-			return null;
-		}
+	public static LocalDate convertStringToDate(String theDate) {
+	
+		Locale locale = Locale.US;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "MM/dd/yyyy" ).withLocale (locale);
+		LocalDate localDate = LocalDate.parse ( theDate , formatter );
+
+		return localDate;
 		
 	}
 	
-	public void convertDateToString(Date theDate) {
-		String expectedPattern = "MM/dd/yyyy";
-		
-		SimpleDateFormat dateFormater = new SimpleDateFormat(expectedPattern);
-		String date = dateFormater.format(theDate);
-		
-		
-		
-	}
+	
 	
 	//calculate difference between dates
-	
-	 public static long betweenDates(Date firstDate, Date secondDate) {
-	    return ChronoUnit.DAYS.between(firstDate.toInstant(), secondDate.toInstant());
+	 public static long betweenDates(LocalDate firstDate, LocalDate secondDate) {
+		
+	    return  ChronoUnit.DAYS.between(firstDate,secondDate);
 	}
 	 
    
