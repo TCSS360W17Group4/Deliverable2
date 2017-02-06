@@ -1,7 +1,8 @@
 
-public abstract class AbstractUser {
+public class AbstractUser {
 
-	
+
+
 	private int myUserId;
 	private String myName;
 	private String myPhone;
@@ -10,9 +11,122 @@ public abstract class AbstractUser {
 	private String myUserName;
 	private String myEmail;
 	
+	
+	public void setMyUserId(int theUserId) {
+		this.myUserId = theUserId;
+	}
+
+
+
+
+
+	public void setMyName(String theName) {
+		this.myName = theName;
+	}
+
+
+
+
+
+	public void setMyPhone(String thePhone) {
+		this.myPhone = thePhone;
+	}
+
+
+
+
+
+	public void setMyAddress(String theAddress) {
+		this.myAddress = theAddress;
+	}
+
+
+
+
+
+	public void setMyType(UserTypes theType) {
+		this.myType = theType;
+	}
+
+
+
+
+
+	public void setMyUserName(String theUserName) {
+		this.myUserName = theUserName;
+	}
+
+
+
+
+
+	public void setMyEmail(String theEmail) {
+		this.myEmail = theEmail;
+	}
+
+
+
 			
 			
 			
 			
-	public enum UserTypes {Volunteer, Manager, Staff}
+	public int getMyUserId() {
+		return myUserId;
+	}
+
+
+
+
+
+	public String getMyName() {
+		return myName;
+	}
+
+
+
+
+
+	public String getMyPhone() {
+		return myPhone;
+	}
+
+
+
+
+
+	public String getMyAddress() {
+		return myAddress;
+	}
+
+
+
+
+
+	public UserTypes getMyType() {
+		return myType;
+	}
+
+
+
+
+
+	public String getMyUserName() {
+		return myUserName;
+	}
+
+
+
+
+
+	public String getMyEmail() {
+		return myEmail;
+	}
+
+
+
+
+
+
+
+	public enum UserTypes {Vol, Mgr, Stf}
 }
