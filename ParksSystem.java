@@ -4,6 +4,8 @@ import java.util.List;
 
 
 /**
+ * ParksSystem to control the system data,
+ * and login 
  * 
  * @author Dereje 
  *
@@ -24,6 +26,13 @@ public class ParksSystem {
 	}
 	
 	
+	/**
+	 * search for list of Volunteers for a job (past or present)
+	 * with specific manager id
+	 * 
+	 * @param theVolunteers the volunteers to be searched
+	 * @param theManagerId the id used to filiter the volunteers
+	 */
 	public void getVolunteersByManagerId(List<Volunteer> theVolunteers, int theManagerId) {
 		List<Job> managerJobs = getJobsByManagerId(myJobs,theManagerId);
 		List<Volunteer> myVolunteers = new ArrayList<>();
@@ -45,6 +54,14 @@ public class ParksSystem {
 		}
 	}
 	
+	/**
+	 * Search for jobs by a manager id
+	 * 
+	 * @param theJobs all the jobs that already exist
+	 * @param theManagerId the id of the manager
+	 * 
+	 * @return a list of jobs by specified manager id
+	 */
 	 //get jobs by manager Id
 	 public List<Job> getJobsByManagerId(List<Job> theJobs, int theManagerId) {
 		 List<Job> managerJobs = new ArrayList<Job>(); 
@@ -62,14 +79,20 @@ public class ParksSystem {
 		 return managerJobs;
 	 }
 	
+	 /**
+	  * authenticate login of a user with specifice user name
+	  */
 	/**Handle login, and logOut**/
 	public void login(String theUserName) {
+		//parse the user name
 		String userType = theUserName.substring(0,3);
 		String userId = theUserName.substring(3,theUserName.length());
 		
+		//check if user type exist and user id is an int
 		if(UserType.userExist(userType) && userId.matches("[0-9]+")) {
 			int id = Integer.parseInt(userId);
 			
+			//logged in, now load the user to the system
 			if(isUserLoaded(userType,id)) {
 				
 			} else {
@@ -86,7 +109,13 @@ public class ParksSystem {
 		
 	}
 	
-	
+	/**
+	 * loads the current user to the system
+	 * 
+	 * @param theUserType the type of user(enum Manager, Staff, Volunteer)
+	 * @param theUserId the id of the user
+	 * @return true if current user object created
+	 */
 	public boolean isUserLoaded(String theUserType, int theUserId) {
 	
 		boolean loadSuccess = false;
@@ -111,14 +140,19 @@ public class ParksSystem {
 		
 		return loadSuccess;
 	}
-	
+	/**
+	 * checks a user id exist for a list of users
+	 * 
+	 * @param users the list of users
+	 * @param theId the id to be checked
+	 * @return true if that id exist for a user
+	 */
 	public <E> boolean isIdExist(List<E> users, int theId) {
 
+		//the user id follows the index
+		//user id greater than or equal the size, it doesnt exist
 		return (theId>=0 && theId < users.size());
 			
 	}
-	
-	
-	
 	
 }
