@@ -7,7 +7,7 @@ public class AbstractUser {
 	private String myName;
 	private String myPhone;
 	private String myAddress;
-	private UserTypes myType;
+	private UserType myType;
 	private String myUserName;
 	private String myEmail;
 	
@@ -44,7 +44,7 @@ public class AbstractUser {
 
 
 
-	public void setMyType(UserTypes theType) {
+	public void setMyType(UserType theType) {
 		this.myType = theType;
 	}
 
@@ -102,7 +102,7 @@ public class AbstractUser {
 
 
 
-	public UserTypes getMyType() {
+	public UserType getMyType() {
 		return myType;
 	}
 
@@ -124,9 +124,4 @@ public class AbstractUser {
 
 
 
-
-
-
-
-	public enum UserTypes {Vol, Mgr, Stf}
 }

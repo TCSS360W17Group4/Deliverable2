@@ -20,6 +20,7 @@ public class ParksSystem {
 		
 		myParkMangers.add(new ParkManager());
 		
+		
 	}
 	
 	
@@ -90,8 +91,8 @@ public class ParksSystem {
 	
 		boolean loadSuccess = false;
 		if(theUserType == UserType.Manager.getMyType() && isIdExist(myParkMangers,theUserId)) {
-			
-			ParkManager currentUser = myParkMangers.get(theUserId);
+			//check instanceof and init outside?
+			myCurrentUser = myParkMangers.get(theUserId);
 			
 			loadSuccess = true;
 			
