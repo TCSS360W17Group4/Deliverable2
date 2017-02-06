@@ -272,6 +272,22 @@ public class JobController {
 		 return upcomingJobs;
 	 }
     
+	 //get jobs by manager Id
+	 public List<Job> getJobsByManagerId(List<Job> theJobs, int theManagerId) {
+		 List<Job> managerJobs = new ArrayList<Job>(); 
+		 
+		 for (int i = 0; i < theJobs.size(); i++) {
+			 	Job jobChecked = theJobs.get(i);
+				if(jobChecked.getMyJobManagerId()== theManagerId) {
+						//add it to manager Jobs
+						managerJobs.add(jobChecked);
+					
+				}
+				
+			}
+		 
+		 return managerJobs;
+	 }
 	 
 	/**Helper methods **/
 	 //format time string to Time
