@@ -7,4 +7,8 @@ public class Volunteer extends AbstractUser {
         
     }
     
+    public void setMyVolunteerJobs(int theJobs[]){
+        myVolunteerJobs = theJobs;  ///we accept a reference to a list of jobs, this is our new list
+        return;
+    }
 }

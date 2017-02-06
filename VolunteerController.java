@@ -15,4 +15,10 @@ public class VolunteerController extends AbstractController {
         
     }
     
+    public void signUpForJob(Job theJob) {
+        if( ! JobController.isJobFullForSignUp(theJob) ) {
+            //this is where the design fails
+        }
+    }
+    
 }
