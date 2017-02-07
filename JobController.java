@@ -14,7 +14,7 @@ import java.util.Locale;
  * 
  *
  */
-public class JobController {
+public class JobController extends AbstractController {
 
 	
 	private static final int MAX_NUM_PENDING_JOBS = 30;
