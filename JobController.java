@@ -1,3 +1,4 @@
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -17,15 +18,40 @@ import java.util.Locale;
 public class JobController {
 
 	
-	private static final int MAX_NUM_PENDING_JOBS = 30;
+	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 30;
 	private static final int MAX_NUM_VOLUNTEERS_PER_JOB = 30;
 	private static final int MAX_DAYS_FOR_FUTURE_JOB_DATE = 30;
 	private static final int MAX_JOB_LENGTH_IN_DAYS = 2;
 	private static final int MAX_JOBS_PER_DAY_PER_MANAGER = 2;
 	private static final int MIN_JOB_POST_DAY_LENGTH = 3; 
 	private static final int ONE_DAY_OFFSET = 1;
-	
+	private int myMaxNumberOfPendingJobs ;
 
+	
+	/**
+	 * 
+	 */
+	public JobController() {
+		this.myMaxNumberOfPendingJobs = DEFAULT_MAX_NUM_PENDING_JOBS;
+	}
+	
+	/**
+	 * getter
+	 * @return getter for max number of pending jobs
+	 */
+	public int getMyMaxNumberOfPendingJobs() {
+		return this.myMaxNumberOfPendingJobs;
+	}
+	
+	/**
+	 * Setter for pending jobs limit
+	 * 
+	 * @param theNewMax setter for max number of pending jobs
+	 */
+	public void setMyMaxNumberOfPendingJobs(int theNewMax) {
+		this.myMaxNumberOfPendingJobs = theNewMax;
+	}
+	
 	/**
 	 * Checks if new jobs can be added
 	 * 
@@ -36,7 +62,7 @@ public class JobController {
 	 public boolean isNewJobAccepted(List<Job> theJobs) {
 		 List<Job> pendingJobs = getMyPendingJobs(theJobs);
 		 
-		 return pendingJobs.size() < MAX_NUM_PENDING_JOBS;
+		 return pendingJobs.size() < myMaxNumberOfPendingJobs;
 	 }
 	
 	 /**
@@ -47,6 +73,7 @@ public class JobController {
 	  */
 	public void initJobForm(int theUserId, Job theJob) {
 			theJob.setMyJobManagerId(theUserId);
+			
 			
 	}
 	
@@ -153,7 +180,7 @@ public class JobController {
 	 * @param theNum the number of light work volunteers needed
 	 */
 	public void addNumOfLightVolunteer(Job theJob, int theNum) {
-		if(theNum <=30 && theNum >=0) {
+		if(theNum <=MAX_NUM_VOLUNTEERS_PER_JOB && theNum >=0) {
 			theJob.setMyLightVolunteerNumber(theNum);
 		}
 	}
@@ -167,7 +194,7 @@ public class JobController {
 	public void addNumOfMediumVolunteer(Job theJob, int theNum) {
 		int currentTotal = theJob.getMyLightVolunteerNumber() + theNum;
 		
-		if(currentTotal >=0 && currentTotal <=30 ) {
+		if(currentTotal >=0 && currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB ) {
 			theJob.setMyMediumVolunteerNumber(theNum);
 		} else {
 			//error cant be added
@@ -182,7 +209,7 @@ public class JobController {
 	 */
 	public void addNumOfHeavyVolunteer(Job theJob, int theNum) {
 		int currentTotal = theJob.getMyLightVolunteerNumber() + theJob.getMyMediumVolunteerNumber() + theNum;
-		if(currentTotal > 0 && currentTotal <=30 ) {
+		if(currentTotal > 0 && currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB ) {
 			theJob.setMyHeavyVolunteerNumber(theNum);
 		} else {
 			//error 
@@ -305,10 +332,11 @@ public class JobController {
 	  * @return true if job reached maximum volunteer limit, false otherwise
 	  */
 	 //job is full for sign up BR: 2B
-	 public boolean isJobFullForSignUp(Job theJob) {
+	 public static boolean isJobFullForSignUp(Job theJob) {
 		 
-		 int currentTotal = totalVolunteersPerJob(theJob);
-		 return currentTotal == MAX_NUM_VOLUNTEERS_PER_JOB;
+		 int totalVolunteersNeeded = totalVolunteersPerJob(theJob);
+		 int currentTotal = theJob.getMyCurrentTotalVolunteers();
+		 return totalVolunteersNeeded == currentTotal;
 	 }
 	 
 	 /**
@@ -318,7 +346,7 @@ public class JobController {
 	  * @return the total number of volunteers(light,medium,heavy)
 	  */
 	 //total volunteers per job
-	 public int totalVolunteersPerJob(Job theJob) {
+	 public static int totalVolunteersPerJob(Job theJob) {
 		 int currentTotalVolunteers = 0;
 		 
 		 currentTotalVolunteers = theJob.getMyLightVolunteerNumber() + 
@@ -356,6 +384,8 @@ public class JobController {
 	 }
 	 
 	 
+	 
+	 
 	 /****************************
 	  * Different query for the jobs arraylist
 	  ****************************/
@@ -371,7 +401,7 @@ public class JobController {
 		 
 		 for (int i = 0; i < theJobs.size(); i++) {
 			 	Job jobChecked = theJobs.get(i);
-				if(!jobChecked.isMyJobIsPast()) {
+				if(!jobChecked.getMyJobIsPast()) {
 					//job is not full and signing up day not passed
 					if(!isSignUpDayPassed(jobChecked) &&
 							!isJobFullForSignUp(jobChecked)) {
@@ -385,52 +415,7 @@ public class JobController {
 		 return pendingJobs;
 	 }
 	 
-	 /**
-	  * search for jobs that are not past yet
-	  * 
-	  * @param theJobs the jobs to be searched
-	  * @return all jobs that are present (greater or equal to current date)
-	  */
-	 //get upcoming jobs(job not in the past)
-	 public List<Job> getUpcomingJobs(List<Job> theJobs) {
-		 List<Job> upcomingJobs = new ArrayList<Job>(); 
-		 
-		 for (int i = 0; i < theJobs.size(); i++) {
-			 	Job jobChecked = theJobs.get(i);
-				if(!jobChecked.isMyJobIsPast()) {
-						//add it to pending
-						upcomingJobs.add(jobChecked);
-					
-				}
-				
-			}
-		 
-		 return upcomingJobs;
-	 }
-    
-	 /**
-	  * search the jobs by specific manager id
-	  * @param theJobs the jobs to be searched 
-	  * 
-	  * @param theManagerId the manager id to filiter the job
-	  * @return all jobs that a manager manages 
-	  */
-	 //get jobs by manager Id
-	 public List<Job> getJobsByManagerId(List<Job> theJobs, int theManagerId) {
-		 List<Job> managerJobs = new ArrayList<Job>(); 
-		 
-		 for (int i = 0; i < theJobs.size(); i++) {
-			 	Job jobChecked = theJobs.get(i);
-				if(jobChecked.getMyJobManagerId()== theManagerId) {
-						//add it to manager Jobs
-						managerJobs.add(jobChecked);
-					
-				}
-				
-			}
-		 
-		 return managerJobs;
-	 }
+
 	 
 	/********************
 	 *  Helper methods

@@ -1,19 +1,23 @@
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Volunteer extends AbstractUser {
 	
-	 private int myBlackballStatus;
-	 private int myVolunteerJobs[];
+	 private boolean isUserBlackBalled = false;
+	 private List<Integer> myVolunteerJobs = new ArrayList<>();
 	
-	 public int getMyBlackballStatus() {
-		return myBlackballStatus;
+	 public boolean getMyBlackballStatus() {
+		return isUserBlackBalled;
 	}
-	public void setMyBlackballStatus(int theBlackballStatus) {
-		this.myBlackballStatus = theBlackballStatus;
+	public void setMyBlackballStatus(boolean theBlackballStatus) {
+		this.isUserBlackBalled = theBlackballStatus;
 	}
-	public int[] getMyVolunteerJobs() {
+	public List<Integer> getMyVolunteerJobs() {
 		return myVolunteerJobs;
 	}
-	public void setMyVolunteerJobs(int[] theVolunteerJobs) {
+	public void setMyVolunteerJobs(List<Integer> theVolunteerJobs) {
 		this.myVolunteerJobs = theVolunteerJobs;
 	}
 

@@ -1,3 +1,4 @@
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
@@ -22,6 +23,7 @@ public class Job {
     private int myJobManagerId;
     private boolean myJobIsPending;
     private boolean myJobIsPast;//if enddate a job < currentdate make sure to set this to true
+    private int myCurrentTotalVolunteers;
 	
 	
 	
@@ -105,13 +107,13 @@ public class Job {
 
 
 
-	public boolean isMyJobPending() {
+	public boolean getMyJobIsPending() {
 		return myJobIsPending;
 	}
 
 
 
-	public boolean isMyJobIsPast() {
+	public boolean getMyJobIsPast() {
 		return myJobIsPast;
 	}
 
@@ -187,5 +189,17 @@ public class Job {
 
 	public void setMyJobIsPast(boolean theJobIsPast) {
 		this.myJobIsPast = theJobIsPast;
+	}
+
+
+
+	public int getMyCurrentTotalVolunteers() {
+		return myCurrentTotalVolunteers;
+	}
+
+
+
+	public void setMyCurrentTotalVolunteers(int theCurrentTotalVolunteers) {
+		this.myCurrentTotalVolunteers = theCurrentTotalVolunteers;
 	}
 }
