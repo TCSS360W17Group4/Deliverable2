@@ -14,15 +14,20 @@ import java.util.List;
 public class ParksSystem {
 
 	private static AbstractUser myCurrentUser;
-	List<Job> myJobs = new ArrayList<Job>();
-	List<Volunteer> myVolunteers = new ArrayList<Volunteer>();
-	private static List<ParkManager> myParkMangers= new ArrayList<ParkManager>();
-	List<UrbanStaff> myUrbanStaff =  new ArrayList<UrbanStaff>();
+	List<Job> myJobs;
+	List<Volunteer> myVolunteers;
+	private static List<ParkManager> myParkManagers;
+	List<UrbanStaff> myUrbanStaff;
 	
 	
 	private static JobController jobController = new JobController();
 	
-
+	public ParksSystem(){
+	    myJobs = new ArrayList<Job>();
+	    myVolunteers = new ArrayList<Volunteer>();
+	    ParksSystem.myParkManagers = new ArrayList<ParkManager>();
+	    myUrbanStaff = new ArrayList<UrbanStaff>();
+	}
 	
 	/***********************
 	 * Searches for Park Managers
@@ -33,7 +38,7 @@ public class ParksSystem {
 	 * with specific manager id
 	 * 
 	 * @param theVolunteers the volunteers to be searched
-	 * @param theManagerId the id used to filiter the volunteers
+	 * @param theManagerId the id used to filter the volunteers
 	 */
 	public void getVolunteersByManagerId(List<Volunteer> theVolunteers, List<Job> thejobs, int theManagerId) {
 		List<Job> managerJobs = getJobsByManagerId(thejobs,theManagerId);
@@ -299,14 +304,14 @@ public class ParksSystem {
 	public boolean isUserLoaded(String theUserType, int theUserId) {
 	
 		boolean loadSuccess = false;
-		if(theUserType == UserType.Manager.getMyType() && isIdExist(myParkMangers,theUserId)) {
+		if(theUserType == UserType.Manager.getMyType() && isIdExist(myParkManagers,theUserId)) {
 			//check instanceof and init outside?
-			myCurrentUser = myParkMangers.get(theUserId);
+			myCurrentUser = myParkManagers.get(theUserId);
 			
 			loadSuccess = true;
 			
 		  
-		} else if (theUserType == UserType.Staff.getMyType() && isIdExist(myParkMangers,theUserId)) {
+		} else if (theUserType == UserType.Staff.getMyType() && isIdExist(myParkManagers,theUserId)) {
 			
 			myCurrentUser = myUrbanStaff.get(theUserId);
 			loadSuccess = true;
