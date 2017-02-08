@@ -20,18 +20,18 @@ public class UrbanParksStaffController extends AbstractController{
     private final List<Job> myJobs;
 	private final List<Volunteer> myVolunteers;
 	private final List<ParkManager> myParkManagers;
-    private final List<UrbanStaff> myUrbanStaff;
+    private final List<UrbanParksStaff> myUrbanParksStaff;
     private JobController myJobController;
     
     public UrbanParksStaffController(List<Job> theJobs, 
     List<Volunteer> theVolunteers, 
     List<ParkManager> theParkManagers, 
-    List<UrbanStaff> theUrbanStaff, 
+    List<UrbanParksStaff> theUrbanParksStaff, 
     JobController theJobController) {
         myJobs = theJobs;
         myVolunteers = theVolunteers;
         myParkManagers = theParkManagers;
-        myUrbanStaff = theUrbanStaff;
+        myUrbanParksStaff = theUrbanParksStaff;
         myJobController = theJobController;
     }
     
