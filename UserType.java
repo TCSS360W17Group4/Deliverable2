@@ -1,4 +1,5 @@
 
+
 /**
  * Enum to hold the user types
  * 
