@@ -40,7 +40,7 @@ public class UrbanParksStaffController extends AbstractController{
     public void changeMaxJobs(int newMaxJobs) {
         // uses the setter method in JobController class
         myJobController.setMyMaxNumberOfPendingJobs(newMaxJobs);
-    }  
+    }
     
     
     // User story 4: As an Urban Parks staff member I want to view a one-month calendar of all upcoming jobs.
@@ -49,7 +49,11 @@ public class UrbanParksStaffController extends AbstractController{
     public List<Job> viewCalendar() {
         List<Job> pendingJobs = new ArrayList<Job>();
         for (Job j : myJobs) {
-            if (j.getMyJobIsPending()) {
+            if (j.getMyJobIsPending() && 
+                // compares start date to current date right now
+                j.getMyStartDate() > j.getMyStartDate().now() &&
+                // compares start date to date of one month from right now
+                j.getMyStartDate() < j.getMyStartDate().now().plusMonths(1)) {
                 pendingJobs.add(j);
             }
         }
