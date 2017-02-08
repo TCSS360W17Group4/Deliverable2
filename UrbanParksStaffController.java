@@ -2,25 +2,64 @@
    extending system would make accessing data in system easy
    but extending to share data makes the object too bound to system
 */
-import java.util.Arrays;
 
-public class UrbanParksStaffController {
+/**
+ * 
+ * 
+ * @author Tony Richardson
+ * 
+ */
+
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+
+public class UrbanParksStaffController extends AbstractController{
+    
+    private final List<Job> myJobs;
+	private final List<Volunteer> myVolunteers;
+	private final List<ParkManager> myParkManagers;
+    private final List<UrbanStaff> myUrbanStaff;
+    private JobController myJobController;
+    
+    public UrbanParksStaffController(List<Job> theJobs, 
+    List<Volunteer> theVolunteers, 
+    List<ParkManager> theParkManagers, 
+    List<UrbanStaff> theUrbanStaff, 
+    JobController theJobController) {
+        myJobs = theJobs;
+        myVolunteers = theVolunteers;
+        myParkManagers = theParkManagers;
+        myUrbanStaff = theUrbanStaff;
+        myJobController = theJobController;
+    }
     
     
     // User story 5: As an Urban Parks staff member I want to change the maximum number of pending jobs that are allowed in the system.
     public void changeMaxJobs(int newMaxJobs) {
-        // need access to maxjobs field in system
-        maxjobs = newMaxJobs;
+        // uses the setter method in JobController class
+        myJobController.setMyMaxNumberOfPendingJobs(newMaxJobs);
     }  
     
     
     // User story 4: As an Urban Parks staff member I want to view a one-month calendar of all upcoming jobs.
     // view one month calendar
-    public void viewCalendar() {
-        
-      
+    // returns a list of upcoming jobs
+    public List<Job> viewCalendar() {
+        List<Job> pendingJobs = new ArrayList<Job>();
+        for (Job j : myJobs) {
+            if (j.getMyJobIsPending()) {
+                pendingJobs.add(j);
+            }
+        }
+        return pendingJobs;
     }
     
+    
+    
+    
+    /*
     private Job[] viewCalendar(int startDate, int endDate) {
         // sorts job array if not already sorted
         
@@ -58,23 +97,8 @@ public class UrbanParksStaffController {
             }
             len /= 2;
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+       
         
         int s = binarySearch(jobs, startDate);
         int e = binarySearch(jobs, endDate);
@@ -91,5 +115,5 @@ public class UrbanParksStaffController {
             
         }
     }
-    
+    */
 }
