@@ -26,7 +26,11 @@ public class JobController {
 	private static final int MIN_JOB_POST_DAY_LENGTH = 3; 
 	private static final int ONE_DAY_OFFSET = 1;
 	private int myMaxNumberOfPendingJobs ;
+<<<<<<< HEAD
 	private static ArrayList<Job> myJobsList;
+=======
+	private static List<Job> myJobsList;
+>>>>>>> dereje2
 	
 	/**
 	 * 
@@ -35,7 +39,11 @@ public class JobController {
 		this.myMaxNumberOfPendingJobs = DEFAULT_MAX_NUM_PENDING_JOBS;
 	}
 	   
+<<<<<<< HEAD
 	public JobController(ArrayList<Job> theJobs) {
+=======
+	public JobController(List<Job> theJobs) {
+>>>>>>> dereje2
 	    this.myMaxNumberOfPendingJobs = DEFAULT_MAX_NUM_PENDING_JOBS;
 	    JobController.myJobsList = theJobs;
 	    
