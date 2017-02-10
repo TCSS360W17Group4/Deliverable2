@@ -12,17 +12,19 @@
 
 package model;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
 public class UrbanParksStaffController extends AbstractController{
     
+    
     private final List<Job> myJobs;
-	private final List<Volunteer> myVolunteers;
-	private final List<ParkManager> myParkManagers;
-    private final List<UrbanParksStaff> myUrbanParksStaff;
-    private JobController myJobController;
+	//private final List<Volunteer> myVolunteers;
+	//private final List<ParkManager> myParkManagers;
+    //private final List<UrbanParksStaff> myUrbanParksStaff;
+    //private JobController myJobController;
     
     
     /**
@@ -36,6 +38,7 @@ public class UrbanParksStaffController extends AbstractController{
      * @param theJobController The job controller from the parks system.
      * 
      */
+     /*
     public UrbanParksStaffController(
     List<Job> theJobs, 
     List<Volunteer> theVolunteers, 
@@ -47,6 +50,16 @@ public class UrbanParksStaffController extends AbstractController{
         myParkManagers = theParkManagers;
         myUrbanParksStaff = theUrbanParksStaff;
         myJobController = theJobController;
+    }
+    */
+    public UrbanParksStaffController(AbstractUser theUser, 
+        List<Volunteer> theVolunteers, List<ParkManager> theParkManagers,
+        List<UrbanParksStaff> theUrbanParksStaff,
+        JobController theJobController,
+        List<Job> theJobs) {
+        
+        super(theUser, theVolunteers, theParkManagers, theUrbanParksStaff, theJobController);
+        myJobs = theJobs;
     }
     
     
@@ -72,8 +85,25 @@ public class UrbanParksStaffController extends AbstractController{
      * 
      * @return A list of pending jobs with start dates from now to one month from now.
      */
-    public List<Job> viewCalendar() {
+    public List<Job> getPendingJobsForOneMonth() {
         List<Job> pendingJobs = new ArrayList<Job>();
+        for (Job j : myJobs) {
+            if (j.isJobPending() && 
+                // compares start date to current date right now
+                //j.getMyStartDate().compareTo(j.getMyStartDate().now()) > 0 &&
+                // compares start date to date of one month from right now
+                j.getMyStartDate().compareTo(LocalDate.now().plusMonths(1)) <= 0) {
+                pendingJobs.add(j);
+            }
+        }
+        return pendingJobs;
+    }
+    
+    // local date will not do what we need it to do
+    
+    /*
+    public List<Job> getPendingJobsInRange(LocalDate start, LocalDate end) {
+        List<Job> jobsRange = new ArrayList<Job>();
         for (Job j : myJobs) {
             if (j.getMyJobIsPending() && 
                 // compares start date to current date right now
@@ -82,10 +112,9 @@ public class UrbanParksStaffController extends AbstractController{
                 j.getMyStartDate().compareTo(j.getMyStartDate().now().plusMonths(1)) < 0) {
                 pendingJobs.add(j);
             }
-        }
-        return pendingJobs;
+        } 
     }
-    
+    */
     
 
 }
