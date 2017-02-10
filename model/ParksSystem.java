@@ -377,7 +377,6 @@ public class ParksSystem implements java.io.Serializable{
 			
 	}
 	
-	//this will likely no longer be needed if the user interface will drive the project
 	public void run(){
 	    //someone needs to do this at some point, not necessary for JUnit testing
 	    String userName = new String();

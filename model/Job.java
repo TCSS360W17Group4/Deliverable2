@@ -35,8 +35,8 @@ public class Job {
 
 
 
-    public void setMyVolunteerList(List<Integer> myVolunteerList) {
-        this.myVolunteerList = myVolunteerList;
+    public void setMyVolunteerList(List<Integer> theVolunteerList) {
+        this.myVolunteerList = theVolunteerList;
     }
 
 
