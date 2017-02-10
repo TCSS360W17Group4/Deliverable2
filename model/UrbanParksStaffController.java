@@ -77,9 +77,9 @@ public class UrbanParksStaffController extends AbstractController{
         for (Job j : myJobs) {
             if (j.getMyJobIsPending() && 
                 // compares start date to current date right now
-                j.getMyStartDate() > j.getMyStartDate().now() &&
+                j.getMyStartDate().compareTo(j.getMyStartDate().now()) > 0 &&
                 // compares start date to date of one month from right now
-                j.getMyStartDate() < j.getMyStartDate().now().plusMonths(1)) {
+                j.getMyStartDate().compareTo(j.getMyStartDate().now().plusMonths(1)) < 0) {
                 pendingJobs.add(j);
             }
         }
