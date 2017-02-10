@@ -30,19 +30,19 @@ public class Job {
 	private List<Integer> myVolunteerList;
 	
 	public List<Integer> getMyVolunteerList() {
-		return myVolunteerList;
-	}
+        return myVolunteerList;
+    }
 
 
 
-	public void setMyVolunteerList(List<Integer> theVolunteerList) {
-		this.myVolunteerList = theVolunteerList;
-	}
+    public void setMyVolunteerList(List<Integer> theVolunteerList) {
+        this.myVolunteerList = theVolunteerList;
+    }
 
 
 
-	public Job(Park thePark) {
-		myPark = new Park();
+    public Job(Park thePark) {
+		myPark = thePark;
 	}
 
 

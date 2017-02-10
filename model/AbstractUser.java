@@ -1,7 +1,7 @@
 package model;
 
 
-public class AbstractUser {
+public abstract class AbstractUser {
 
 
 

@@ -229,6 +229,7 @@ public class JobController {
 		
 		if(currentTotal >=0 && currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB ) {
 			theJob.setMyMediumVolunteerNumber(theNum);
+
 			numAccepted = true;
 		} else {
 		  numAccepted = false;
@@ -243,6 +244,7 @@ public class JobController {
 	 * @param theJob theJob theJob the job volunteer number assigned
 	 * @param theNum the number of heavy work volunteers needed
 	 */
+
 	public boolean isMaxHeavyVolNumValid(Job theJob, int theNum) {
 		boolean numAccepted = false;
 		int currentTotal = theJob.getMyLightVolunteerNumber() + theJob.getMyMediumVolunteerNumber() + theNum;
@@ -254,6 +256,7 @@ public class JobController {
 		}
 		
 		return numAccepted;
+
 	}
 	
 
@@ -264,7 +267,7 @@ public class JobController {
 	 * @param theJobs the jobs that exist already
 	 */
 	//set Job ID/
-	public void addJob(Job theJob, List<Job>theJobs){
+	public void addJob(Job theJob, List<Job>theJobs) {
 		//the size of the existing job becomes the id of the new job
 		theJob.setMyJobId(theJobs.size());
 		//add Job
@@ -504,6 +507,7 @@ public class JobController {
 	//format string date to LocalDate
 	public static LocalDate convertStringToDate(String theDate) {
 	
+
 		try {
 			Locale locale = Locale.US;
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "MM/dd/yy" ).withLocale (locale);
@@ -514,6 +518,7 @@ public class JobController {
 				//return past date so test fails, instead of exception
 				return null;
 			}
+
 		
 	}
 	
