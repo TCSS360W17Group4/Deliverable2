@@ -3,6 +3,7 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -26,10 +27,22 @@ public class Job {
     private boolean myJobIsPast;//if enddate a job < currentdate make sure to set this to true
     private int myCurrentTotalVolunteers;
 	
+	private List<Integer> myVolunteerList;
 	
-	
-	public Job(Park thePark) {
-		thePark = new Park();
+	public List<Integer> getMyVolunteerList() {
+        return myVolunteerList;
+    }
+
+
+
+    public void setMyVolunteerList(List<Integer> myVolunteerList) {
+        this.myVolunteerList = myVolunteerList;
+    }
+
+
+
+    public Job(Park thePark) {
+		myPark = thePark;
 	}
 
 

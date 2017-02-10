@@ -12,7 +12,7 @@ import java.util.List;
  * @author Dereje 
  *
  */
-public class ParksSystem {
+public class ParksSystem implements java.io.Serializable{
 
 	private static AbstractUser myCurrentUser;
 	private static List<Job> myJobs;
@@ -377,6 +377,7 @@ public class ParksSystem {
 			
 	}
 	
+	//this will likely no longer be needed if the user interface will drive the project
 	public void run(){
 	    //someone needs to do this at some point, not necessary for JUnit testing
 	    String userName = new String();
