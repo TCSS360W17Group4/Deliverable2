@@ -1,3 +1,4 @@
+package model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
  * @author Dereje 
  *
  */
-public class ParksSystem {
+public class ParksSystem implements java.io.Serializable{
 
 	private static AbstractUser myCurrentUser;
 	private static List<Job> myJobs;

@@ -1,3 +1,4 @@
+package model;
 /* 
    extending system would make accessing data in system easy
    but extending to share data makes the object too bound to system
