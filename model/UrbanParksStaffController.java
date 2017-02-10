@@ -18,24 +18,29 @@ import java.util.ArrayList;
 
 public class UrbanParksStaffController extends AbstractController{
     
-    private final List<Job> myJobs;
-    private final List<Volunteer> myVolunteers;
-    private final List<ParkManager> myParkManagers;
-    private final List<UrbanParksStaff> myUrbanParksStaff;
-    private JobController myJobController;
+    //private final List<Job> myJobs;
+    //private final List<Volunteer> myVolunteers;
+    //private final List<ParkManager> myParkManagers;
+    //private final List<UrbanParksStaff> myUrbanParksStaff;
+    //private JobController myJobController;
     
-    public UrbanParksStaffController(List<Job> theJobs, 
+    /*public UrbanParksStaffController(UrbanParksStaff theUser, 
     List<Volunteer> theVolunteers, 
     List<ParkManager> theParkManagers, 
     List<UrbanParksStaff> theUrbanParksStaff, 
     JobController theJobController) {
-        myJobs = theJobs;
+        //myJobs = theJobs;
         myVolunteers = theVolunteers;
         myParkManagers = theParkManagers;
         myUrbanParksStaff = theUrbanParksStaff;
         myJobController = theJobController;
+    }*/
+    public UrbanParksStaffController(UrbanParksStaff theUser, 
+            List<Volunteer> theVolunteers, List<ParkManager> theParkManagers,
+            List<UrbanParksStaff> theUrbanParksStaff,
+            JobController theJobController) {
+        super(theUser, theVolunteers, theParkManagers, theUrbanParksStaff, theJobController);
     }
-    
     
     // User story 5: As an Urban Parks staff member I want to change the maximum number of pending jobs that are allowed in the system.
     public void changeMaxJobs(int newMaxJobs) {
@@ -47,7 +52,7 @@ public class UrbanParksStaffController extends AbstractController{
     // User story 4: As an Urban Parks staff member I want to view a one-month calendar of all upcoming jobs.
     // view one month calendar
     // returns a list of upcoming jobs
-    public List<Job> viewCalendar() {
+    /*public List<Job> viewCalendar() {
         List<Job> pendingJobs = new ArrayList<Job>();
         for (Job j : myJobs) {
             if (j.getMyJobIsPending()) {
@@ -55,7 +60,7 @@ public class UrbanParksStaffController extends AbstractController{
             }
         }
         return pendingJobs;
-    }
+    }*/
     
     
     
