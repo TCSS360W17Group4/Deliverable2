@@ -267,7 +267,7 @@ public class JobController {
 	 * @param theJobs the jobs that exist already
 	 */
 	//set Job ID/
-	public void addJob(Job theJob, List<Job>theJobs){
+	public void addJob(Job theJob, List<Job>theJobs) {
 		//the size of the existing job becomes the id of the new job
 		theJob.setMyJobId(theJobs.size());
 		//add Job

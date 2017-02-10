@@ -32,7 +32,7 @@ public class Converter {
             result+="\tQUIT(Q)\n";
             //mySystem.logout();
         } else if (tokens[0].toUpperCase() == "STARTSIM" || tokens[0].toUpperCase() == "SS") {
-            
+            HomeView myHomeView = new HomeView();
             //LoginView myLoginView = new LoginView();
             
         } else if (tokens[0].toUpperCase() == "SAVE" || tokens[0].toUpperCase() == "S") {
