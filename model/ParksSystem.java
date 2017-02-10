@@ -1,27 +1,38 @@
 package model;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 
-/**
+/*
  * ParksSystem to control the system data,
  * and login 
  * 
  * @author Dereje 
  *
  */
-public class ParksSystem {
+public class ParksSystem implements java.io.Serializable{
 
 	private static AbstractUser myCurrentUser;
-	List<Job> myJobs = new ArrayList<Job>();
-	List<Volunteer> myVolunteers = new ArrayList<Volunteer>();
-	private static List<ParkManager> myParkMangers= new ArrayList<ParkManager>();
-	List<UrbanParksStaff> myUrbanParksStaff =  new ArrayList<UrbanParksStaff>();
-	//added Job Controller to use the query methods
+	private static List<Job> myJobs;
+	private static List<Volunteer> myVolunteers;
+	private static List<ParkManager> myParkManagers;
+	private static List<UrbanParksStaff> myUrbanStaff;
 	
-	private static JobController jobController = new JobController();
 	
+	private static JobController myJobController;
+	private static AbstractController myUserController;
+	
+	public ParksSystem(){
+	    myCurrentUser = new AbstractUser();
+	    myJobs = new ArrayList<Job>();
+	    myVolunteers = new ArrayList<Volunteer>();
+	    myParkManagers = new ArrayList<ParkManager>();
+	    myUrbanStaff = new ArrayList<UrbanParksStaff>();
+	    myJobController = new JobController(myJobs);
+	    myUserController = new AbstractController();
+	}
 	
 	/***********************
 	 * Searches for Park Managers
@@ -81,7 +92,7 @@ public class ParksSystem {
 	 }
 	 
 	 /*****************************
-	  * Searches for volunteers
+	  * Query for volunteers
 	  **************************/
 	 
 	 /**
@@ -98,22 +109,26 @@ public class ParksSystem {
 		 List<Integer> currentJobsList = myVolunteers.get(theVolunteerId).getMyVolunteerJobs();
 		 
 		 		if (myVolunteers.get(theVolunteerId).getMyBlackballStatus() || 
-		 				volunteerHasTheJob(theVolunteerId,theJobId) || 
-		 				jobController.isSignUpDayPassed(myJobs.get(theJobId)) || 
-		 				jobController.isJobFullForSignUp(myJobs.get(theJobId))) {
+		 		        volunteerHasTheJob(theVolunteerId,theJobId) || 
+		 				myJobController.isSignUpDayPassed(myJobs.get(theJobId)) || 
+		 				JobController.isJobFullForSignUp(myJobs.get(theJobId))) {
 		 			//already volunteered or sign up date passed(BR.6C) or full or blackball(6B)
-		 			return false;
+		 		    return false;
+		 		    
 		 		} else {
-		 			//add to the bucket
-		 			currentJobsList.add(new Integer(theJobId));
-		 			//make job list the current one
-		 			myVolunteers.get(theVolunteerId).setMyVolunteerJobs(currentJobsList);
-		 			
-		 			//update total volunteers for the job
-		 			int currenTotal = myJobs.get(theJobId).getMyCurrentTotalVolunteers()+1;
-		 			myJobs.get(theJobId).setMyCurrentTotalVolunteers(currenTotal);
-		 			return true;
-		 		}
+		 		
+		 		    //add to the bucket
+		 		    currentJobsList.add(new Integer(theJobId));
+		 		    //make job list the current one
+		 		    myVolunteers.get(theVolunteerId).setMyVolunteerJobs(currentJobsList);
+                    	
+                	//update total volunteers for the job
+                	int currenTotal = myJobs.get(theJobId).getMyCurrentTotalVolunteers()+1;
+    	 			myJobs.get(theJobId).setMyCurrentTotalVolunteers(currenTotal);
+    	 			return true;
+                    	 			
+                    }
+		 		
 	 }
 	 
 	 
@@ -133,8 +148,8 @@ public class ParksSystem {
 				if(!jobChecked.getMyJobIsPast()) {
 					//job is not full and signing up day not passed and 
 					//the volunteer does not have the job
-					if(!jobController.isSignUpDayPassed(jobChecked) &&
-							!jobController.isJobFullForSignUp(jobChecked) &&
+					if(!myJobController.isSignUpDayPassed(jobChecked) &&
+							!JobController.isJobFullForSignUp(jobChecked) &&
 							!volunteerHasTheJob(theVolunteerId, jobChecked.getMyJobId())) {
 						//add it to pending
 						pendingJobs.add(jobChecked);
@@ -145,6 +160,8 @@ public class ParksSystem {
 		 
 		 return pendingJobs;
 	 }
+	 
+	 
 	 
 	 /**
 	  * checks if the volunteer already has the job
@@ -247,7 +264,7 @@ public class ParksSystem {
 	  */
 	 //story 5
 	 public void updatePendingJobsLimit(int theNewMax) {
-		 jobController.setMyMaxNumberOfPendingJobs(theNewMax);
+		 myJobController.setMyMaxNumberOfPendingJobs(theNewMax);
 	 }
 	 
      /********************************
@@ -255,46 +272,54 @@ public class ParksSystem {
       ********************************/
 	 
 	
-	public void logout() {
+		/**
+		 * loads the current user to the system
+		 * 
+		 * @param theUserType the type of user(enum Manager, Staff, Volunteer)
+		 * @param theUserId the id of the user
+		 * @return true if current user object created
+		 */
+		public boolean loginSuccessful(String theUserName) {
+			String userType = theUserName.substring(0,3);
+			String userId = theUserName.substring(3,theUserName.length());
+			boolean isSuccessful = false;
 		
-	}
-	
-	/**
-	 * loads the current user to the system
-	 * 
-	 * @param theUserType the type of user(enum Manager, Staff, Volunteer)
-	 * @param theUserId the id of the user
-	 * @return true if current user object created
-	 */
-	public boolean loginSuccessful(String theUserName) {
-		String userType = theUserName.substring(0,3);
-		String userId = theUserName.substring(3,theUserName.length());
-		boolean isSuccessful = false;
-		
+		//check if user type exist and user id is an int
 		if(UserType.userExist(userType) && userId.matches("[0-9]+")) {
 			int id = Integer.parseInt(userId);
 			
 			if(userType.equals(UserType.Manager.getMyType()) ) {
-				//check instanceof and init outside?
-				ParkManager currentUser = myParkMangers.get(id);
-				
-				ParkManagerController pmController = new ParkManagerController(currentUser,myVolunteers,myJobs);
-				System.out.println("manager");
+			     myUserController = new ParkManagerController(
+	                        (ParkManager)myCurrentUser, 
+	                        myVolunteers, 
+	                        myParkManagers, 
+	                        myUrbanStaff, 
+	                        myJobController);
 				
 				isSuccessful = true;
 			  
 			} else if (userType.equals(UserType.Staff.getMyType()) ) {
 				
-				UrbanParksStaff currentUser = myUrbanParksStaff.get(id);
-				System.out.println("staff");
+			
+			    /*
+			    myUserController = new UrbanParksStaffController(
+                        (UrbanParksStaff)myCurrentUser, 
+                        myVolunteers, 
+                        myParkManagers, 
+                        myUrbanStaff, 
+                        myJobController);
+                        */
 				isSuccessful = true;
 			} else if (userType.equals(UserType.Volunteer.getMyType()) ){
-				System.out.println("volunteerr");
-				//myCurrentUser = myVolunteers.get(theUserId);
-				Volunteer currentUser = myVolunteers.get(id);
+			    myUserController = new VolunteerController(
+			            (Volunteer)myCurrentUser, 
+			            myVolunteers, 
+			            myParkManagers, 
+			            myUrbanStaff, 
+			            myJobController);
 				isSuccessful = true;
 			} else {
-				System.out.println("NONE");
+				
 				isSuccessful = false;
 			}
 			
@@ -306,10 +331,13 @@ public class ParksSystem {
 		
 		
 		return isSuccessful;
+	}
 	
-		
+	public void logout() {
 		
 	}
+	
+	
 	/**
 	 * checks a user id exist for a list of users
 	 * 
@@ -323,6 +351,14 @@ public class ParksSystem {
 		//user id greater than or equal the size, it doesnt exist
 		return (theId>=0 && theId < users.size());
 			
+	}
+	
+	public void run(){
+	    //someone needs to do this at some point, not necessary for JUnit testing
+	    String userName = new String();
+	    loginSuccessful(userName);
+	    //Also needed after we sort out JUnit testing
+	    //myUserController.run();  
 	}
 	
 }
