@@ -1,3 +1,5 @@
+package model;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -14,25 +16,49 @@ import java.util.Locale;
  * 
  *
  */
-public class JobController extends AbstractController {
+public class JobController {
 
 	
-	private static final int MAX_NUM_PENDING_JOBS = 30;
+	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 30;
 	private static final int MAX_NUM_VOLUNTEERS_PER_JOB = 30;
 	private static final int MAX_DAYS_FOR_FUTURE_JOB_DATE = 30;
 	private static final int MAX_JOB_LENGTH_IN_DAYS = 2;
 	private static final int MAX_JOBS_PER_DAY_PER_MANAGER = 2;
 	private static final int MIN_JOB_POST_DAY_LENGTH = 3; 
 	private static final int ONE_DAY_OFFSET = 1;
+	private int myMaxNumberOfPendingJobs ;
+	private static List<Job> myJobsList;
 	
-    private List<Job> myJobs = new ArrayList<Job>(); 	
+	/**
+	 * 
+	 */
+	public JobController() {
+		this.myMaxNumberOfPendingJobs = DEFAULT_MAX_NUM_PENDING_JOBS;
+	}
+	   
+	public JobController(List<Job> theJobs) {
+	    this.myMaxNumberOfPendingJobs = DEFAULT_MAX_NUM_PENDING_JOBS;
+	    JobController.myJobsList = theJobs;
+	    
+	}
 	
-    public JobController(List<Job> theJobs) {
-        myJobs = theJobs;
-    }
-    
-    public JobController(){}
-    
+	/**
+	 * getter
+	 * @return getter for max number of pending jobs
+	 */
+	public int getMyMaxNumberOfPendingJobs() {
+		return this.myMaxNumberOfPendingJobs;
+	}
+	
+	/**
+	 * Setter for pending jobs limit
+	 * 
+	 * @param theNewMax setter for max number of pending jobs
+	 */
+	public void setMyMaxNumberOfPendingJobs(int theNewMax) {
+		this.myMaxNumberOfPendingJobs = theNewMax;
+	}
+	
 	/**
 	 * Checks if new jobs can be added
 	 * 
@@ -43,7 +69,7 @@ public class JobController extends AbstractController {
 	 public boolean isNewJobAccepted(List<Job> theJobs) {
 		 List<Job> pendingJobs = getMyPendingJobs(theJobs);
 		 
-		 return pendingJobs.size() < MAX_NUM_PENDING_JOBS;
+		 return pendingJobs.size() < myMaxNumberOfPendingJobs;
 	 }
 	
 	 /**
@@ -55,27 +81,31 @@ public class JobController extends AbstractController {
 	public void initJobForm(int theUserId, Job theJob) {
 			theJob.setMyJobManagerId(theUserId);
 			
+			
 	}
 	
-	/**
-	 * assign the park name for given job
-	 * 
-	 * @param theParkName park name for the job
-	 * @param theJob the job park name to be assigned
-	 */
-	
-	public void addJobParkName(String theParkName, Job theJob){
-		theJob.getMyPark().setMyName(theParkName);
+	public boolean isParkAdded(ParkManager theManager, Job theJob, Park thePark) {
+		
+		if(theManager.getMyParks().size() == 1) {
+			thePark = theManager.getMyParks().get(0);
+			theJob =  new Job(thePark);
+			theJob.setMyJobManagerId(theManager.getMyUserId());
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 	
-	/**
-	 * assign the city for the job
-	 * 
-	 * @param theCity the city of the job
-	 * @param theJob the job the city assigned
-	 */
-	public void addJobCity(String theCity, Job theJob) {
-		theJob.getMyPark().setMyCity(theCity);
+	public Park pickAPark(ParkManager theManager, int theManagerChoice) {
+		Park thePark;
+		if (theManagerChoice == 1) {
+			thePark = theManager.getMyParks().get(0);
+		} else  {
+			thePark = theManager.getMyParks().get(1);
+		} 
+		
+		return thePark;
 	}
 	
 	/**
@@ -85,21 +115,25 @@ public class JobController extends AbstractController {
 	 * @param theJob the job the starting assigned
 	 * @param theJobs the jobs already exist
 	 */
-	public void addStartDate(String theDate, Job theJob, List<Job>theJobs) {
-		
+	public boolean isStartDateAdded(String theDate, Job theJob, List<Job>theJobs) {
+		boolean dateAdded = false;
 		//check the job is future, minus -current 3 days//assumption based on BR volunteer
 		LocalDate jobStartDate = convertStringToDate(theDate);
-		LocalDate currentDate = LocalDate.now();
-		 //BR: C & E
-		if (betweenDates(currentDate,jobStartDate)>= MIN_JOB_POST_DAY_LENGTH && 
-				betweenDates(currentDate,jobStartDate)<= MAX_DAYS_FOR_FUTURE_JOB_DATE){
-			//BR:D
-			if(isDuplicateStartDatePassed(jobStartDate, theJob.getMyJobManagerId(),theJobs)) {
-				theJob.setMyStartDate(jobStartDate);
+		if(jobStartDate != null) {
+			LocalDate currentDate = LocalDate.now();
+			 //BR: C & E
+			if (betweenDates(currentDate,jobStartDate)>= MIN_JOB_POST_DAY_LENGTH && 
+					betweenDates(currentDate,jobStartDate)<= MAX_DAYS_FOR_FUTURE_JOB_DATE){
+				//BR:D
+				if(isDuplicateStartDatePassed(jobStartDate, theJob.getMyJobManagerId(),theJobs)) {
+					theJob.setMyStartDate(jobStartDate);
+					dateAdded = true;
+				} 
+				
 			}
-		} else {
-			//return with error
-		}
+		} 
+		
+		return dateAdded;
 		
 	}
 	
@@ -110,12 +144,13 @@ public class JobController extends AbstractController {
 	 * @param theJob the job the duration is assigned
 	 * @param theJobs theJobs the jobs already exist
 	 */
-	public void addEndDate(int theDuration, Job theJob,List<Job>theJobs) {
+	public boolean isEndDateAdded(int theDuration, Job theJob,List<Job>theJobs) {
 		//accept user input duration of the job/ 2 is MAX=> 1 or 2 only option
-		
+		boolean dateAdded = false;
 		if(theDuration <= 0 || theDuration > MAX_JOB_LENGTH_IN_DAYS) {
 			//the LocalDate cant be added 
-			
+			dateAdded = false;
+			return dateAdded;
 		} 
 		
 		//add duration to startDate
@@ -123,10 +158,13 @@ public class JobController extends AbstractController {
 		//check for duplicates
 		if(isDuplicateEndDatePassed(endDate, theJob.getMyJobManagerId(),theDuration,theJobs)) {
 			theJob.setMyEndDate(endDate);
+			dateAdded = true;
 		} else {
 			//cant be added
+			dateAdded = false;
 		}
 		
+		return dateAdded;
 
 	}
 	
@@ -149,8 +187,14 @@ public class JobController extends AbstractController {
 	 * @param theJob the job description is assigned
 	 * @param theDescription the description of the job
 	 */
-	public void addJobDescription(Job theJob, String theDescription) {
-		theJob.setMyDescription(theDescription);
+	public boolean isJobDescriptionAdded(Job theJob, String theDescription) {
+		if (theDescription.length() >= 0) {
+			theJob.setMyDescription(theDescription);
+			return true;
+			} else {
+				return false;
+			}
+			
 		
 	}
 	/**
@@ -158,11 +202,18 @@ public class JobController extends AbstractController {
 	 * 
 	 * @param theJob the job volunteer number assigned
 	 * @param theNum the number of light work volunteers needed
+	 * @return
 	 */
-	public void addNumOfLightVolunteer(Job theJob, int theNum) {
-		if(theNum <=30 && theNum >=0) {
+	public boolean isMaxLightVolNumberValid(Job theJob, int theNum) {
+		boolean numAccepted = false;
+		if(theNum <=MAX_NUM_VOLUNTEERS_PER_JOB && theNum >=0) {
 			theJob.setMyLightVolunteerNumber(theNum);
+			numAccepted = true;
+		} else {
+		  numAccepted = false;
 		}
+		
+		return numAccepted;
 	}
 	
 	/**
@@ -170,15 +221,21 @@ public class JobController extends AbstractController {
 	 * 
 	 * @param theJob theJob the job volunteer number assigned
 	 * @param theNum the number of medium work volunteers needed
+	 * @return
 	 */
-	public void addNumOfMediumVolunteer(Job theJob, int theNum) {
+	public boolean isMaxMediumVolNumValid(Job theJob, int theNum) {
+		boolean numAccepted = false;
 		int currentTotal = theJob.getMyLightVolunteerNumber() + theNum;
 		
-		if(currentTotal >=0 && currentTotal <=30 ) {
+		if(currentTotal >=0 && currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB ) {
 			theJob.setMyMediumVolunteerNumber(theNum);
+
+			numAccepted = true;
 		} else {
-			//error cant be added
+		  numAccepted = false;
 		}
+		
+		return numAccepted;
 	}
 	
 	/**
@@ -187,13 +244,19 @@ public class JobController extends AbstractController {
 	 * @param theJob theJob theJob the job volunteer number assigned
 	 * @param theNum the number of heavy work volunteers needed
 	 */
-	public void addNumOfHeavyVolunteer(Job theJob, int theNum) {
+
+	public boolean isMaxHeavyVolNumValid(Job theJob, int theNum) {
+		boolean numAccepted = false;
 		int currentTotal = theJob.getMyLightVolunteerNumber() + theJob.getMyMediumVolunteerNumber() + theNum;
-		if(currentTotal > 0 && currentTotal <=30 ) {
+		if(currentTotal > 0 && currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB ) {
 			theJob.setMyHeavyVolunteerNumber(theNum);
+			numAccepted = true;
 		} else {
-			//error 
+		  numAccepted = false;
 		}
+		
+		return numAccepted;
+
 	}
 	
 
@@ -204,7 +267,7 @@ public class JobController extends AbstractController {
 	 * @param theJobs the jobs that exist already
 	 */
 	//set Job ID/
-	public void addJob(Job theJob, List<Job>theJobs){
+	public void addJob(Job theJob, List<Job>theJobs) {
 		//the size of the existing job becomes the id of the new job
 		theJob.setMyJobId(theJobs.size());
 		//add Job
@@ -312,10 +375,11 @@ public class JobController extends AbstractController {
 	  * @return true if job reached maximum volunteer limit, false otherwise
 	  */
 	 //job is full for sign up BR: 2B
-	 public boolean isJobFullForSignUp(Job theJob) {
+	 public static boolean isJobFullForSignUp(Job theJob) {
 		 
-		 int currentTotal = totalVolunteersPerJob(theJob);
-		 return currentTotal == MAX_NUM_VOLUNTEERS_PER_JOB;
+		 int totalVolunteersNeeded = totalVolunteersPerJob(theJob);
+		 int currentTotal = theJob.getMyCurrentTotalVolunteers();
+		 return totalVolunteersNeeded == currentTotal;
 	 }
 	 
 	 /**
@@ -325,7 +389,7 @@ public class JobController extends AbstractController {
 	  * @return the total number of volunteers(light,medium,heavy)
 	  */
 	 //total volunteers per job
-	 public int totalVolunteersPerJob(Job theJob) {
+	 public static int totalVolunteersPerJob(Job theJob) {
 		 int currentTotalVolunteers = 0;
 		 
 		 currentTotalVolunteers = theJob.getMyLightVolunteerNumber() + 
@@ -363,6 +427,8 @@ public class JobController extends AbstractController {
 	 }
 	 
 	 
+	 
+	 
 	 /****************************
 	  * Different query for the jobs arraylist
 	  ****************************/
@@ -378,7 +444,7 @@ public class JobController extends AbstractController {
 		 
 		 for (int i = 0; i < theJobs.size(); i++) {
 			 	Job jobChecked = theJobs.get(i);
-				if(!jobChecked.isMyJobIsPast()) {
+				if(!jobChecked.getMyJobIsPast()) {
 					//job is not full and signing up day not passed
 					if(!isSignUpDayPassed(jobChecked) &&
 							!isJobFullForSignUp(jobChecked)) {
@@ -392,52 +458,7 @@ public class JobController extends AbstractController {
 		 return pendingJobs;
 	 }
 	 
-	 /**
-	  * search for jobs that are not past yet
-	  * 
-	  * @param theJobs the jobs to be searched
-	  * @return all jobs that are present (greater or equal to current date)
-	  */
-	 //get upcoming jobs(job not in the past)
-	 public List<Job> getUpcomingJobs(List<Job> theJobs) {
-		 List<Job> upcomingJobs = new ArrayList<Job>(); 
-		 
-		 for (int i = 0; i < theJobs.size(); i++) {
-			 	Job jobChecked = theJobs.get(i);
-				if(!jobChecked.isMyJobIsPast()) {
-						//add it to pending
-						upcomingJobs.add(jobChecked);
-					
-				}
-				
-			}
-		 
-		 return upcomingJobs;
-	 }
-    
-	 /**
-	  * search the jobs by specific manager id
-	  * @param theJobs the jobs to be searched 
-	  * 
-	  * @param theManagerId the manager id to filiter the job
-	  * @return all jobs that a manager manages 
-	  */
-	 //get jobs by manager Id
-	 public List<Job> getJobsByManagerId(List<Job> theJobs, int theManagerId) {
-		 List<Job> managerJobs = new ArrayList<Job>(); 
-		 
-		 for (int i = 0; i < theJobs.size(); i++) {
-			 	Job jobChecked = theJobs.get(i);
-				if(jobChecked.getMyJobManagerId()== theManagerId) {
-						//add it to manager Jobs
-						managerJobs.add(jobChecked);
-					
-				}
-				
-			}
-		 
-		 return managerJobs;
-	 }
+
 	 
 	/********************
 	 *  Helper methods
@@ -486,11 +507,18 @@ public class JobController extends AbstractController {
 	//format string date to LocalDate
 	public static LocalDate convertStringToDate(String theDate) {
 	
-		Locale locale = Locale.US;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "MM/dd/yy" ).withLocale (locale);
-		LocalDate localDate = LocalDate.parse ( theDate , formatter );
 
-		return localDate;
+		try {
+			Locale locale = Locale.US;
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "MM/dd/yy" ).withLocale (locale);
+			LocalDate localDate = LocalDate.parse ( theDate , formatter );
+
+			return localDate;
+			} catch(Exception e) {
+				//return past date so test fails, instead of exception
+				return null;
+			}
+
 		
 	}
 	

@@ -1,3 +1,5 @@
+package model;
+
 
 /**
  * Enum to hold the user types
