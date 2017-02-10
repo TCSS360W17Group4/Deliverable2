@@ -277,53 +277,50 @@ public class ParksSystem implements java.io.Serializable{
 	  * 
 	  * @param theUserName the username to be checked for loggin
 	  */
-	public void login(String theUserName) {
+	public boolean loginSuccessful(String theUserName) {
 		//parse the user name
 		String userType = theUserName.substring(0,3);
 		String userId = theUserName.substring(3,theUserName.length());
+		boolean isSuccessful = false;
 		
 		//check if user type exist and user id is an int
 		if(UserType.userExist(userType) && userId.matches("[0-9]+")) {
-			int id = Integer.parseInt(userId);
-			
-			if (userType == "vol") {
-			    myUserController = new VolunteerController(
-			            (Volunteer)myCurrentUser, 
-			            myVolunteers, 
-			            myParkManagers, 
-			            myUrbanStaff, 
-			            myJobController);
-			}
-			else if (userType == "mgr") {
-	             myUserController = new ParkManagerController(
-                        (ParkManager)myCurrentUser, 
-                        myVolunteers, 
-                        myParkManagers, 
-                        myUrbanStaff, 
-                        myJobController);
-			} 
-			else if (userType == "stf"){
-			    /*
-			    myUserController = new UrbanParksStaffController(
-                        (UrbanParksStaff)myCurrentUser, 
-                        myVolunteers, 
-                        myParkManagers, 
-                        myUrbanStaff, 
-                        myJobController);
-                        */
-			}
-			//logged in, now load the user to the system
-			
-			
-			if(isUserLoaded(userType,id)) {
+				int id = Integer.parseInt(userId);
 				
-			} else {
-				//load failed
-			}
-			
-		} else {
-			//user doesnt exist
+				
+				if(userType.equals(UserType.Volunteer.getMyType()) ) {
+				    myUserController = new VolunteerController(
+				            (Volunteer)myCurrentUser, 
+				            myVolunteers, 
+				            myParkManagers, 
+				            myUrbanStaff, 
+				            myJobController);
+				    isSuccessful = true;
+				} else if(userType.equals(UserType.Manager.getMyType()) ) {
+		             myUserController = new ParkManagerController(
+	                        (ParkManager)myCurrentUser, 
+	                        myVolunteers, 
+	                        myParkManagers, 
+	                        myUrbanStaff, 
+	                        myJobController);
+		             isSuccessful = true;
+				} else if (userType.equals(UserType.Staff.getMyType()) ) {
+				    /*
+				    myUserController = new UrbanParksStaffController(
+	                        (UrbanParksStaff)myCurrentUser, 
+	                        myVolunteers, 
+	                        myParkManagers, 
+	                        myUrbanStaff, 
+	                        myJobController);
+	                        */
+			    	isSuccessful = true;
+				 } else {
+				//user doesnt exist
+					 isSuccessful = false;
+				 }
 		}
+		
+		return isSuccessful;
 			
 	}
 	
@@ -331,37 +328,7 @@ public class ParksSystem implements java.io.Serializable{
 		
 	}
 	
-	/**
-	 * loads the current user to the system
-	 * 
-	 * @param theUserType the type of user(enum Manager, Staff, Volunteer)
-	 * @param theUserId the id of the user
-	 * @return true if current user object created
-	 */
-	public boolean isUserLoaded(String theUserType, int theUserId) {
 	
-		boolean loadSuccess = false;
-		if(theUserType == UserType.Manager.getMyType() && isIdExist(myParkManagers,theUserId)) {
-			//check instanceof and init outside?
-			myCurrentUser = myParkManagers.get(theUserId);
-			
-			loadSuccess = true;
-			
-		  
-		} else if (theUserType == UserType.Staff.getMyType() && isIdExist(myParkManagers,theUserId)) {
-			
-			myCurrentUser = myUrbanStaff.get(theUserId);
-			loadSuccess = true;
-			 
-		} else {
-			
-			myCurrentUser = myVolunteers.get(theUserId);
-			loadSuccess = true;
-			
-		}
-		
-		return loadSuccess;
-	}
 	/**
 	 * checks a user id exist for a list of users
 	 * 
@@ -380,7 +347,7 @@ public class ParksSystem implements java.io.Serializable{
 	public void run(){
 	    //someone needs to do this at some point, not necessary for JUnit testing
 	    String userName = new String();
-	    login(userName);
+	    loginSuccessful(userName);
 	    //Also needed after we sort out JUnit testing
 	    //myUserController.run();  
 	}
