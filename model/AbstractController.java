@@ -17,8 +17,8 @@ import java.util.List;
  */
 
 
-public class AbstractController {
-    protected final AbstractUser myUser;
+public abstract class AbstractController {
+    protected AbstractUser myUser;
     protected final List<Volunteer> myVolunteers;
     protected final List<ParkManager> myParkManagers;
     protected final List<UrbanParksStaff> myUrbanParksStaff;
@@ -26,7 +26,7 @@ public class AbstractController {
     
     //should not get called explicitly, this exists to prevent compile errors
     public AbstractController() {  
-        myUser = new AbstractUser();
+        //myUser = new AbstractUser();
         myVolunteers = new ArrayList<Volunteer>();
         myParkManagers = new ArrayList<ParkManager>();
         myUrbanParksStaff = new ArrayList<UrbanParksStaff>();

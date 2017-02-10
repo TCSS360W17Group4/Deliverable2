@@ -18,6 +18,7 @@ public class CommandLine {
         {
             System.out.println(">");
             command = myScanner.nextLine();
+            theConverter.ioCalls(command);
             System.out.println(command + "\n");
         } while ((command!="QUIT")&&(command!="Q")&&(command!="quit")&&(command!="q"));
         
