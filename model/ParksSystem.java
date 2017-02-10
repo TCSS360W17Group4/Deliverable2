@@ -25,13 +25,13 @@ public class ParksSystem implements java.io.Serializable{
 	private static AbstractController myUserController;
 	
 	public ParksSystem(){
-	    myCurrentUser = new AbstractUser();
+	    //myCurrentUser = new AbstractUser();
 	    myJobs = new ArrayList<Job>();
 	    myVolunteers = new ArrayList<Volunteer>();
 	    myParkManagers = new ArrayList<ParkManager>();
 	    myUrbanStaff = new ArrayList<UrbanParksStaff>();
 	    myJobController = new JobController(myJobs);
-	    myUserController = new AbstractController();
+	    ///myUserController = new AbstractController();
 	}
 	
 	/***********************

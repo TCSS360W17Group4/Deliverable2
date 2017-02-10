@@ -27,7 +27,7 @@ public abstract class AbstractController {
     //should not get called explicitly, this exists to prevent compile errors
     /*
     public AbstractController() {  
-        myUser = new AbstractUser();
+        //myUser = new AbstractUser();
         myVolunteers = new ArrayList<Volunteer>();
         myParkManagers = new ArrayList<ParkManager>();
         myUrbanParksStaff = new ArrayList<UrbanParksStaff>();

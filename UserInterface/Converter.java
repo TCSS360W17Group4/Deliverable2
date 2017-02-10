@@ -23,19 +23,20 @@ public class Converter {
         //we need to define all of the useful commands: for the demonstration, there should be 7 commands, one for each user story
          
         if (tokens[0].toUpperCase() == "HELP" || tokens[0].toUpperCase() == "H") {
-            result="Commands:\n";
-            result+="-------------------\n";
+            result="\tCommands:\n";
+            result+="\t-------------------\n";
             result+="\tSAVE(S) <filename>\n";
             result+="\tLOAD(L) <filename>\n";
             result+="\tSTARTSIM(SS)\n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
             //mySystem.logout();
-        } else if (tokens[0].toUpperCase() == "STARTSIM" || tokens[0].toUpperCase() == "SS") {
-            HomeView myHomeView = new HomeView();
+        } else if (tokens[0].equalsIgnoreCase("STARTSIM") || tokens[0].equalsIgnoreCase("SS") ) {
+            HomeView myHomeView = new HomeView(mySystem);
+            myHomeView.run();
             //LoginView myLoginView = new LoginView();
             
-        } else if (tokens[0].toUpperCase() == "SAVE" || tokens[0].toUpperCase() == "S") {
+        } else if (tokens[0].equalsIgnoreCase("SAVE") || tokens[0].equalsIgnoreCase("S") ) {
         //do a save call  
 
             try {
@@ -51,7 +52,7 @@ public class Converter {
             } 
             
             
-        } else if (tokens[0].toUpperCase() == "LOAD" || tokens[0].toUpperCase() == "L") {
+        } else if (tokens[0].equalsIgnoreCase("LOAD") || tokens[0].equalsIgnoreCase("L") ) {
 
             try {
              // Read from disk using FileInputStream
