@@ -10,6 +10,7 @@
  * 
  */
 
+package model;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +24,8 @@ public class UrbanParksStaffController extends AbstractController{
     private final List<UrbanParksStaff> myUrbanParksStaff;
     private JobController myJobController;
     
-    public UrbanParksStaffController(List<Job> theJobs, 
+    public UrbanParksStaffController(
+    List<Job> theJobs, 
     List<Volunteer> theVolunteers, 
     List<ParkManager> theParkManagers, 
     List<UrbanParksStaff> theUrbanParksStaff, 
