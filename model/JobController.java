@@ -84,25 +84,28 @@ public class JobController {
 			
 	}
 	
-	/**
-	 * assign the park name for given job
-	 * 
-	 * @param theParkName park name for the job
-	 * @param theJob the job park name to be assigned
-	 */
-	
-	public void addJobParkName(String theParkName, Job theJob){
-		theJob.getMyPark().setMyName(theParkName);
+	public boolean isParkAdded(ParkManager theManager, Job theJob, Park thePark) {
+		
+		if(theManager.getMyParks().size() == 1) {
+			thePark = theManager.getMyParks().get(0);
+			theJob =  new Job(thePark);
+			theJob.setMyJobManagerId(theManager.getMyUserId());
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 	
-	/**
-	 * assign the city for the job
-	 * 
-	 * @param theCity the city of the job
-	 * @param theJob the job the city assigned
-	 */
-	public void addJobCity(String theCity, Job theJob) {
-		theJob.getMyPark().setMyCity(theCity);
+	public Park pickAPark(ParkManager theManager, int theManagerChoice) {
+		Park thePark;
+		if (theManagerChoice == 1) {
+			thePark = theManager.getMyParks().get(0);
+		} else  {
+			thePark = theManager.getMyParks().get(1);
+		} 
+		
+		return thePark;
 	}
 	
 	/**
@@ -112,22 +115,25 @@ public class JobController {
 	 * @param theJob the job the starting assigned
 	 * @param theJobs the jobs already exist
 	 */
-	public void addStartDate(String theDate, Job theJob, List<Job>theJobs) {
-		
+	public boolean isStartDateAdded(String theDate, Job theJob, List<Job>theJobs) {
+		boolean dateAdded = false;
 		//check the job is future, minus -current 3 days//assumption based on BR volunteer
 		LocalDate jobStartDate = convertStringToDate(theDate);
-		LocalDate currentDate = LocalDate.now();
-		 //BR: C & E
-		if (betweenDates(currentDate,jobStartDate)>= MIN_JOB_POST_DAY_LENGTH && 
-				betweenDates(currentDate,jobStartDate)<= MAX_DAYS_FOR_FUTURE_JOB_DATE){
-			//BR:D
-			if(isDuplicateStartDatePassed(jobStartDate, theJob.getMyJobManagerId(),theJobs)) {
-				theJob.setMyStartDate(jobStartDate);
+		if(jobStartDate != null) {
+			LocalDate currentDate = LocalDate.now();
+			 //BR: C & E
+			if (betweenDates(currentDate,jobStartDate)>= MIN_JOB_POST_DAY_LENGTH && 
+					betweenDates(currentDate,jobStartDate)<= MAX_DAYS_FOR_FUTURE_JOB_DATE){
+				//BR:D
+				if(isDuplicateStartDatePassed(jobStartDate, theJob.getMyJobManagerId(),theJobs)) {
+					theJob.setMyStartDate(jobStartDate);
+					dateAdded = true;
+				} 
 				
 			}
-		} else {
-			//return with error
-		}
+		} 
+		
+		return dateAdded;
 		
 	}
 	
@@ -138,24 +144,27 @@ public class JobController {
 	 * @param theJob the job the duration is assigned
 	 * @param theJobs theJobs the jobs already exist
 	 */
-	public void addEndDate(int theDuration, Job theJob,List<Job>theJobs) {
+	public boolean isEndDateAdded(int theDuration, Job theJob,List<Job>theJobs) {
 		//accept user input duration of the job/ 2 is MAX=> 1 or 2 only option
-		
+		boolean dateAdded = false;
 		if(theDuration <= 0 || theDuration > MAX_JOB_LENGTH_IN_DAYS) {
 			//the LocalDate cant be added 
-			//theJob.setMyEndDate(null);
+			dateAdded = false;
+			return dateAdded;
 		} 
 		
 		//add duration to startDate
-		LocalDate endDate = (theJob.getMyStartDate()).plusDays(theDuration);
+		LocalDate endDate = theJob.getMyStartDate().plusDays(theDuration);
 		//check for duplicates
 		if(isDuplicateEndDatePassed(endDate, theJob.getMyJobManagerId(),theDuration,theJobs)) {
 			theJob.setMyEndDate(endDate);
+			dateAdded = true;
 		} else {
 			//cant be added
-			//theJob.setMyEndDate(null);
+			dateAdded = false;
 		}
 		
+		return dateAdded;
 
 	}
 	
@@ -178,8 +187,14 @@ public class JobController {
 	 * @param theJob the job description is assigned
 	 * @param theDescription the description of the job
 	 */
-	public void addJobDescription(Job theJob, String theDescription) {
-		theJob.setMyDescription(theDescription);
+	public boolean isJobDescriptionAdded(Job theJob, String theDescription) {
+		if (theDescription.length() >= 0) {
+			theJob.setMyDescription(theDescription);
+			return true;
+			} else {
+				return false;
+			}
+			
 		
 	}
 	/**
@@ -187,14 +202,18 @@ public class JobController {
 	 * 
 	 * @param theJob the job volunteer number assigned
 	 * @param theNum the number of light work volunteers needed
+	 * @return
 	 */
-	public void addNumOfLightVolunteer(Job theJob, int theNum) {
+	public boolean isMaxLightVolNumberValid(Job theJob, int theNum) {
+		boolean numAccepted = false;
 		if(theNum <=MAX_NUM_VOLUNTEERS_PER_JOB && theNum >=0) {
 			theJob.setMyLightVolunteerNumber(theNum);
+			numAccepted = true;
 		} else {
-			//boolean return is better
-			theJob.setMyLightVolunteerNumber(0);
+		  numAccepted = false;
 		}
+		
+		return numAccepted;
 	}
 	
 	/**
@@ -202,17 +221,20 @@ public class JobController {
 	 * 
 	 * @param theJob theJob the job volunteer number assigned
 	 * @param theNum the number of medium work volunteers needed
+	 * @return
 	 */
-	public void addNumOfMediumVolunteer(Job theJob, int theNum) {
+	public boolean isMaxMediumVolNumValid(Job theJob, int theNum) {
+		boolean numAccepted = false;
 		int currentTotal = theJob.getMyLightVolunteerNumber() + theNum;
 		
 		if(currentTotal >=0 && currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB ) {
 			theJob.setMyMediumVolunteerNumber(theNum);
+			numAccepted = true;
 		} else {
-			//error cant be added
-			//boolean return is better
-			theJob.setMyMediumVolunteerNumber(0);
+		  numAccepted = false;
 		}
+		
+		return numAccepted;
 	}
 	
 	/**
@@ -221,14 +243,17 @@ public class JobController {
 	 * @param theJob theJob theJob the job volunteer number assigned
 	 * @param theNum the number of heavy work volunteers needed
 	 */
-	public void addNumOfHeavyVolunteer(Job theJob, int theNum) {
+	public boolean isMaxHeavyVolNumValid(Job theJob, int theNum) {
+		boolean numAccepted = false;
 		int currentTotal = theJob.getMyLightVolunteerNumber() + theJob.getMyMediumVolunteerNumber() + theNum;
 		if(currentTotal > 0 && currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB ) {
 			theJob.setMyHeavyVolunteerNumber(theNum);
+			numAccepted = true;
 		} else {
-			//boolean return is better
-			theJob.setMyHeavyVolunteerNumber(0);
+		  numAccepted = false;
 		}
+		
+		return numAccepted;
 	}
 	
 
@@ -479,11 +504,16 @@ public class JobController {
 	//format string date to LocalDate
 	public static LocalDate convertStringToDate(String theDate) {
 	
-		Locale locale = Locale.US;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "MM/dd/yy" ).withLocale (locale);
-		LocalDate localDate = LocalDate.parse ( theDate , formatter );
+		try {
+			Locale locale = Locale.US;
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "MM/dd/yy" ).withLocale (locale);
+			LocalDate localDate = LocalDate.parse ( theDate , formatter );
 
-		return localDate;
+			return localDate;
+			} catch(Exception e) {
+				//return past date so test fails, instead of exception
+				return null;
+			}
 		
 	}
 	

@@ -40,12 +40,12 @@ public class JobControllerTest {
 		
 		Job job1 = new Job(new Park());
 		Job job2 = new Job(new Park());
-		jobController.addStartDate("02/14/17", job1, myJobs);
-		jobController.addStartDate("02/15/17", job2, myJobs);
+		jobController.isStartDateAdded("02/14/17", job1, myJobs);
+		jobController.isStartDateAdded("02/15/17", job2, myJobs);
 		job1.setMyHeavyVolunteerNumber(2);
 		job2.setMyHeavyVolunteerNumber(2);
-		jobController.addEndDate(1, job1, myJobs);
-		jobController.addEndDate(1, job2, myJobs);
+		jobController.isEndDateAdded(1, job1, myJobs);
+		jobController.isEndDateAdded(1, job2, myJobs);
 
 		
 		myJobs.add(0,job1);
@@ -61,77 +61,77 @@ public class JobControllerTest {
 	 ************************/
 	
 	/**
-	 * {@link model.JobController#addNumOfLightVolunteer(Job, int)(Job)}
+	 * {@link model.JobController#isMaxLightVolNumberValid(Job, int)}
 	 */
 	@Test
-	public void testAddNumOfLightVolunteer() {
+	public void testAddNumOfLightVolunteerOverLimitAndUnderLimit() {
 		Job job1 = new Job(new Park());
-		jobController.addNumOfLightVolunteer(job1, 30);
-		assertEquals(new Integer(job1.getMyLightVolunteerNumber()),new Integer(30));
-		jobController.addNumOfLightVolunteer(job1, 31);
-		//change the assert to assertTrue or false once method return boolean
-		assertEquals(new Integer(job1.getMyLightVolunteerNumber()),new Integer(0));
+		jobController.isMaxLightVolNumberValid(job1, 30);
+		assertTrue("light volunteer max below 30 failed",jobController.isMaxLightVolNumberValid(job1, 30));
+		jobController.isMaxLightVolNumberValid(job1, 31);
+		assertFalse("light volunteer max below 30 failed",jobController.isMaxLightVolNumberValid(job1, 31));
 	}
 	
 	
 	/**
 	 * Case 1 light volunteer 30, and adding medium 1
 	 * 
-	 * {@link model.JobController#addNumOfMediumVolunteer(Job, int)(Job)}
+	 * {@link model.JobController#isMaxMediumVolNumValid(Job, int)}
 	 */
 	@Test
-	public void testAddNumOfMediumVolunteerCaseOne() {
+	public void testIsMaxMediumVolNumValidWithMaxLightVol() {
 		Job job1 = new Job(new Park());
-		jobController.addNumOfLightVolunteer(job1, 30);
-		jobController.addNumOfMediumVolunteer(job1, 1);
-		assertEquals(new Integer(job1.getMyMediumVolunteerNumber()),new Integer(0));
+		assertTrue("light volunteer has valid number failed",jobController.isMaxLightVolNumberValid(job1, 30));
+		assertFalse("sum of light + medium is <=30 failed",jobController.isMaxMediumVolNumValid(job1, 1));
 		
 	}
 	
 	/**
 	 * Case 2 light volunteer <30, and adding medium 1
 	 * 
-	 * {@link model.JobController#addNumOfMediumVolunteer(Job, int)(Job)}
+	 * {@link model.JobController#isMaxMediumVolNumValid(Job, int)}
 	 */
 	@Test
-	public void testAddNumOfMediumVolunteerCaseTwo() {
+	public void testIsMaxMediumVolNumValidrWithBelowMaxLightVol() {
 		Job job1 = new Job(new Park());
-		jobController.addNumOfLightVolunteer(job1, 29);
-		jobController.addNumOfMediumVolunteer(job1, 1);
-		assertEquals(new Integer(job1.getMyMediumVolunteerNumber()),new Integer(1));
+		assertTrue("light volunteer has valid number failed",jobController.isMaxLightVolNumberValid(job1, 29));
+		assertTrue("sum of light + medium is <=30 failed",jobController.isMaxMediumVolNumValid(job1, 1));
+
 	
 	}
 	/**
 	 * Case 1 light volunteer + medium = 30
-	 * {@link model.JobController#addNumOfHeavyVolunteer(Job, int)(Job)}
+	 * {@link model.JobController#isMaxHeavyVolNumValid(Job, int)}
 	 */
 	@Test
-	public void testAddNumOfHeavyVolunteerCaseOne() {
+	public void testAddNumOfHeavyVolunteerWithMedAndLightMax() {
 		Job job1 = new Job(new Park());
-		jobController.addNumOfLightVolunteer(job1, 29);
-		jobController.addNumOfMediumVolunteer(job1, 1);
-		jobController.addNumOfHeavyVolunteer(job1, 1);
-		assertEquals(new Integer(job1.getMyHeavyVolunteerNumber()),new Integer(0));
+
+		assertTrue("light volunteer has valid number fail",jobController.isMaxLightVolNumberValid(job1, 29));
+		assertTrue("sum of light + medium is <=30 fail",jobController.isMaxMediumVolNumValid(job1, 1));
+		assertFalse("sum of light + medium + heavy is <=30 fail",jobController.isMaxHeavyVolNumValid(job1, 1));
+	
 	}
 	
 	/**
 	 * case 2 light Volunteer + medium <30
-	 * {@link model.JobController#addNumOfHeavyVolunteer(Job, int)(Job)}
+	 * {@link model.JobController#isMaxHeavyVolNumValid(Job, int)}
 	 */
 	@Test
-	public void testAddNumOfHeavyVolunteer() {
+	public void testIsMaxHeavyVolNumValidBelow30WithMedAndLightBelowMax() {
 		Job job1 = new Job(new Park());
-		jobController.addNumOfLightVolunteer(job1, 20);
-		jobController.addNumOfMediumVolunteer(job1, 0);
-		jobController.addNumOfHeavyVolunteer(job1, 1);
-		assertEquals(new Integer(job1.getMyHeavyVolunteerNumber()),new Integer(1));
+
+		assertTrue("light volunteer has valid number fail",jobController.isMaxLightVolNumberValid(job1, 20));
+		assertTrue("sum of light + medium is <=30 fail",jobController.isMaxMediumVolNumValid(job1, 0));
+		assertTrue("sum of light + medium + heavy is <=30 fail",jobController.isMaxHeavyVolNumValid(job1, 1));
 		
-		jobController.addNumOfLightVolunteer(job1, 20);
-		jobController.addNumOfMediumVolunteer(job1, 0);
-		jobController.addNumOfHeavyVolunteer(job1, 11);
-		//adding over 30
-		assertEquals(new Integer(job1.getMyHeavyVolunteerNumber()),new Integer(0));
+		
+		assertTrue("light volunteer has valid number fail",jobController.isMaxLightVolNumberValid(job1, 20));
+		assertTrue("sum of light + medium is <=30 fail",jobController.isMaxMediumVolNumValid(job1, 0));
+		assertFalse("sum of light + medium + heavy is <=30 fail",jobController.isMaxHeavyVolNumValid(job1, 11));
+	
 	}
+	
 	
 	
 

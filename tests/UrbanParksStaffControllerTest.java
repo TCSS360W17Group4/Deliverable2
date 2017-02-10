@@ -35,8 +35,8 @@ public class UrbanParksStaffControllerTest {
 			job1.setMyMediumVolunteerNumber(2);
 			job1.setMyCurrentTotalVolunteers(2);
 			
-			jobController.addStartDate("02/14/17", job1, myJobs);
-			jobController.addStartDate("02/15/17", job2, myJobs);
+			jobController.isStartDateAdded("02/14/17", job1, myJobs);
+			jobController.isStartDateAdded("02/15/17", job2, myJobs);
 		
 			urbanParks = new UrbanParksStaffController(myJobs, null, null, null, jobController);
 	}
