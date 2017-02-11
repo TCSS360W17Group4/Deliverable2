@@ -18,20 +18,20 @@ import java.util.List;
 
 
 public abstract class AbstractController {
-    protected final AbstractUser myUser;
+    protected AbstractUser myUser;
     protected final List<Volunteer> myVolunteers;
     protected final List<ParkManager> myParkManagers;
     protected final List<UrbanParksStaff> myUrbanParksStaff;
     protected final JobController myJobController;
     
     //should not get called explicitly, this exists to prevent compile errors
-    /*public AbstractController() {  
+    public AbstractController() {  
         //myUser = new AbstractUser();
         myVolunteers = new ArrayList<Volunteer>();
         myParkManagers = new ArrayList<ParkManager>();
         myUrbanParksStaff = new ArrayList<UrbanParksStaff>();
         myJobController = new JobController();
-    }*/
+    }
     
     public AbstractController(AbstractUser theUser, 
             List<Volunteer> theVolunteers, List<ParkManager> theParkManagers,

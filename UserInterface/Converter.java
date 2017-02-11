@@ -22,7 +22,8 @@ public class Converter {
         
         //we need to define all of the useful commands: for the demonstration, there should be 7 commands, one for each user story
          
-        if (tokens[0].toUpperCase() == "HELP" || tokens[0].toUpperCase() == "H") {
+
+        if (tokens[0].equalsIgnoreCase("HELP")|| tokens[0].equalsIgnoreCase("H") ) {
             result="\tCommands:\n";
             result+="\t-------------------\n";
             result+="\tSAVE(S) <filename>\n";
@@ -78,12 +79,7 @@ public class Converter {
         }
         
         
-      //example: '1' could come from user trying to log in as a volunteer, call login method for volunteer
-        //the string at index = 1 could be the userName that they are trying to log in with
-        //mySystem.login(tokens[1]);
-        
-        
-        
+
         return result;
         
     }
