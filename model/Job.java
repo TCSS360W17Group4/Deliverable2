@@ -216,4 +216,13 @@ public class Job {
 	public void setMyCurrentTotalVolunteers(int theCurrentTotalVolunteers) {
 		this.myCurrentTotalVolunteers = theCurrentTotalVolunteers;
 	}
+    
+    
+    /*
+     * @author Tony Richardson
+     * date 2/10/2017
+     */
+     public boolean isJobPending() {
+        return myStartDate.compareTo(LocalDate.now()) >= 0;
+     }
 }
