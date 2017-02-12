@@ -277,61 +277,70 @@ public class ParksSystem implements java.io.Serializable{
 	  * 
 	  * @param theUserName the username to be checked for loggin
 	  */
+//we need to return a user SOMEHOW otherwise when is the Controller ever going to be built?
 	public AbstractUser loginSuccessful(String theUserName) {
 		//parse the user name
 		String userType = theUserName.substring(0,3);
+		//can be index 3, since username has length 4 generally
 		String userId = theUserName.substring(3,theUserName.length());
-		boolean isSuccessful = false;
-		int id = -1;
-		//check if user type exist and user id is an int
-		if(UserType.userExist(userType) && userId.matches("[0-9]+")) {
-		    id = Integer.parseInt(userId);
-		    
-		    if(userType.equals(UserType.Volunteer.getMyType()) ) {
-		        myUserController = new VolunteerController(
+		boolean isSuccessful = false;	
+		int id;
+		
+		if (UserType.userExist(userType) && userId.matches("[0-9]+")) {
+			id = Integer.parseInt(userId);
+		} else {
+			//return false;//no need to check the other statements
+		}
+				
+				//id check to avoid nullpointer calling Contains
+		if(userType.equals(UserType.Volunteer.getMyType()) 
+				&& id < myVolunteers.size()
+				&& myVolunteers.contains(myVolunteers.get(id)) ) {
+				    myUserController = new VolunteerController(
 				            (Volunteer)myCurrentUser, 
 				            myVolunteers, 
 				            myParkManagers, 
 				            myUrbanStaff, 
 				            myJobController);
-				    isSuccessful = true;
-				    
-		    } else if(userType.equals(UserType.Manager.getMyType()) ) {
+		    isSuccessful = true;
+		} else if(userType.equals(UserType.Manager.getMyType())
+		        && id < myParkManagers.size()
+				&& myParkManagers.contains(myParkManagers.get(id)) ) {
 		             myUserController = new ParkManagerController(
 	                        (ParkManager)myCurrentUser, 
 	                        myVolunteers, 
 	                        myParkManagers, 
 	                        myUrbanStaff, 
 	                        myJobController);
-		             isSuccessful = true;
-		             
-		    } else if (userType.equals(UserType.Staff.getMyType()) ) {
-				    /*
-				    myUserController = new UrbanParksStaffController(
-	                        (UrbanParksStaff)myCurrentUser, 
-	                        myVolunteers, 
-	                        myParkManagers, 
-	                        myUrbanStaff, 
-	                        myJobController);
-	                        */
-			    	isSuccessful = true;
-			    	
-		    } else {
-				//user doesnt exist
-					 //return -1;
-		        
-		    }
-		}
+             isSuccessful = true;
+		} else if (userType.equals(UserType.Staff.getMyType()) 
+				&& id < myUrbanStaff.size()
+				&& myUrbanStaff.contains(myUrbanStaff.get(id)) ) {
+		    /*
+		    myUserController = new UrbanParksStaffController(
+                    (UrbanParksStaff)myCurrentUser, 
+                    myVolunteers, 
+                    myParkManagers, 
+                    myUrbanStaff, 
+                    myJobController);
+                    */
+	    	isSuccessful = true;
+		 } else {
+		//user doesnt exist
+			 isSuccessful = false;
+		 }
 		
 		return myCurrentUser;
+		//return isSuccessful;
 			
-	}
-	
-	public void logout() {
-		
-	}
+}
 	
 	
+	
+<<<<<<< HEAD
+=======
+	
+>>>>>>> dereje
 	/**
 	 * checks a user id exist for a list of users
 	 * 
@@ -354,7 +363,16 @@ public class ParksSystem implements java.io.Serializable{
 	    //Also needed after we sort out JUnit testing
 	    //myUserController.run();  
 	}
+
+	public List<ParkManager> getMyParkManagers() {
+		return myParkManagers;
+	}
+
+	public void setMyParkManagers(List<ParkManager> theParkManagers) {
+		ParksSystem.myParkManagers = theParkManagers;
+	}
 	
+<<<<<<< HEAD
 	public static AbstractUser FindUser(String theUserName) {
 	    for (Integer integer : a) {
 	        integer.toString();
@@ -365,4 +383,25 @@ public class ParksSystem implements java.io.Serializable{
 	    return UserToRet;
 	}
 	
+=======
+	public  List<Volunteer> getMyVolunteers() {
+		return myVolunteers;
+	}
+
+	public  void setMyVolunteers(List<Volunteer> theVolunteers) {
+		ParksSystem.myVolunteers = theVolunteers;
+	}
+
+	public static List<UrbanParksStaff> getMyUrbanStaff() {
+		return myUrbanStaff;
+	}
+
+	public void setMyUrbanStaff(List<UrbanParksStaff> theUrbanStaff) {
+		ParksSystem.myUrbanStaff = theUrbanStaff;
+	}
+
+	public void logout() {
+		
+	}
+>>>>>>> dereje
 }
