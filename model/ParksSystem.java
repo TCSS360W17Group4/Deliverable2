@@ -277,15 +277,15 @@ public class ParksSystem implements java.io.Serializable{
 	  * 
 	  * @param theUserName the username to be checked for loggin
 	  */
-	public boolean loginSuccessful(String theUserName) {
+	public AbstractUser loginSuccessful(String theUserName) {
 		//parse the user name
 		String userType = theUserName.substring(0,3);
 		String userId = theUserName.substring(3,theUserName.length());
 		boolean isSuccessful = false;
-		
+		int id = -1;
 		//check if user type exist and user id is an int
 		if(UserType.userExist(userType) && userId.matches("[0-9]+")) {
-				int id = Integer.parseInt(userId);
+				id = Integer.parseInt(userId);
 				
 				
 				if(userType.equals(UserType.Volunteer.getMyType()) ) {
@@ -316,11 +316,11 @@ public class ParksSystem implements java.io.Serializable{
 			    	isSuccessful = true;
 				 } else {
 				//user doesnt exist
-					 isSuccessful = false;
+					 //return -1;
 				 }
 		}
 		
-		return isSuccessful;
+		return myCurrentUser;
 			
 	}
 	

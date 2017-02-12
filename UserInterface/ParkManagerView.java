@@ -8,11 +8,12 @@ import model.Job;
 import model.JobController;
 import model.Park;
 import model.ParkManager;
+import model.ParksSystem;
 import model.Volunteer;
 
 public class ParkManagerView {
 	
-	
+	private ParksSystem mySystem;
 	//private  Scanner myScanner;
 	private JobController myJobController;
 	private  List<Job>myParkSystemJobs;
@@ -30,7 +31,11 @@ public class ParkManagerView {
 		
 		initManagerHomeView(theManager);
 	}*/
-	
+	public ParkManagerView(ParksSystem theSystem, ParkManager theParkManager){
+	    mySystem = theSystem;
+	    myCurrentManager = theParkManager;
+	    
+	}
 	
 	//I don't think this does anything
 	private void initManagerHomeView(ParkManager theManager){
@@ -54,8 +59,9 @@ public class ParkManagerView {
 		//park name and city, job manager id
 		Job newJob = null;
 		//Park thePark = new Park(-1, null, null, myCurrentManager.getMyUserId());
-		Park thePark = new Park();
 		
+		//this isn't the right place to be creating and entering jobs
+		Park thePark = new Park();
 		if(myJobController.isParkAdded(myCurrentManager,newJob,thePark)){
 			thePark.toString();
 		} else {
@@ -66,8 +72,7 @@ public class ParkManagerView {
 			thePark = myJobController.pickAPark(myCurrentManager, userChoice);
 			newJob = new Job(thePark);
 			newJob.setMyJobManagerId(myCurrentManager.getMyUserId());
-			thePark.toString();
-			
+			thePark.toString();			
 			
 		}
 		
