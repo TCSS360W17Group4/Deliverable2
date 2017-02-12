@@ -88,7 +88,7 @@ public class UrbanParksStaffController extends AbstractController{
     public List<Job> getPendingJobsForOneMonth() {
         List<Job> pendingJobs = new ArrayList<Job>();
         for (Job j : myJobs) {
-            if (j.isJobPending() && 
+            if (j.isPending() && 
                 // compares start date to current date right now
                 //j.getMyStartDate().compareTo(j.getMyStartDate().now()) > 0 &&
                 // compares start date to date of one month from right now

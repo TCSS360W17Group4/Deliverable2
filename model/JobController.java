@@ -28,7 +28,9 @@ public class JobController {
 	private static final int ONE_DAY_OFFSET = 1;
 	private int myMaxNumberOfPendingJobs ;
 	private static List<Job> myJobsList;
-	
+	// using size of job list to create jobIds is fine if you never delete a job
+    // If a job is deleted the next job Id will not be unique
+    
 	/**
 	 * 
 	 */
@@ -458,7 +460,90 @@ public class JobController {
 		 return pendingJobs;
 	 }
 	 
-
+    
+    
+    
+    /**
+     * 
+     * @author Tony Richardson
+     * Date 2017/02/10
+     * 
+     * @param jobs The job list to check if jobs can be added to.
+     * 
+     * 
+     * @return Returns true if the number of pending jobs is less than the maximum number of pending jobs.
+     *         Returns false if the job cannot be added.
+     */
+    public boolean canAddJob(Job theJob, List<Job> jobs) {
+        boolean check = true;
+        // User Story 2 BR a) Not more than the maximum number of pending jobs at a time.
+        check &= numPendingJobs(jobs) < myMaxNumberOfPendingJobs;
+        // User Story 2 BR d) There can be no more than two jobs on any given day.
+        check &= !isJobDateConflict(theJob, jobs);
+        // User Story 2 BR e) A job cannot be scheduled more than one month in the future.
+        check &= isLessThanOneMonthOut(theJob);
+        return check;
+    }
+    
+    /**
+     * 
+     * @author Tony Richardson
+     * Date 2017/02/10
+     * 
+     * 
+     * @param jobs The job list to search for pending jobs.
+     * 
+     * @return The number of pending jobs in the job list
+     */
+    public int numPendingJobs(List<Job> jobs) {
+        int pending = 0;
+        for(int i = 0; i < jobs.size(); i++) {
+            if(jobs.get(i).isPending()) {
+                pending++;
+            }
+        }
+        return pending;
+    }
+    
+    /**
+     * 
+     * @author Tony Richardson
+     * Date 2017/02/10
+     * 
+     * 
+     * @param theJob The job to check for conflicts.
+     * @param jobs The job list to search for conflicting jobs.
+     * 
+     * @return True if a job in the job list jobs has the same start date as parameter theJob.
+     *         False if theJob does not conflict with the date of another job in jobs.
+     */
+    public boolean isJobDateConflict(Job theJob, List<Job> jobs) {
+        for(int i = 0; i < jobs.size(); i++) {
+            // Jobs have same start date. There is a conflict.
+            if(jobs.get(i).getMyStartDate().compareTo(theJob.getMyStartDate()) == 0) {
+                return true;
+            }
+        }
+        // There were no conflicts
+        return false;
+    }
+    
+    /**
+     * 
+     * @author Tony Richardson
+     * Date 2017/02/10
+     * 
+     * 
+     * @param theJob The job to check start date.
+     * 
+     * @return True if theJob is scheduled for less than one month from now.
+     *         False if theJob is scheduled for one month or longer from now..
+     */
+    public boolean isLessThanOneMonthOut(Job theJob) {
+        return theJob.getMyStartDate.compareTo(LocalDate.now().plusMonths(1)) < 0;
+    }
+    
+    
 	 
 	/********************
 	 *  Helper methods
@@ -539,5 +624,11 @@ public class JobController {
 	    return  ChronoUnit.DAYS.between(firstDate,secondDate);
 	}
 	 
+     
+     
+    
+    
+    
+    
 	
 }

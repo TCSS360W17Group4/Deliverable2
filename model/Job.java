@@ -2,7 +2,9 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -15,6 +17,12 @@ public class Job {
 	private int myJobId;
 	private Date myCreationDate;
 	private Park myPark;
+    
+    //private Calendar myCreationDate;
+    //private Calendar myStartDate;
+	//private Calendar myEndDate;
+    //private Calendar myTime;
+    
 	private LocalDate myStartDate;
 	private LocalDate myEndDate;
 	private LocalTime myTime;
@@ -29,6 +37,19 @@ public class Job {
 	
 	private List<Integer> myVolunteerList;
 	
+    
+    public Job(Park thePark) {
+		myPark = thePark;
+	}
+    
+
+     /*
+    public Job(Park thePark, ) {
+        // sets creation date for time and date right now
+        myCreationDate = new GregorianCalendar();
+    }*/
+    
+    
 	public List<Integer> getMyVolunteerList() {
         return myVolunteerList;
     }
@@ -39,14 +60,11 @@ public class Job {
         this.myVolunteerList = theVolunteerList;
     }
 
-
-
-    public Job(Park thePark) {
-		myPark = thePark;
-	}
-
-
-
+    
+    
+    /*public Calendar getMyCreationDate() {
+		return this.myCreationDate;
+	}*/
 	public Date getMyCreationDate() {
 		return this.myCreationDate;
 	}
@@ -72,19 +90,25 @@ public class Job {
 	}
 
 
-
+    /*public Calendar getMyStartDate() {
+		return myStartDate;
+	}*/
 	public LocalDate getMyStartDate() {
 		return myStartDate;
 	}
 
 
-
+    /*public Calendar getMyEndDate() {
+		return myEndDate;
+	}*/
 	public LocalDate getMyEndDate() {
 		return myEndDate;
 	}
 
 
-
+    /*public Calendar getMyTime() {
+		return myTime;
+	}*/
 	public LocalTime getMyTime() {
 		return myTime;
 	}
@@ -146,19 +170,24 @@ public class Job {
 	}
 
 
-
-	public void setMyStartDate(LocalDate theStartDate) {
+    /*public void setMyStartDate(Calendar theStartDate) {
 		this.myStartDate = theStartDate;
+	}*/
+	public void setMyStartDate(LocalDate theStartDate) {
+	    this.myStartDate = theStartDate;
 	}
 
-
-
+	/*public void setMyEndDate(Calendar theEndDate) {
+		this.myEndDate = theEndDate;
+	}*/
 	public void setMyEndDate(LocalDate theEndDate) {
 		this.myEndDate = theEndDate;
 	}
 
 
-
+	/*public void setMyTime(Calendar theTime) {
+		this.myTime = theTime;
+	}*/
 	public void setMyTime(LocalTime theTime) {
 		this.myTime = theTime;
 	}
@@ -222,7 +251,7 @@ public class Job {
      * @author Tony Richardson
      * date 2/10/2017
      */
-     public boolean isJobPending() {
+     public boolean isPending() {
         return myStartDate.compareTo(LocalDate.now()) >= 0;
      }
 }
