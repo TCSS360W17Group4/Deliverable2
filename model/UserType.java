@@ -36,7 +36,7 @@ public enum UserType {
         boolean userTypeExist = false ;
 
         for(final UserType type : UserType.values()) {
-        	if(type.myType == theString) {
+        	if(type.myType.equals(theString)) {
         		userTypeExist = true;
         		break;
         	}
