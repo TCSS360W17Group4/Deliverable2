@@ -278,7 +278,7 @@ public class ParksSystem implements java.io.Serializable{
 	  * @param theUserName the username to be checked for loggin
 	  */
 //we need to return a user SOMEHOW otherwise when is the Controller ever going to be built?
-	public AbstractUser loginSuccessful(String theUserName) {
+	public AbstractController loginSuccessful(String theUserName) {
 		//parse the user name
 		String userType = theUserName.substring(0,3);
 		//can be index 3, since username has length 4 generally
@@ -288,8 +288,10 @@ public class ParksSystem implements java.io.Serializable{
 		
 		if (UserType.userExist(userType) && userId.matches("[0-9]+")) {
 			id = Integer.parseInt(userId);
+			
 		} else {
-			//return false;//no need to check the other statements
+			return myUserController; //check elsewhere whether the user is instantiated or if empty
+			
 		}
 				
 				//id check to avoid nullpointer calling Contains
@@ -303,6 +305,7 @@ public class ParksSystem implements java.io.Serializable{
 				            myUrbanStaff, 
 				            myJobController);
 		    isSuccessful = true;
+		    
 		} else if(userType.equals(UserType.Manager.getMyType())
 		        && id < myParkManagers.size()
 				&& myParkManagers.contains(myParkManagers.get(id)) ) {
@@ -313,34 +316,32 @@ public class ParksSystem implements java.io.Serializable{
 	                        myUrbanStaff, 
 	                        myJobController);
              isSuccessful = true;
+             
 		} else if (userType.equals(UserType.Staff.getMyType()) 
 				&& id < myUrbanStaff.size()
 				&& myUrbanStaff.contains(myUrbanStaff.get(id)) ) {
-		    /*
+		    
 		    myUserController = new UrbanParksStaffController(
                     (UrbanParksStaff)myCurrentUser, 
                     myVolunteers, 
                     myParkManagers, 
                     myUrbanStaff, 
-                    myJobController);
-                    */
+                    myJobController, 
+                    myJobController.getMyJobsList() /*whatever*/);
+                    
 	    	isSuccessful = true;
+	    	
 		 } else {
 		//user doesnt exist
 			 isSuccessful = false;
 		 }
 		
-		return myCurrentUser;
+		return myUserController;
 		//return isSuccessful;
-			
-}
+		
+	}
 	
 	
-	
-<<<<<<< HEAD
-=======
-	
->>>>>>> dereje
 	/**
 	 * checks a user id exist for a list of users
 	 * 
@@ -361,31 +362,24 @@ public class ParksSystem implements java.io.Serializable{
 	    String userName = new String();
 	    loginSuccessful(userName);
 	    //Also needed after we sort out JUnit testing
-	    //myUserController.run();  
+	    //myUserController.run(); 
+	    
 	}
 
 	public List<ParkManager> getMyParkManagers() {
 		return myParkManagers;
+		
 	}
 
 	public void setMyParkManagers(List<ParkManager> theParkManagers) {
 		ParksSystem.myParkManagers = theParkManagers;
+		
 	}
 	
-<<<<<<< HEAD
-	public static AbstractUser FindUser(String theUserName) {
-	    for (Integer integer : a) {
-	        integer.toString();
-	      }
-	    
-	    
-	    AbstractUser UserToRet = new Volunteer();
-	    return UserToRet;
-	}
-	
-=======
+
 	public  List<Volunteer> getMyVolunteers() {
 		return myVolunteers;
+		
 	}
 
 	public  void setMyVolunteers(List<Volunteer> theVolunteers) {
@@ -394,14 +388,35 @@ public class ParksSystem implements java.io.Serializable{
 
 	public static List<UrbanParksStaff> getMyUrbanStaff() {
 		return myUrbanStaff;
+		
 	}
 
 	public void setMyUrbanStaff(List<UrbanParksStaff> theUrbanStaff) {
 		ParksSystem.myUrbanStaff = theUrbanStaff;
+		
 	}
 
 	public void logout() {
-		
+		//explicitly set to null for logout
+	    myCurrentUser = null;
+	    myUserController = null;
+	    //Want to make sure these objects are not kept in memory, this might not be necessary
+	    
 	}
->>>>>>> dereje
+	
+	/*public static AbstractUser FindVolunteer(String theUserName) {
+	    for (Volunteer aVolunteer : myVolunteers) {
+	        //integer.toString();
+	        if (aVolunteer.getMyUserName().equals(theUserName) ) {
+	            return aVolunteer;
+	        }
+	        
+	    }
+	    AbstractUser UserToRet = new Volunteer(); //return a null user.  Check elsewhere if the user is null to stop login routine
+        return UserToRet;
+	    
+	    
+	        
+	    }*/
+
 }

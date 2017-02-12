@@ -537,7 +537,11 @@ public class JobController {
 	 public static long betweenDates(LocalDate firstDate, LocalDate secondDate) {
 		
 	    return  ChronoUnit.DAYS.between(firstDate,secondDate);
-	}
+	 }
+	 
+	 public List<Job> getMyJobsList(){
+	     return myJobsList;
+	 }
 	 
 	
 }
