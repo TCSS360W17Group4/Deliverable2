@@ -19,6 +19,26 @@ import java.util.List;
 
 public abstract class AbstractController {
     protected final AbstractUser myUser;
+    public AbstractUser getMyUser() {
+        return myUser;
+    }
+
+    public List<Volunteer> getMyVolunteers() {
+        return myVolunteers;
+    }
+
+    public List<ParkManager> getMyParkManagers() {
+        return myParkManagers;
+    }
+
+    public List<UrbanParksStaff> getMyUrbanParksStaff() {
+        return myUrbanParksStaff;
+    }
+
+    public JobController getMyJobController() {
+        return myJobController;
+    }
+
     protected final List<Volunteer> myVolunteers;
     protected final List<ParkManager> myParkManagers;
     protected final List<UrbanParksStaff> myUrbanParksStaff;

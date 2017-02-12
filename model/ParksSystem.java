@@ -196,9 +196,11 @@ public class ParksSystem implements java.io.Serializable{
 			if(!prevJob.getMyStartDate().equals(newJob.getMyStartDate()) &&
 					!prevJob.getMyEndDate().equals(newJob.getMyEndDate())) {
 				return true;
+				
 			}
 			
 		}
+		
 		return false;
 	}
 	
@@ -265,6 +267,7 @@ public class ParksSystem implements java.io.Serializable{
 	 //story 5
 	 public void updatePendingJobsLimit(int theNewMax) {
 		 myJobController.setMyMaxNumberOfPendingJobs(theNewMax);
+		 
 	 }
 	 
      /********************************
@@ -275,67 +278,68 @@ public class ParksSystem implements java.io.Serializable{
 	 /**
 	  * authenticate user login 
 	  * 
-	  * @param theUserName the username to be checked for loggin
+	  * @param theUserName the username to be checked for login
 	  */
-	public boolean loginSuccessful(String theUserName) {
+//we need to return a user SOMEHOW otherwise when is the Controller ever going to be built?
+	public AbstractController loginSuccessful(String theUserName) {
 		//parse the user name
 		String userType = theUserName.substring(0,3);
 		//can be index 3, since username has length 4 generally
 		String userId = theUserName.substring(3,theUserName.length());
-		boolean isSuccessful = false;
-	
 		int id;
 		
 		if (UserType.userExist(userType) && userId.matches("[0-9]+")) {
 			id = Integer.parseInt(userId);
+			
 		} else {
-			return false;//no need to check the other statements
+			return myUserController; //check elsewhere whether the user is instantiated or if empty
+			
 		}
 				
 				//id check to avoid nullpointer calling Contains
 		if(userType.equals(UserType.Volunteer.getMyType()) 
 				&& id < myVolunteers.size()
 				&& myVolunteers.contains(myVolunteers.get(id)) ) {
-				    myUserController = new VolunteerController(
-				            (Volunteer)myCurrentUser, 
-				            myVolunteers, 
-				            myParkManagers, 
-				            myUrbanStaff, 
-				            myJobController);
-		    isSuccessful = true;
+		    myCurrentUser = myVolunteers.get(id);
+			myUserController = new VolunteerController(
+			        (Volunteer)myCurrentUser, 
+		            myVolunteers, 
+		            myParkManagers, 
+		            myUrbanStaff, 
+		            myJobController);
+		    
 		} else if(userType.equals(UserType.Manager.getMyType())
-				&& id < myParkManagers.size()
+		        && id < myParkManagers.size()
 				&& myParkManagers.contains(myParkManagers.get(id)) ) {
-		             myUserController = new ParkManagerController(
-	                        (ParkManager)myCurrentUser, 
-	                        myVolunteers, 
-	                        myParkManagers, 
-	                        myUrbanStaff, 
-	                        myJobController);
-             isSuccessful = true;
+		    myCurrentUser = myParkManagers.get(id);
+		    myUserController = new ParkManagerController(
+		            (ParkManager)myCurrentUser, 
+                    myVolunteers, 
+                    myParkManagers, 
+                    myUrbanStaff, 
+                    myJobController);
+             
 		} else if (userType.equals(UserType.Staff.getMyType()) 
 				&& id < myUrbanStaff.size()
 				&& myUrbanStaff.contains(myUrbanStaff.get(id)) ) {
-		    /*
+		    myCurrentUser = myUrbanStaff.get(id);
 		    myUserController = new UrbanParksStaffController(
                     (UrbanParksStaff)myCurrentUser, 
                     myVolunteers, 
                     myParkManagers, 
                     myUrbanStaff, 
-                    myJobController);
-                    */
-	    	isSuccessful = true;
+                    myJobController, 
+                    myJobController.getMyJobsList() /*whatever*/);               
+	    	
 		 } else {
-		//user doesnt exist
-			 isSuccessful = false;
+		     //I think we already have a 'else' block that prevents this block from ever being reached
+		     return myUserController;
 		 }
 		
+		return myUserController;
+		//return isSuccessful;
 		
-		return isSuccessful;
-			
 	}
-	
-	
 	
 	
 	/**
@@ -358,34 +362,62 @@ public class ParksSystem implements java.io.Serializable{
 	    String userName = new String();
 	    loginSuccessful(userName);
 	    //Also needed after we sort out JUnit testing
-	    //myUserController.run();  
+	    //myUserController.run(); 
+	    
 	}
 
 	public List<ParkManager> getMyParkManagers() {
 		return myParkManagers;
+		
 	}
 
 	public void setMyParkManagers(List<ParkManager> theParkManagers) {
 		ParksSystem.myParkManagers = theParkManagers;
+		
 	}
 	
+
 	public  List<Volunteer> getMyVolunteers() {
 		return myVolunteers;
+		
 	}
 
 	public  void setMyVolunteers(List<Volunteer> theVolunteers) {
 		ParksSystem.myVolunteers = theVolunteers;
+		
 	}
 
 	public static List<UrbanParksStaff> getMyUrbanStaff() {
 		return myUrbanStaff;
+		
 	}
 
 	public void setMyUrbanStaff(List<UrbanParksStaff> theUrbanStaff) {
 		ParksSystem.myUrbanStaff = theUrbanStaff;
+		
 	}
 
 	public void logout() {
-		
+		//explicitly set to null for logout
+	    myCurrentUser = null;
+	    myUserController = null;
+	    //Want to make sure these objects are not kept in memory, this might not be necessary
+	    
 	}
+	
+	/*public static AbstractUser FindVolunteer(String theUserName) {
+	    for (Volunteer aVolunteer : myVolunteers) {
+	        //integer.toString();
+	        if (aVolunteer.getMyUserName().equals(theUserName) ) {
+	            return aVolunteer;
+	            
+	        }
+	        
+	    }
+	    
+	    AbstractUser UserToRet = new Volunteer(); //return a null user.  Check elsewhere if the user is null to stop login routine
+        return UserToRet;	    
+	        
+	    } */
+
 }

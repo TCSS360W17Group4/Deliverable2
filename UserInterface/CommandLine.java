@@ -7,7 +7,7 @@ import java.util.Scanner;
 //most of the interface should be done here, converter handles interpreting user commands, and making calls to the model
 public class CommandLine {
     
-    static final Scanner myScanner = new Scanner(System.in);
+    public static final Scanner myScanner = new Scanner(System.in);
     
     public CommandLine(Converter theConverter) {
         String command = "";
