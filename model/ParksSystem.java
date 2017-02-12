@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,20 +10,20 @@ import java.util.List;
  * ParksSystem to control the system data,
  * and login 
  * 
- * @author Dereje 
+ * @author Dereje Bireda
  *
  */
-public class ParksSystem implements java.io.Serializable{
+public class ParksSystem implements Serializable{
 
-	private static AbstractUser myCurrentUser;
-	private static List<Job> myJobs;
-	private static List<Volunteer> myVolunteers;
-	private static List<ParkManager> myParkManagers;
-	private static List<UrbanParksStaff> myUrbanStaff;
+	private  AbstractUser myCurrentUser;
+	private  List<Job> myJobs;
+	private  List<Volunteer> myVolunteers;
+	private  List<ParkManager> myParkManagers;
+	private  List<UrbanParksStaff> myUrbanStaff;
 	
 	
-	private static JobController myJobController;
-	private static AbstractController myUserController;
+	private JobController myJobController;
+	private AbstractController myUserController;
 	
 	public ParksSystem(){
 	    //myCurrentUser = new AbstractUser();
@@ -342,6 +343,14 @@ public class ParksSystem implements java.io.Serializable{
 	}
 	
 	
+	public  AbstractController getMyUserController() {
+		return this.myUserController;
+	}
+
+	public void setMyUserController(AbstractController theUserController) {
+		this.myUserController = theUserController;
+	}
+
 	/**
 	 * checks a user id exist for a list of users
 	 * 
@@ -372,7 +381,7 @@ public class ParksSystem implements java.io.Serializable{
 	}
 
 	public void setMyParkManagers(List<ParkManager> theParkManagers) {
-		ParksSystem.myParkManagers = theParkManagers;
+		this.myParkManagers = theParkManagers;
 		
 	}
 	
@@ -383,17 +392,25 @@ public class ParksSystem implements java.io.Serializable{
 	}
 
 	public  void setMyVolunteers(List<Volunteer> theVolunteers) {
-		ParksSystem.myVolunteers = theVolunteers;
+		this.myVolunteers = theVolunteers;
 		
 	}
 
-	public static List<UrbanParksStaff> getMyUrbanStaff() {
+	public List<UrbanParksStaff> getMyUrbanStaff() {
 		return myUrbanStaff;
 		
 	}
 
+	public List<Job> getMyJobs() {
+		return myJobs;
+	}
+
+	public void setMyJobs(List<Job> theJobs) {
+		this.myJobs = theJobs;
+	}
+
 	public void setMyUrbanStaff(List<UrbanParksStaff> theUrbanStaff) {
-		ParksSystem.myUrbanStaff = theUrbanStaff;
+		this.myUrbanStaff = theUrbanStaff;
 		
 	}
 

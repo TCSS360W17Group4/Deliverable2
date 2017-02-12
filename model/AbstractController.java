@@ -6,6 +6,7 @@ package model;
  */ 
  
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 
 
-public abstract class AbstractController {
+public abstract class AbstractController implements Serializable {
     protected final AbstractUser myUser;
     public AbstractUser getMyUser() {
         return myUser;

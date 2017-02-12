@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +17,7 @@ import java.util.Locale;
  * 
  *
  */
-public class JobController {
+public class JobController implements Serializable{
 
 	
 	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 30;
