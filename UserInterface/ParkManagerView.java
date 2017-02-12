@@ -96,8 +96,11 @@ public class ParkManagerView {
 		    	if(!myJobController.isStartDateAdded(line, theJob, myParkSystemJobs)) {
 		    		System.out.println("Please enter again");
 		    		continue;
+		    		
 		    	} else {
+		    	    
 		    		return true;
+		    		
 		    	}
 		    	
 		   
@@ -117,7 +120,9 @@ public class ParkManagerView {
 	    	if(!myJobController.isEndDateAdded(jobDuration, theJob, myParkSystemJobs)) {
 	    		System.out.println("Enter again");
 	    		continue;
+	    		
 	    	} else {
+	    	    
 	    		return true;
 	    	}
 	    	
@@ -138,7 +143,9 @@ public class ParkManagerView {
 	    	if(!myJobController.isJobDescriptionAdded(theJob, jobDescription)) {
 	    		System.out.println("Enter again");
 	    		continue;
+	    		
 	    	} else {
+	    	    
 	    		return true;
 	    	}
 	    	
@@ -154,6 +161,7 @@ public class ParkManagerView {
 		System.out.println("Enter max number of volunteers required: Total less than 30");
 		System.out.println();
 		return false;
+		
 	}
 	
 	//one routine for user story 3 As a Park Manager I want to view a numbered list of Volunteers for a job (past or present) in the parks that I manage.
@@ -172,6 +180,7 @@ public class ParkManagerView {
             command = CommandLine.myScanner.nextLine();
             result = ProcessInput(command);
             System.out.println(result + "\n");
+            
         } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
         
         //if user quit, do a ParksSystem.logout() call
@@ -203,16 +212,23 @@ public class ParkManagerView {
         
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
             //do the user story routine
+            sumbitJobView();
             result += NewJobRoutine();
+            
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOBS") ) {
             //not a required user story
             result += "Hi class, this isn't implemented!";
+            
         } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("LST") ) {
             //do the user story routine
+            
         } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
+            mySystem.logout();
             result += "Logging Out";
+            
         } else {
             result += "Unrecognized Command";
+            
         }
         
         return result;

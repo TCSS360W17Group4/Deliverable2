@@ -50,7 +50,7 @@ public class HomeView {
             result+="\tQUIT(Q)\n";
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("VOL") ) {
             VolunteerController myVolunteerController = (VolunteerController)mySystem.loginSuccessful(tokens[1]);
-            if (myVolunteerController.getMyUser() == null){
+            if (myVolunteerController == null || myVolunteerController.getMyUser() == null){
                 return "Login Failed, User not Found";
                 
             }
@@ -61,7 +61,7 @@ public class HomeView {
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("MGR") ) {
 
             ParkManagerController myParkManagerController = (ParkManagerController)mySystem.loginSuccessful(tokens[1]);
-            if (myParkManagerController.getMyUser() == null){
+            if (myParkManagerController == null || myParkManagerController.getMyUser() == null){
                 return "Login Failed, User not Found";
                 
             }
@@ -71,7 +71,7 @@ public class HomeView {
             
         } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("UST") ) {
             UrbanParksStaffController myUrbanParksStaffController = (UrbanParksStaffController)mySystem.loginSuccessful(tokens[1]);
-            if (myUrbanParksStaffController.getMyUser() == null){
+            if (myUrbanParksStaffController == null || myUrbanParksStaffController.getMyUser() == null) {
                 return "Login Failed, User not Found";
                 
             }
