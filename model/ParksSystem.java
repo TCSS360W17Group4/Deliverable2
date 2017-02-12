@@ -285,18 +285,18 @@ public class ParksSystem implements java.io.Serializable{
 		int id = -1;
 		//check if user type exist and user id is an int
 		if(UserType.userExist(userType) && userId.matches("[0-9]+")) {
-				id = Integer.parseInt(userId);
-				
-				
-				if(userType.equals(UserType.Volunteer.getMyType()) ) {
-				    myUserController = new VolunteerController(
+		    id = Integer.parseInt(userId);
+		    
+		    if(userType.equals(UserType.Volunteer.getMyType()) ) {
+		        myUserController = new VolunteerController(
 				            (Volunteer)myCurrentUser, 
 				            myVolunteers, 
 				            myParkManagers, 
 				            myUrbanStaff, 
 				            myJobController);
 				    isSuccessful = true;
-				} else if(userType.equals(UserType.Manager.getMyType()) ) {
+				    
+		    } else if(userType.equals(UserType.Manager.getMyType()) ) {
 		             myUserController = new ParkManagerController(
 	                        (ParkManager)myCurrentUser, 
 	                        myVolunteers, 
@@ -304,7 +304,8 @@ public class ParksSystem implements java.io.Serializable{
 	                        myUrbanStaff, 
 	                        myJobController);
 		             isSuccessful = true;
-				} else if (userType.equals(UserType.Staff.getMyType()) ) {
+		             
+		    } else if (userType.equals(UserType.Staff.getMyType()) ) {
 				    /*
 				    myUserController = new UrbanParksStaffController(
 	                        (UrbanParksStaff)myCurrentUser, 
@@ -314,10 +315,12 @@ public class ParksSystem implements java.io.Serializable{
 	                        myJobController);
 	                        */
 			    	isSuccessful = true;
-				 } else {
+			    	
+		    } else {
 				//user doesnt exist
 					 //return -1;
-				 }
+		        
+		    }
 		}
 		
 		return myCurrentUser;
@@ -350,6 +353,16 @@ public class ParksSystem implements java.io.Serializable{
 	    loginSuccessful(userName);
 	    //Also needed after we sort out JUnit testing
 	    //myUserController.run();  
+	}
+	
+	public static AbstractUser FindUser(String theUserName) {
+	    for (Integer integer : a) {
+	        integer.toString();
+	      }
+	    
+	    
+	    AbstractUser UserToRet = new Volunteer();
+	    return UserToRet;
 	}
 	
 }
