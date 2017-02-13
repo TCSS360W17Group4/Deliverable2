@@ -81,8 +81,8 @@ public class UrbanParksStaffView {
             //result="\tWelcome, Volunteer\n";
             result="\t-------------------\n";
             result+="\t1 View Upcoming Jobs \t(CAL) \n";
-            result+="\t2 Submit a new Job \t(NEW) \n";
-            result+="\t3 System Tasks \t\t(SYS) \n";
+            result+="\t2 Submit a new Job \t\t(NEW) \n";
+            result+="\t3 Change System Settings \t(SYS) \n";
             result+="\t4 View A User \t\t(USR) <username>\n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
@@ -157,15 +157,15 @@ public class UrbanParksStaffView {
             myJobController.setMyMaxNumberOfPendingJobs(tempInt);
             result+="\tMaximum total system jobs is now " + tempInt + "\n";
             
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("VOL") ) {
+        } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("VOL") ) {
             //not implemented
             result+="Not Implemented";
             
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("LNG") ) {
+        } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("LNG") ) {
             //not implemented
             result+="Not Implemented";
             
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("DAY") ) {
+        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("DAY") ) {
             //not implemented
             result+="Not Implemented";
             
