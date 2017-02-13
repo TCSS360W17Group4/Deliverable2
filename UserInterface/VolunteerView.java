@@ -6,8 +6,6 @@ import java.util.List;
 
 import model.Job;
 import model.JobController;
-import model.Park;
-import model.ParkManager;
 import model.ParkManagerController;
 import model.ParksSystem;
 import model.Volunteer;

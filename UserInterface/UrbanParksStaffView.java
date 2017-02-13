@@ -119,7 +119,7 @@ public class UrbanParksStaffView {
         String result = "";
         String command;
         
-        result = ProcessInput("HELP");
+        result = SystemChangesHelper("HELP");
         System.out.println(result + "\n");
         do
         {
@@ -141,7 +141,6 @@ public class UrbanParksStaffView {
 
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
             System.out.printf("\tWelcome, Urban Parks Staff %s\n",myUrbanParksStaff.getMyName());
-            //result="\tWelcome, Volunteer\n";
             result="\t-------------------\n";
             result+="\tWhat do you want to change?\n\n";
             result+="\t1 Maximum Total Jobs \t(MAX) <number>\n";

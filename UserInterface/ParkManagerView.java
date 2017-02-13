@@ -203,7 +203,6 @@ public class ParkManagerView {
         String result = "";
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
             System.out.printf("\tWelcome, Park Manager %s\n",myCurrentManager.getMyName());
-            //result="\tWelcome, Park Manager\n";
             result="\t-------------------\n";
             result+="\t1 Submit a new Job (NEW) \n";
             result+="\t2 Search Jobs\t\t(JOB) \n";
@@ -222,7 +221,7 @@ public class ParkManagerView {
             //not implemented
             
         } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("VOL") ) {
-            //do the user story routine
+            ViewMyVolunteers();
             
         } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
             mySystem.logout();
@@ -235,5 +234,17 @@ public class ParkManagerView {
         
         return result;
     }
+    
+    
+    
+    
+    public String ViewMyVolunteers(){
+        String result = "";
+        
+        
+        return result;
+    }
+    
+    
 
 }
