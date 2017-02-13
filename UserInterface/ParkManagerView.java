@@ -202,13 +202,13 @@ public class ParkManagerView {
         String[] tokens = theString.split(" ");
         String result = "";
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
-            result="\tWelcome, Park Manager\n";
-            result+="\t-------------------\n";
-            result+="\t1 Submit a new Job (NEW) <username>\n";
-            result+="\t2 Search Jobs\t\t(JOB) <username>\n";
-            result+="\t3 View Pending Jobs\t(PND) <username>\n";
-            result+="\t4 View A User \t\t(USR) <username>\n";
-            result+="\t5 System Functions \t(SYS) <username>\n";
+            System.out.printf("\tWelcome, Park Manager %s\n",myCurrentManager.getMyName());
+            //result="\tWelcome, Park Manager\n";
+            result="\t-------------------\n";
+            result+="\t1 Submit a new Job (NEW) \n";
+            result+="\t2 Search Jobs\t\t(JOB) \n";
+            result+="\t3 View My Upcoming Jobs\t(PND) \n";
+            result+="\t4 View my Volunteers\t(VOL) \n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
         
@@ -216,15 +216,12 @@ public class ParkManagerView {
             //do the user story routine
             
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOB") ) {
-            //do the user story routine
+            //not implemented
             
         } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("PND") ) {
-            //do the user story routine
+            //not implemented
             
-        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("USR") ) {
-            //do the user story routine
-            
-        } else if (tokens[0].equalsIgnoreCase("5") || tokens[0].equalsIgnoreCase("SYS") ) {
+        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("VOL") ) {
             //do the user story routine
             
         } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {

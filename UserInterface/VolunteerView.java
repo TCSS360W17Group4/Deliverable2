@@ -35,15 +35,20 @@ public class VolunteerView {
         Job tempJob;
         List<Integer> currentJobs = myCurrentVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
         System.out.println("Park,           Date            Description");
-        for (Integer i : currentJobs ) {
-            tempJob = myJobController.getJobById(i);  //going through every job in the list, getting the job
+        try {
+            for (Integer i : currentJobs ) {
+                tempJob = myJobController.getJobById(i);  //going through every job in the list, getting the job
            
-          //should output formatted list of jobs after full iteration  
-          //jobs will show with Name of Park, the Start Date, and the Description
-            System.out.printf("%d)\t\t\t%s\t\t%s\n", 
-                    tempJob.getMyPark().getMyName(),    
-                    myFormat.format( tempJob.getMyStartDate() ),
-                    tempJob.getMyDescription());
+                //should output formatted list of jobs after full iteration  
+                //jobs will show with Name of Park, the Start Date, and the Description
+                System.out.printf("%d)\t\t\t%s\t\t%s\n", 
+                        tempJob.getMyPark().getMyName(),    
+                        myFormat.format( tempJob.getMyStartDate() ),
+                        tempJob.getMyDescription());
+            }
+            
+        } catch (NullPointerException e) {
+            return "\nError: no jobs found for you\n";
         }
         
         return result;
@@ -93,7 +98,7 @@ public class VolunteerView {
             //do the user story routine
             
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("VOL") ) {
-            
+            //not implemented
             
         } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("CUR") ) {
             result += ViewMyJobs();
