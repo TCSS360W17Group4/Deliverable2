@@ -79,8 +79,9 @@ public class VolunteerView {
         String[] tokens = theString.split(" ");
         String result = "";
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
-            result="\tWelcome, Volunteer\n";
-            result+="\t-------------------\n";
+            System.out.printf("\tWelcome, Volunteer %s\n",myCurrentVolunteer.getMyName());
+            //result="\tWelcome, Volunteer\n";
+            result="\t-------------------\n";
             result+="\t1 Search for Jobs \t\t(SCH) <username>\n";
             result+="\t2 Volunteer for a Job\t\t(VOL) <username>\n";
             result+="\t3 View My Current Jobs\t\t(CUR)\n";

@@ -15,7 +15,6 @@ public class Converter {
 
     
     public String ioCalls(String theString) {
-        mySystem = new ParksSystem();
         
         //user will input commands and arguments, all separated by whitespace
         String[] tokens = theString.split(" ");
