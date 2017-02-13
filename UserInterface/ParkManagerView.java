@@ -21,9 +21,8 @@ public class ParkManagerView {
 	private List<Volunteer>myParksSystemVolunteer;
 	private ParkManager myCurrentManager;
 	
-	//can't do this as we don't have access to these things
-	/*public ParkManagerView(ParkManager theManager, List<Volunteer>theVolunteers, List<Job> theJobs) {
-		myReader = new Scanner(System.in);
+
+	public ParkManagerView(ParkManager theManager, List<Volunteer>theVolunteers, List<Job> theJobs) {
 		myJobController = new JobController();
 		myParkSystemJobs = theJobs;
 		myParksSystemVolunteer = theVolunteers;
@@ -31,7 +30,8 @@ public class ParkManagerView {
 		//init initial page for this user
 		
 		initManagerHomeView(theManager);
-	}*/
+	}
+	
 	public ParkManagerView(ParksSystem theSystem, ParkManagerController theParkManagerController){
 	    mySystem = theSystem;
 	    myCurrentManager = (ParkManager) theParkManagerController.getMyUser();
@@ -176,7 +176,7 @@ public class ParkManagerView {
         System.out.println(result + "\n");
         do
         {
-            System.out.printf(">");
+            System.out.printf("Enter a Command >");
             command = CommandLine.myScanner.nextLine();
             result = ProcessInput(command);
             System.out.println(result + "\n");
@@ -202,24 +202,29 @@ public class ParkManagerView {
         String[] tokens = theString.split(" ");
         String result = "";
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
-            result="\tWelcome Park Manager\n";
+            result="\tWelcome, Park Manager\n";
             result+="\t-------------------\n";
             result+="\t1 Submit a new Job (NEW) <username>\n";
-            result+="\t2 View Current Jobs(JOBS) <username>\n";
-            result+="\t3 View Volunteer List\t(LST) <username>\n";
+            result+="\t2 Search Jobs\t\t(JOB) <username>\n";
+            result+="\t3 View Pending Jobs\t(PND) <username>\n";
+            result+="\t4 View A User \t\t(USR) <username>\n";
+            result+="\t5 System Functions \t(SYS) <username>\n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
         
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
             //do the user story routine
-            sumbitJobView();
-            result += NewJobRoutine();
             
-        } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOBS") ) {
-            //not a required user story
-            result += "Hi class, this isn't implemented!";
+        } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOB") ) {
+            //do the user story routine
             
-        } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("LST") ) {
+        } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("PND") ) {
+            //do the user story routine
+            
+        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("USR") ) {
+            //do the user story routine
+            
+        } else if (tokens[0].equalsIgnoreCase("5") || tokens[0].equalsIgnoreCase("SYS") ) {
             //do the user story routine
             
         } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {

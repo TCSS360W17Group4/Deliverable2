@@ -24,7 +24,7 @@ public class HomeView {
         System.out.println(result + "\n");
         do
         {
-            System.out.printf(">");
+            System.out.printf("Enter a Command >");
             command = CommandLine.myScanner.nextLine();
             result = ProcessInput(command);
             System.out.println(result + "\n");
@@ -43,7 +43,7 @@ public class HomeView {
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
             result="\tWelcome to Urban Parks\n";
             result+="\t-------------------\n";
-            result+="\t1 Login User \t\t\t(LOG) <username>\n";
+            result+="\t1 Login Volunteer \t\t\t(Vol) <username>\n";
             result+="\t2 Login Manager\t\t\t(Mgr) <username>\n";
             result+="\t3 Login Urban Parks Staff\t(USt) <username>\n";
             result+="\tHELP(H)\n";

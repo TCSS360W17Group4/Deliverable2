@@ -1,7 +1,8 @@
 package model;
 
+import java.io.Serializable;
 
-public class Park {
+public class Park implements Serializable{
 
 	private int myParkId;
 	private String myName;

@@ -2,12 +2,13 @@ package model;
 import java.util.List;
 
 public class VolunteerController extends AbstractController {
-        
-    /*
+    Volunteer myUser;    
+    
     public List<Integer> getMyJobs() {
-        return myVolunteer.getMyVolunteerJobs();
+            return myUser.getMyVolunteerJobs();
         
-    }*/
+    }
+    
     public VolunteerController(Volunteer theUser, 
             List<Volunteer> theVolunteers, List<ParkManager> theParkManagers,
             List<UrbanParksStaff> theUrbanParksStaff,

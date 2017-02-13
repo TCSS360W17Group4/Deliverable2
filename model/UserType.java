@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 
 /**
  * Enum to hold the user types
@@ -7,7 +8,7 @@ package model;
  * @author Dereje Bireda
  *
  */
-public enum UserType {
+public enum UserType implements Serializable {
 	
 	Volunteer("vol")
 	,Manager("mgr") 
