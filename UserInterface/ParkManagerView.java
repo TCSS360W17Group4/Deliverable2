@@ -255,10 +255,9 @@ public class ParkManagerView {
         } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
         
         
-        
         return result;
     }
-    
+	
     public String ViewMyVolunteersHelper(String theString){
         String result = "";
         
