@@ -24,7 +24,7 @@ public class HomeView {
         System.out.println(result + "\n");
         do
         {
-            System.out.printf(">");
+            System.out.printf("Enter a Command >");
             command = CommandLine.myScanner.nextLine();
             result = ProcessInput(command);
             System.out.println(result + "\n");
@@ -38,16 +38,17 @@ public class HomeView {
     public String ProcessInput(String theString) {
         String[] tokens = theString.split(" ");
         String result = "";
-
         
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
             result="\tWelcome to Urban Parks\n";
             result+="\t-------------------\n";
-            result+="\t1 Login User \t\t\t(LOG) <username>\n";
+            result+="\t1 Login Volunteer \t\t(Vol) <username>\n";
             result+="\t2 Login Manager\t\t\t(Mgr) <username>\n";
             result+="\t3 Login Urban Parks Staff\t(USt) <username>\n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
+            result+="\n";
+            result+="\tExample input: 2 MyUserName, or VOL MyUserName\n";
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("VOL") ) {
             VolunteerController myVolunteerController = (VolunteerController)mySystem.loginSuccessful(tokens[1]);
             if (myVolunteerController == null || myVolunteerController.getMyUser() == null){
@@ -56,7 +57,7 @@ public class HomeView {
             }
             
             VolunteerView myVolunteerView = new VolunteerView(mySystem, myVolunteerController);
-            //myVolunteerView.run();
+           myVolunteerView.run();
             
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("MGR") ) {
 
@@ -76,7 +77,7 @@ public class HomeView {
                 
             }
             UrbanParksStaffView myUrbanParksStaffView = new UrbanParksStaffView(mySystem, myUrbanParksStaffController);
-            //UrbanParksStaffView.run();
+            myUrbanParksStaffView.run();
             
         } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
             mySystem.logout();

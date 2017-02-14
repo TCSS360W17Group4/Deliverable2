@@ -330,7 +330,7 @@ public class ParksSystem implements Serializable{
                     myParkManagers, 
                     myUrbanStaff, 
                     myJobController, 
-                    myJobController.getMyJobsList() /*whatever*/);               
+                    myJobs /*whatever*/);               
 	    	
 		 } else {
 		     //I think we already have a 'else' block that prevents this block from ever being reached
@@ -366,7 +366,7 @@ public class ParksSystem implements Serializable{
 			
 	}
 	
-	public void run(){
+	public void run() {
 	    //someone needs to do this at some point, not necessary for JUnit testing
 	    String userName = new String();
 	    loginSuccessful(userName);
