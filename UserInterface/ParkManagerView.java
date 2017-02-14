@@ -207,7 +207,7 @@ public class ParkManagerView {
             //not implemented
             
         } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("VOL") ) {
-            ViewMyVolunteers();
+            result += ViewMyVolunteers();
             
         } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
             mySystem.logout();
@@ -249,7 +249,7 @@ public class ParkManagerView {
         
         ArrayList<Job> tempJobs = (ArrayList<Job>)mySystem.getMyJobs();
         ArrayList<Job> jobsForThisManager = new ArrayList<Job>();
-        System.out.println("\t\tPark\t\t\tDate\t\tDescription");
+        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription");
         Integer counter = 1;
         try {
             for (Job tempJob : tempJobs ) {
@@ -270,8 +270,8 @@ public class ParkManagerView {
             return "\nError: no jobs found for you\n";
         }
         
-        result+="\n\tEnter a Job number from above >\n";
-        System.out.println(result + "\n");
+        result+="\n\tEnter a Job number from above >";
+        System.out.printf(result);
         
       //this is the most awful thing I have had to do in this entire project. This line right here.
         Job tempJob = new Job(new Park());  

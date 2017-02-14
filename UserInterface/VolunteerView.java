@@ -2,10 +2,12 @@ package UserInterface;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Job;
 import model.JobController;
+import model.Park;
 import model.ParkManagerController;
 import model.ParksSystem;
 import model.Volunteer;
@@ -63,13 +65,14 @@ public class VolunteerView {
             result+="\t4 View Past Jobs\t\t(PST) \n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
+            result+="\n\n\tExample: type 3 or CUR and press Enter\n";
         
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("SCH") ) {
             //do the user story routine
-            SignUpForAJob();
             
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("VOL") ) {
             //not implemented
+            result += SignUpForAJob(); 
             
         } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("CUR") ) {
             result += ViewMyJobs();
@@ -122,11 +125,63 @@ public class VolunteerView {
     
     
 
-    //As a Volunteer I want to volunteer for a job.
+    //User story: As a Volunteer I want to volunteer for a job.
     public String SignUpForAJob() {
         String result = "";
         
+        List<Job> pendingJobs = new ArrayList<Job>();
+        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription");
+        Integer counter = 1;
+        ArrayList<Job> someJobs = (ArrayList<Job>)myJobController.getMyJobsList();
         
-        return result;
+        //this is not the best, or even a good way of doing this
+        try {
+            for (Job j : myJobController.getMyPendingJobs(mySystem.getMyJobs())) {
+                if (j.isPending() && 
+                    // compares start date to current date right now
+                    //j.getMyStartDate().compareTo(j.getMyStartDate().now()) > 0 &&
+                    // compares start date to date of one month from right now
+                    j.getMyStartDate().compareTo(LocalDate.now().plusMonths(1)) <= 0) {
+                    pendingJobs.add(j);
+                    //should print to screen now
+                    LocalDate tempDate = j.getMyStartDate();
+                    System.out.printf("%d)\t%s\t%s\t%s\n", 
+                            counter,
+                            j.getMyPark().getMyName(),    
+                            tempDate.toString(),
+                            j.getMyDescription());
+                    counter++;
+                }
+            }
+        } catch (NullPointerException e) {
+            return "\nError: no jobs found for you\n";
+        }
+        
+        result+="\n\tEnter a Job number from above >";
+        System.out.printf(result);
+        Job tempJob = new Job(new Park());  
+        
+        try {
+            Integer i;
+            String command = CommandLine.myScanner.nextLine();
+            i = Integer.valueOf(command) - 1;
+            if (i < someJobs.size() ) {
+                tempJob = pendingJobs.get(i);  //need to sign up for this job. the volunteer has to be added to the job, and the job needs to be added to the volunteer
+                ArrayList<Integer> tempInts = (ArrayList<Integer>) tempJob.getMyVolunteerList();
+                tempInts.add(myCurrentVolunteer.getMyUserId() ); //hnow the job has a reference to the volunteer
+                tempInts = (ArrayList<Integer>) myCurrentVolunteer.getMyVolunteerJobs();
+                tempInts.add(myCurrentVolunteer.getMyUserId() ); //now the volunteer has a reference to the job
+            } else {
+                System.out.println("Not a valid job number.");
+                return "";
+            }
+                
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        
+        
+        
+        return "\nSuccessfully Signed Up for Job at\t" + tempJob.getMyPark().getMyName();
     }
 }

@@ -151,7 +151,8 @@ public class UrbanParksStaffView {
             result+="\t4 Maximum Jobs per Day \t\t(DAY) <number>\n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
-        
+            result+="\n\n\tExample: type 2 24 or VOL 24 and press Enter\n";
+            
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("MAX") ) {
             //do the call
             Integer tempInt = Integer.parseInt(tokens[1]);
@@ -174,7 +175,7 @@ public class UrbanParksStaffView {
             result += "\tGoing Back\n";
             
         } else {
-            result += "\tUnreccognized Command\n";
+            result += "\tUnrecognized Command\n";
         }
         return result;
     }
