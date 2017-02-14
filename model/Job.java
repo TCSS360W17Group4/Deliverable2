@@ -223,7 +223,7 @@ public class Job implements Serializable {
      * @author Tony Richardson
      * date 2/10/2017
      */
-     public boolean isJobPending() {
+     public boolean isPending() {
         return myStartDate.compareTo(LocalDate.now()) >= 0;
      }
 }

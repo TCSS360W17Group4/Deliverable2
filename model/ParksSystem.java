@@ -366,7 +366,7 @@ public class ParksSystem implements Serializable{
 			
 	}
 	
-	public void run(){
+	public void run() {
 	    //someone needs to do this at some point, not necessary for JUnit testing
 	    String userName = new String();
 	    loginSuccessful(userName);

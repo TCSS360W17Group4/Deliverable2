@@ -1,6 +1,7 @@
 package UserInterface;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -183,7 +184,6 @@ public class ParkManagerView {
             
         } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
         
-        //if user quit, do a ParksSystem.logout() call
         
     }
     
@@ -202,13 +202,12 @@ public class ParkManagerView {
         String[] tokens = theString.split(" ");
         String result = "";
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
-            result="\tWelcome, Park Manager\n";
-            result+="\t-------------------\n";
-            result+="\t1 Submit a new Job (NEW) <username>\n";
-            result+="\t2 Search Jobs\t\t(JOB) <username>\n";
-            result+="\t3 View Pending Jobs\t(PND) <username>\n";
-            result+="\t4 View A User \t\t(USR) <username>\n";
-            result+="\t5 System Functions \t(SYS) <username>\n";
+            System.out.printf("\tWelcome, Park Manager %s\n",myCurrentManager.getMyName());
+            result="\t-------------------\n";
+            result+="\t1 Submit a new Job (NEW) \n";
+            result+="\t2 Search Jobs\t\t(JOB) \n";
+            result+="\t3 View My Upcoming Jobs\t(PND) \n";
+            result+="\t4 View my Volunteers\t(VOL) \n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
         
@@ -216,16 +215,13 @@ public class ParkManagerView {
             //do the user story routine
             
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOB") ) {
-            //do the user story routine
+            //not implemented
             
         } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("PND") ) {
-            //do the user story routine
+            //not implemented
             
-        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("USR") ) {
-            //do the user story routine
-            
-        } else if (tokens[0].equalsIgnoreCase("5") || tokens[0].equalsIgnoreCase("SYS") ) {
-            //do the user story routine
+        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("VOL") ) {
+            ViewMyVolunteers();
             
         } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
             mySystem.logout();
@@ -238,5 +234,63 @@ public class ParkManagerView {
         
         return result;
     }
+    
+    
+    
+    
+    public String ViewMyVolunteers(){
+        String result = "";
+        
+        String command;
+
+        result = ViewMyVolunteersHelper("HELP");
+        System.out.println(result + "\n");
+        do
+        {
+            System.out.printf("Enter a Command >");
+            command = CommandLine.myScanner.nextLine();
+            result = ViewMyVolunteersHelper(command);
+            System.out.println(result + "\n");
+            
+        } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
+        
+        
+        
+        return result;
+    }
+    
+    public String ViewMyVolunteersHelper(String theString){
+        String result = "";
+        
+        String[] tokens = theString.split(" ");
+        ArrayList<Park> tempParks = (ArrayList<Park>)myCurrentManager.getMyParks();
+
+        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
+            
+            System.out.printf("\tWelcome, Park Manager %s\n",myCurrentManager.getMyName());
+            result="\t-------------------\n";
+            result+="\t1 Submit a new Job (NEW) \n";
+            result+="\tHELP(H)\n";
+            result+="\tQUIT(Q)\n";
+        
+        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
+            //do the user story routine
+
+            
+        } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
+
+            result += "\tGoing Back\n";
+            
+        } else {
+            result += "\tUnrecognized Command\n";
+            
+        }
+        
+        return result;
+        
+        
+        
+    }
+    
 
 }
