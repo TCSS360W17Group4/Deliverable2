@@ -33,7 +33,7 @@ public class VolunteerView {
         Job tempJob;
         List<Integer> currentJobs = myCurrentVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
         System.out.println("\t\tPark\t\t\tDate\t\tDescription");
-        Integer counter = 0;
+        Integer counter = 1;
         try {
             for (Integer i : currentJobs ) {
                 tempJob = myJobController.getJobById(i);  //going through every job in the list, getting the job

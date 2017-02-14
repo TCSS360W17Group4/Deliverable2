@@ -165,9 +165,6 @@ public class ParkManagerView {
 		
 	}
 	
-	//one routine for user story 3 As a Park Manager I want to view a numbered list of Volunteers for a job (past or present) in the parks that I manage.
-	
-	//one routine for user story 2 As a Park Manager I want to submit a new job
 	
     public void run() {
         String result = "";
@@ -187,17 +184,7 @@ public class ParkManagerView {
         
     }
     
-    public String NewJobRoutine(){
-        String result = "";
-        //need 
-        
-        
-        
-        return result;
-    }
-    
-    
-    
+
     public String ProcessInput(String theString) {
         String[] tokens = theString.split(" ");
         String result = "";
@@ -237,80 +224,91 @@ public class ParkManagerView {
     
     
     
-    
+    //heavily modified version of other UI loops
     public String ViewMyVolunteers(){
         String result = "";
-        
-        String command;
+        String command = "";
 
-        result = ViewMyVolunteersHelper("HELP");
+        //result = ViewMyVolunteersHelper("HELP");
         System.out.println(result + "\n");
-        do
-        {
-            System.out.printf("Enter a Command >");
-            command = CommandLine.myScanner.nextLine();
-            result = ViewMyVolunteersHelper(command);
-            System.out.println(result + "\n");
-            
-        } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
+        result = ViewMyVolunteersHelper(command);
+        System.out.println(result + "\n");
+        
+         if (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) ) {
+             //we have a number from before, get the volunteers based on this number
+         }
         
         return result;
     }
 	
-    public String ViewMyVolunteersHelper(String theString){
+    
+    //This is the second most awful thing I have had to do in this entire project
+    public String ViewMyVolunteersHelper(String theString) {
         String result = "";
         
         String[] tokens = theString.split(" ");
         
         ArrayList<Job> tempJobs = (ArrayList<Job>)mySystem.getMyJobs();
-        
+        ArrayList<Job> jobsForThisManager = new ArrayList<Job>();
+        System.out.println("\t\tPark\t\t\tDate\t\tDescription");
+        Integer counter = 1;
         try {
             for (Job tempJob : tempJobs ) {
-                if (tempJob.getMyJobManagerId() == myCurrentManager.getMyUserId())
-
-                System.out.printf("%d)\t\t\t%s\t\t%s\n", 
-                        tempJob.getMyPark().getMyName(),    
-                        //myFormat.format( tempJob.getMyStartDate() ),
-                        tempJob.getMyDescription());
-            }
+                if (tempJob.getMyJobManagerId() == myCurrentManager.getMyUserId()) {
+                    LocalDate tempDate = tempJob.getMyStartDate();
+                    System.out.printf("%d)\t%s\t%s\t%s\n", 
+                            counter,
+                            tempJob.getMyPark().getMyName(),    
+                            tempDate.toString(),
+                            //myFormat.format( tempJob.getMyStartDate() ),
+                            tempJob.getMyDescription());
+                    counter++;
+                    jobsForThisManager.add(tempJob);
+                    }
+                }
             
         } catch (NullPointerException e) {
             return "\nError: no jobs found for you\n";
         }
         
+        result+="\n\tEnter a Job number from above >\n";
+        System.out.println(result + "\n");
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
-            
-            System.out.printf("\tWelcome, Park Manager %s\n",myCurrentManager.getMyName());
-            result="\t-------------------\n";
-            result+="\t1 Submit a new Job (NEW) \n";
-            result+="\tHELP(H)\n";
-            result+="\tQUIT(Q)\n";
-        
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
-            //do the user story routine
-
-            
-        } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
-
-            result += "\tGoing Back\n";
-            
-        } else {
-            result += "\tUnrecognized Command\n";
-            
+      //this is the most awful thing I have had to do in this entire project. This line right here.
+        Job tempJob = new Job(new Park());  
+        try {
+            Integer i;
+            String command = CommandLine.myScanner.nextLine();
+            i = Integer.valueOf(command) - 1;
+            if (i < jobsForThisManager.size() ) {
+                tempJob = jobsForThisManager.get(i);
+                
+            } else {
+                System.out.println("Not a valid job number.");
+                return "";
+            }
+                
+        } catch (Exception e){
+            e.printStackTrace();
         }
         
-        return result;
+        ArrayList<Integer> IndexList = new ArrayList<Integer>();
+        IndexList = (ArrayList<Integer>)tempJob.getMyVolunteerList();
+        List<Volunteer> VolunteersList = (ArrayList<Volunteer>)mySystem.getMyVolunteers();
+        System.out.println("\tName\t\tPhone\t\tEmail");
+        Volunteer tempVol;
+        counter = 1;
+        for (Integer i : IndexList) {
+            tempVol = VolunteersList.get(i);
+            System.out.printf("%d) %s\t%s\t%s\n",
+                    counter,
+                    tempVol.getMyName(),
+                    tempVol.getMyPhone(),
+                    tempVol.getMyEmail() );
+            counter++;
+        }
+
+        return "";
         
         
         
