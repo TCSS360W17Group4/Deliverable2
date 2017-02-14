@@ -330,7 +330,7 @@ public class ParksSystem implements Serializable{
                     myParkManagers, 
                     myUrbanStaff, 
                     myJobController, 
-                    myJobController.getMyJobsList() /*whatever*/);               
+                    myJobs /*whatever*/);               
 	    	
 		 } else {
 		     //I think we already have a 'else' block that prevents this block from ever being reached

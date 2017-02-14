@@ -1,6 +1,7 @@
 package UserInterface;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import model.Job;
@@ -22,7 +23,8 @@ public class UrbanParksStaffView {
         mySystem = theSystem;
         myUrbanParksStaff = (UrbanParksStaff) theUrbanParksStaffController.getMyUser();
         myController = (UrbanParksStaffController)mySystem.getMyUserController();
-        
+        myJobController = new JobController(mySystem.getMyJobs());
+        //myController = new UrbanParksStaffController();
     }
     
     
@@ -50,15 +52,15 @@ public class UrbanParksStaffView {
         ArrayList<Job> currentJobs = (ArrayList<Job>)myController.getPendingJobsForOneMonth();
         SimpleDateFormat myFormat = new SimpleDateFormat("EEE, MMM d, yy"); //example: Wed, Jul 4, '01
         
-        System.out.println("Park,           Date            Description");
+        System.out.println("\t\tPark\t\t\tDate\t\t\tDescription");
         try {
             for (Job i : currentJobs ) {
-           
+                LocalDate tempDate = i.getMyStartDate();
                 //should output formatted list of jobs after full iteration  
                 //jobs will show with Name of Park, the Start Date, and the Description
-                System.out.printf("%d)\t\t\t%s\t\t%s\n", 
+                System.out.printf("\t\t%s\t%s\t\t%s\n", 
                         i.getMyPark().getMyName(),    
-                        myFormat.format( i.getMyStartDate() ),
+                        tempDate.toString(),
                         i.getMyDescription());
             }
         

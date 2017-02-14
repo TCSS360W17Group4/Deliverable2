@@ -24,38 +24,6 @@ public class VolunteerView {
         myJobController = new JobController(mySystem.getMyJobs());
     }
     
-    //user stories go here
-    //As a Volunteer I want to volunteer for a job.
-    //As a Volunteer I want to view a listing of the jobs I am signed up for.
-    public String ViewMyJobs() {
-        String result = "\n";
-        SimpleDateFormat myFormat = new SimpleDateFormat("EEE, MMM d, yy"); //example: Wed, Jul 4, '01
-        Job tempJob;
-        List<Integer> currentJobs = myCurrentVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
-        System.out.println("\t\tPark\t\t\tDate\t\tDescription");
-        Integer counter = 1;
-        try {
-            for (Integer i : currentJobs ) {
-                tempJob = myJobController.getJobById(i);  //going through every job in the list, getting the job
-                LocalDate tempDate = tempJob.getMyStartDate();
-                //should output formatted list of jobs after full iteration  
-                //jobs will show with Name of Park, the Start Date, and the Description
-                System.out.printf("%d)\t%s\t%s\t%s\n", 
-                        counter,
-                        tempJob.getMyPark().getMyName(),    
-                        tempDate.toString(),
-                        //myFormat.format( tempJob.getMyStartDate() ),
-                        tempJob.getMyDescription());
-                counter++;
-            }
-            
-        } catch (NullPointerException e) {
-            return "\nError: no jobs found for you\n";
-        }
-        
-        return result;
-    }
-    
 
     
     
@@ -89,15 +57,16 @@ public class VolunteerView {
             System.out.printf("\tWelcome, Volunteer %s\n",myCurrentVolunteer.getMyName());
             //result="\tWelcome, Volunteer\n";
             result="\t-------------------\n";
-            result+="\t1 Search for Jobs \t\t(SCH) <username>\n";
-            result+="\t2 Volunteer for a Job\t\t(VOL) <username>\n";
+            result+="\t1 Search for Jobs \t\t(SCH) \n";
+            result+="\t2 Volunteer for a Job\t\t(VOL) \n";
             result+="\t3 View My Current Jobs\t\t(CUR)\n";
-            result+="\t4 View Past Jobs\t\t(PST) <username>\n";
+            result+="\t4 View Past Jobs\t\t(PST) \n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
         
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("SCH") ) {
             //do the user story routine
+            SignUpForAJob();
             
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("VOL") ) {
             //not implemented
@@ -119,5 +88,45 @@ public class VolunteerView {
         
         return result;
     }
+    
+    
 
+    
+    //As a Volunteer I want to view a listing of the jobs I am signed up for.
+    public String ViewMyJobs() {
+        String result = "\n";
+        //SimpleDateFormat myFormat = new SimpleDateFormat("EEE, MMM d, yy"); //example: Wed, Jul 4, '01
+        Job tempJob;
+        List<Integer> currentJobs = myCurrentVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
+        System.out.println("\t\tPark\t\t\tDate\t\tDescription");
+        Integer counter = 1;
+        try {
+            for (Integer i : currentJobs ) {
+                tempJob = myJobController.getJobById(i);  //going through every job in the list, getting the job
+                LocalDate tempDate = tempJob.getMyStartDate();
+                //jobs will show with Name of Park, the Start Date, and the Description
+                System.out.printf("%d)\t%s\t%s\t%s\n", 
+                        counter,
+                        tempJob.getMyPark().getMyName(),    
+                        tempDate.toString(),
+                        tempJob.getMyDescription());
+                counter++;
+            }
+            
+        } catch (NullPointerException e) {
+            return "\nError: no jobs found for you\n";
+        }
+        
+        return result;
+    }
+    
+    
+
+    //As a Volunteer I want to volunteer for a job.
+    public String SignUpForAJob() {
+        String result = "";
+        
+        
+        return result;
+    }
 }

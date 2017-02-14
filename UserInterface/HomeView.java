@@ -77,7 +77,7 @@ public class HomeView {
                 
             }
             UrbanParksStaffView myUrbanParksStaffView = new UrbanParksStaffView(mySystem, myUrbanParksStaffController);
-            //UrbanParksStaffView.run();
+            myUrbanParksStaffView.run();
             
         } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
             mySystem.logout();

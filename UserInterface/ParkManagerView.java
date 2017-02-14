@@ -24,12 +24,11 @@ public class ParkManagerView {
 	
 
 	public ParkManagerView(ParkManager theManager, List<Volunteer>theVolunteers, List<Job> theJobs) {
-		myJobController = new JobController();
 		myParkSystemJobs = theJobs;
 		myParksSystemVolunteer = theVolunteers;
 		myCurrentManager = theManager;
 		//init initial page for this user
-		
+		myJobController = new JobController(mySystem.getMyJobs());
 		initManagerHomeView(theManager);
 	}
 	
@@ -39,7 +38,7 @@ public class ParkManagerView {
 	    
 	}
 	
-	//I don't think this does anything
+	//I don't think this does anything -chris
 	private void initManagerHomeView(ParkManager theManager){
 		
 		System.out.println("Welcome to Urban Parks");
