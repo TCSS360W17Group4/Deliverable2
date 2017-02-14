@@ -254,7 +254,6 @@ public class ParkManagerView {
             
         } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
         
-        
         return result;
     }
 	
@@ -262,7 +261,33 @@ public class ParkManagerView {
         String result = "";
         
         String[] tokens = theString.split(" ");
-        ArrayList<Park> tempParks = (ArrayList<Park>)myCurrentManager.getMyParks();
+        
+        ArrayList<Job> tempJobs = (ArrayList<Job>)mySystem.getMyJobs();
+        
+        try {
+            for (Job tempJob : tempJobs ) {
+                if (tempJob.getMyJobManagerId() == myCurrentManager.getMyUserId())
+
+                System.out.printf("%d)\t\t\t%s\t\t%s\n", 
+                        tempJob.getMyPark().getMyName(),    
+                        //myFormat.format( tempJob.getMyStartDate() ),
+                        tempJob.getMyDescription());
+            }
+            
+        } catch (NullPointerException e) {
+            return "\nError: no jobs found for you\n";
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
             

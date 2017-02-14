@@ -21,7 +21,7 @@ public class VolunteerView {
     public VolunteerView(ParksSystem theSystem, VolunteerController theVolunteerController){
         mySystem = theSystem;
         myCurrentVolunteer = (Volunteer) theVolunteerController.getMyUser();
-        
+        myJobController = new JobController(mySystem.getMyJobs());
     }
     
     //user stories go here
@@ -32,17 +32,21 @@ public class VolunteerView {
         SimpleDateFormat myFormat = new SimpleDateFormat("EEE, MMM d, yy"); //example: Wed, Jul 4, '01
         Job tempJob;
         List<Integer> currentJobs = myCurrentVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
-        System.out.println("Park,           Date            Description");
+        System.out.println("\t\tPark\t\t\tDate\t\tDescription");
+        Integer counter = 0;
         try {
             for (Integer i : currentJobs ) {
                 tempJob = myJobController.getJobById(i);  //going through every job in the list, getting the job
-           
+                LocalDate tempDate = tempJob.getMyStartDate();
                 //should output formatted list of jobs after full iteration  
                 //jobs will show with Name of Park, the Start Date, and the Description
-                System.out.printf("%d)\t\t\t%s\t\t%s\n", 
+                System.out.printf("%d)\t%s\t%s\t%s\n", 
+                        counter,
                         tempJob.getMyPark().getMyName(),    
-                        myFormat.format( tempJob.getMyStartDate() ),
+                        tempDate.toString(),
+                        //myFormat.format( tempJob.getMyStartDate() ),
                         tempJob.getMyDescription());
+                counter++;
             }
             
         } catch (NullPointerException e) {
