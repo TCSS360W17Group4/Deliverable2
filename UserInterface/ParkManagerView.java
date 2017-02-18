@@ -21,7 +21,7 @@ public class ParkManagerView {
 	private  List<Job>myParkSystemJobs;
 	private List<Volunteer>myParksSystemVolunteer;
 	private ParkManager myCurrentManager;
-	
+	private Scanner myReader;
 
 	public ParkManagerView(ParkManager theManager, List<Volunteer>theVolunteers, List<Job> theJobs) {
 		myParkSystemJobs = theJobs;
@@ -29,17 +29,20 @@ public class ParkManagerView {
 		myCurrentManager = theManager;
 		//init initial page for this user
 		myJobController = new JobController(mySystem.getMyJobs());
-		initManagerHomeView(theManager);
+		myReader = new Scanner(System.in);
+		//initManagerHomeView(theManager);
 	}
 	
 	public ParkManagerView(ParksSystem theSystem, ParkManagerController theParkManagerController){
 	    mySystem = theSystem;
 	    myCurrentManager = (ParkManager) theParkManagerController.getMyUser();
-	    
+	    myJobController = new JobController(mySystem.getMyJobs());
+		myReader = new Scanner(System.in);
+		myParkSystemJobs = mySystem.getMyJobs();
 	}
 	
 	//I don't think this does anything -chris
-	private void initManagerHomeView(ParkManager theManager){
+	/*private void initManagerHomeView(ParkManager theManager){
 		
 		System.out.println("Welcome to Urban Parks");
 		//todays date ...manager name ...logged in as Manager
@@ -56,24 +59,34 @@ public class ParkManagerView {
 	}
 	
 	
+	public void myVolunteersMenuView() {
+		StringBuilder menuOptions = new StringBuilder();
+		//getVolunteersByManagerId()
+		menuOptions.append("Your current volunteers list");
+		
+	}*/
+	
 	public void sumbitJobView(){
 		//park name and city, job manager id
 		Job newJob = null;
-		//Park thePark = new Park(-1, null, null, myCurrentManager.getMyUserId());
+		Park thePark = null;
 		
-		//this isn't the right place to be creating and entering jobs
-		Park thePark = new Park();
-		if(myJobController.isParkAdded(myCurrentManager,newJob,thePark)){
-			thePark.toString();
+		if(myCurrentManager.getMyParks().size() == 1){
+			thePark = myJobController.getMySinglePark(myCurrentManager);
+			newJob = new Job(thePark);
+			newJob.setMyPark(thePark);
+			System.out.println(thePark.toString());
+		
 		} else {
 			System.out.println("Enter 1: for " + myCurrentManager.getMyParks().get(0)
 					+ " enter 2 for " + myCurrentManager.getMyParks().get(0));
-			int userChoice = CommandLine.myScanner.nextInt();
+			int userChoice = myReader.nextInt();
 			
 			thePark = myJobController.pickAPark(myCurrentManager, userChoice);
 			newJob = new Job(thePark);
 			newJob.setMyJobManagerId(myCurrentManager.getMyUserId());
-			thePark.toString();			
+			thePark.toString();
+			
 			
 		}
 		
@@ -81,8 +94,9 @@ public class ParkManagerView {
 		acceptDateView(newJob);
 		acceptEndDateView(newJob);
 		acceptDescriptionView(newJob);
+		acceptNumOfVolunteers(newJob);
+		confirmSubmitView(newJob);
 		
-		//myJobController.addStartDate(line,newJob,myParkSystemJobs);
 		
 	}
 	
@@ -92,15 +106,12 @@ public class ParkManagerView {
 		System.out.println("Enter Start date(format MM/dd/yy Eg: 2/10/17 same as Feb 10, 2017");
 		for (int retries = 0;retries < 3; retries++) {
 		
-		    	String line = CommandLine.myScanner.nextLine();
+		    	String line = myReader.nextLine();
 		    	if(!myJobController.isStartDateAdded(line, theJob, myParkSystemJobs)) {
 		    		System.out.println("Please enter again");
 		    		continue;
-		    		
 		    	} else {
-		    	    
 		    		return true;
-		    		
 		    	}
 		    	
 		   
@@ -115,14 +126,13 @@ public class ParkManagerView {
 		
 		for (int retries = 0;retries < 3; retries++) {
 			
-			int jobDuration = CommandLine.myScanner.nextInt();
+			int jobDuration = myReader.nextInt();
+			myReader.nextLine();//consume newline break
 			
 	    	if(!myJobController.isEndDateAdded(jobDuration, theJob, myParkSystemJobs)) {
 	    		System.out.println("Enter again");
 	    		continue;
-	    		
 	    	} else {
-	    	    
 	    		return true;
 	    	}
 	    	
@@ -138,14 +148,12 @@ public class ParkManagerView {
 		
 		for (int retries = 0;retries < 3; retries++) {
 			
-			String jobDescription = CommandLine.myScanner.nextLine();
-			
+			String jobDescription = myReader.nextLine();
+
 	    	if(!myJobController.isJobDescriptionAdded(theJob, jobDescription)) {
 	    		System.out.println("Enter again");
 	    		continue;
-	    		
 	    	} else {
-	    	    
 	    		return true;
 	    	}
 	    	
@@ -158,13 +166,67 @@ public class ParkManagerView {
 
 	public boolean acceptNumOfVolunteers(Job theJob) {
 		//not complete
-		System.out.println("Enter max number of volunteers required: Total less than 30");
-		System.out.println();
-		return false;
+		boolean allNumAdded = false;
+		System.out.println("Enter max volunteers for each category: Total less than 30");
 		
+		//each question has max 3 trials
+		
+		for (int retries = 0;retries < 3; retries++) {
+			System.out.println("Light: ");
+			int light = myReader.nextInt();
+			if(!myJobController.isMaxLightVolNumberValid(theJob, light)) {
+				System.out.println("Enter valid number again");
+	    		continue;
+			} else {
+				allNumAdded = true;
+				break;//go to medium
+			}
+		}	
+		
+		
+		for (int retries = 0;retries < 3; retries++) {
+			System.out.println("Medium: ");
+			int med = myReader.nextInt();
+			
+			if(!myJobController.isMaxMediumVolNumValid(theJob, med)) {
+				System.out.println("Enter valid number again");
+	    		continue;
+			} else {
+				allNumAdded = true;
+				break;//go to heavy
+			}
+		}	
+		
+
+		for (int retries = 0;retries < 3; retries++) {
+			System.out.println("Heavy: ");
+			int heavy = myReader.nextInt();
+			myReader.nextLine();
+			if(!myJobController.isMaxHeavyVolNumValid(theJob, heavy)) {
+				System.out.println("Enter valid number again");
+	    		continue;
+			} else {
+				allNumAdded = true;
+				break;
+			}
+		}	
+			
+		return allNumAdded;
 	}
 	
 	
+	public boolean confirmSubmitView(Job theJob) {
+		
+		System.out.println("Enter Y to submit the job or Enter N to cancel submission");
+		
+		String userConfirmation = myReader.nextLine();
+		if(userConfirmation.equalsIgnoreCase("Y")) {
+			myJobController.addJob(theJob, myParkSystemJobs);
+			return true;
+		} else {
+			return false;
+		}
+	}
     public void run() {
         String result = "";
         String command;
@@ -199,7 +261,7 @@ public class ParkManagerView {
         
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
             //do the user story routine
-            
+        	sumbitJobView();
         } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOB") ) {
             //not implemented
             

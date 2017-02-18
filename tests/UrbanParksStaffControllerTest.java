@@ -42,18 +42,6 @@ public class UrbanParksStaffControllerTest {
 		
 			urbanParks = new UrbanParksStaffController(myUser, null, null, null, jobController, myJobs);
 	}
-	
-	/**
-	 * {@link model.UrbanParksStaffController#viewCalendar()}
-	 */
-	/*
-	@Test
-	public void testViewCalendar() {
-		List<Job> pendingJobs = urbanParks.viewCalendar();
-		int pendingJobsSize = pendingJobs.size();
-		int expectedSize = 1;
-		assertEquals(new Integer(expectedSize),new Integer(pendingJobsSize));
-	}
-	*/
+
 
 }

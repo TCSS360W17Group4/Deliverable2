@@ -23,9 +23,9 @@ public class JobControllerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		
-		 jobController = new JobController();
-		 myJobs = new ArrayList<Job>(); 
+		myJobs = new ArrayList<Job>();
+		 jobController = new JobController(myJobs);
+		  
 		
 	}
 

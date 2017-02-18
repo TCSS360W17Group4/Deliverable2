@@ -86,29 +86,22 @@ public class JobController implements Serializable{
 			
 	}
 	
-	public boolean isParkAdded(ParkManager theManager, Job theJob, Park thePark) {
+	public Park getMySinglePark(ParkManager theManager) {
 		
-		if(theManager.getMyParks().size() == 1) {
-			thePark = theManager.getMyParks().get(0);
-			theJob =  new Job(thePark);
-			theJob.setMyJobManagerId(theManager.getMyUserId());
-			return true;
-		} else {
-			return false;
-		}
-		
-	}
+		return theManager.getMyParks().get(0);
+}
+
+public Park pickAPark(ParkManager theManager, int theManagerChoice) {
+	Park thePark;
+	if (theManagerChoice == 1) {
+		thePark = theManager.getMyParks().get(0);
+	} else  {
+		thePark = theManager.getMyParks().get(1);
+	} 
 	
-	public Park pickAPark(ParkManager theManager, int theManagerChoice) {
-		Park thePark;
-		if (theManagerChoice == 1) {
-			thePark = theManager.getMyParks().get(0);
-		} else  {
-			thePark = theManager.getMyParks().get(1);
-		} 
-		
-		return thePark;
-	}
+	return thePark;
+}
+
 	
 	/**
 	 * assign the starting date of the job
