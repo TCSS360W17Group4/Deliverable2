@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 
 /**
  * Enum to hold the user types
@@ -7,7 +8,7 @@ package model;
  * @author Dereje Bireda
  *
  */
-public enum UserType {
+public enum UserType implements Serializable {
 	
 	Volunteer("vol")
 	,Manager("mgr") 
@@ -36,7 +37,7 @@ public enum UserType {
         boolean userTypeExist = false ;
 
         for(final UserType type : UserType.values()) {
-        	if(type.myType == theString) {
+        	if(type.myType.equals(theString)) {
         		userTypeExist = true;
         		break;
         	}

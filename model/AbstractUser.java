@@ -1,7 +1,8 @@
 package model;
 
+import java.io.Serializable;
 
-public abstract class AbstractUser {
+public abstract class AbstractUser implements Serializable{
 
 
 

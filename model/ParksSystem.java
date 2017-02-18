@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,20 +10,20 @@ import java.util.List;
  * ParksSystem to control the system data,
  * and login 
  * 
- * @author Dereje 
+ * @author Dereje Bireda
  *
  */
-public class ParksSystem implements java.io.Serializable{
+public class ParksSystem implements Serializable{
 
-	private static AbstractUser myCurrentUser;
-	private static List<Job> myJobs;
-	private static List<Volunteer> myVolunteers;
-	private static List<ParkManager> myParkManagers;
-	private static List<UrbanParksStaff> myUrbanStaff;
+	private  AbstractUser myCurrentUser;
+	private  List<Job> myJobs;
+	private  List<Volunteer> myVolunteers;
+	private  List<ParkManager> myParkManagers;
+	private  List<UrbanParksStaff> myUrbanStaff;
 	
 	
-	private static JobController myJobController;
-	private static AbstractController myUserController;
+	private JobController myJobController;
+	private AbstractController myUserController;
 	
 	public ParksSystem(){
 	    //myCurrentUser = new AbstractUser();
@@ -196,9 +197,11 @@ public class ParksSystem implements java.io.Serializable{
 			if(!prevJob.getMyStartDate().equals(newJob.getMyStartDate()) &&
 					!prevJob.getMyEndDate().equals(newJob.getMyEndDate())) {
 				return true;
+				
 			}
 			
 		}
+		
 		return false;
 	}
 	
@@ -265,6 +268,7 @@ public class ParksSystem implements java.io.Serializable{
 	 //story 5
 	 public void updatePendingJobsLimit(int theNewMax) {
 		 myJobController.setMyMaxNumberOfPendingJobs(theNewMax);
+		 
 	 }
 	 
      /********************************
@@ -275,60 +279,78 @@ public class ParksSystem implements java.io.Serializable{
 	 /**
 	  * authenticate user login 
 	  * 
-	  * @param theUserName the username to be checked for loggin
+	  * @param theUserName the username to be checked for login
 	  */
-	public boolean loginSuccessful(String theUserName) {
+//we need to return a user SOMEHOW otherwise when is the Controller ever going to be built?
+	public AbstractController loginSuccessful(String theUserName) {
 		//parse the user name
 		String userType = theUserName.substring(0,3);
+		//can be index 3, since username has length 4 generally
 		String userId = theUserName.substring(3,theUserName.length());
-		boolean isSuccessful = false;
+		int id;
 		
-		//check if user type exist and user id is an int
-		if(UserType.userExist(userType) && userId.matches("[0-9]+")) {
-				int id = Integer.parseInt(userId);
-				
-				
-				if(userType.equals(UserType.Volunteer.getMyType()) ) {
-				    myUserController = new VolunteerController(
-				            (Volunteer)myCurrentUser, 
-				            myVolunteers, 
-				            myParkManagers, 
-				            myUrbanStaff, 
-				            myJobController);
-				    isSuccessful = true;
-				} else if(userType.equals(UserType.Manager.getMyType()) ) {
-		             myUserController = new ParkManagerController(
-	                        (ParkManager)myCurrentUser, 
-	                        myVolunteers, 
-	                        myParkManagers, 
-	                        myUrbanStaff, 
-	                        myJobController);
-		             isSuccessful = true;
-				} else if (userType.equals(UserType.Staff.getMyType()) ) {
-				    /*
-				    myUserController = new UrbanParksStaffController(
-	                        (UrbanParksStaff)myCurrentUser, 
-	                        myVolunteers, 
-	                        myParkManagers, 
-	                        myUrbanStaff, 
-	                        myJobController);
-	                        */
-			    	isSuccessful = true;
-				 } else {
-				//user doesnt exist
-					 isSuccessful = false;
-				 }
-		}
-		
-		return isSuccessful;
+		if (UserType.userExist(userType) && userId.matches("[0-9]+")) {
+			id = Integer.parseInt(userId);
 			
-	}
-	
-	public void logout() {
+		} else {
+			return myUserController; //check elsewhere whether the user is instantiated or if empty
+			
+		}
+				
+				//id check to avoid nullpointer calling Contains
+		if(userType.equals(UserType.Volunteer.getMyType()) 
+				&& id < myVolunteers.size()
+				&& myVolunteers.contains(myVolunteers.get(id)) ) {
+		    myCurrentUser = myVolunteers.get(id);
+			myUserController = new VolunteerController(
+			        (Volunteer)myCurrentUser, 
+		            myVolunteers, 
+		            myParkManagers, 
+		            myUrbanStaff, 
+		            myJobController);
+		    
+		} else if(userType.equals(UserType.Manager.getMyType())
+		        && id < myParkManagers.size()
+				&& myParkManagers.contains(myParkManagers.get(id)) ) {
+		    myCurrentUser = myParkManagers.get(id);
+		    myUserController = new ParkManagerController(
+		            (ParkManager)myCurrentUser, 
+                    myVolunteers, 
+                    myParkManagers, 
+                    myUrbanStaff, 
+                    myJobController);
+             
+		} else if (userType.equals(UserType.Staff.getMyType()) 
+				&& id < myUrbanStaff.size()
+				&& myUrbanStaff.contains(myUrbanStaff.get(id)) ) {
+		    myCurrentUser = myUrbanStaff.get(id);
+		    myUserController = new UrbanParksStaffController(
+                    (UrbanParksStaff)myCurrentUser, 
+                    myVolunteers, 
+                    myParkManagers, 
+                    myUrbanStaff, 
+                    myJobController, 
+                    myJobs /*whatever*/);               
+	    	
+		 } else {
+		     //I think we already have a 'else' block that prevents this block from ever being reached
+		     return myUserController;
+		 }
+		
+		return myUserController;
+		//return isSuccessful;
 		
 	}
 	
 	
+	public  AbstractController getMyUserController() {
+		return this.myUserController;
+	}
+
+	public void setMyUserController(AbstractController theUserController) {
+		this.myUserController = theUserController;
+	}
+
 	/**
 	 * checks a user id exist for a list of users
 	 * 
@@ -344,12 +366,75 @@ public class ParksSystem implements java.io.Serializable{
 			
 	}
 	
-	public void run(){
+	public void run() {
 	    //someone needs to do this at some point, not necessary for JUnit testing
 	    String userName = new String();
 	    loginSuccessful(userName);
 	    //Also needed after we sort out JUnit testing
-	    //myUserController.run();  
+	    //myUserController.run(); 
+	    
+	}
+
+	public List<ParkManager> getMyParkManagers() {
+		return myParkManagers;
+		
+	}
+
+	public void setMyParkManagers(List<ParkManager> theParkManagers) {
+		this.myParkManagers = theParkManagers;
+		
 	}
 	
+
+	public  List<Volunteer> getMyVolunteers() {
+		return myVolunteers;
+		
+	}
+
+	public  void setMyVolunteers(List<Volunteer> theVolunteers) {
+		this.myVolunteers = theVolunteers;
+		
+	}
+
+	public List<UrbanParksStaff> getMyUrbanStaff() {
+		return myUrbanStaff;
+		
+	}
+
+	public List<Job> getMyJobs() {
+		return myJobs;
+	}
+
+	public void setMyJobs(List<Job> theJobs) {
+		this.myJobs = theJobs;
+	}
+
+	public void setMyUrbanStaff(List<UrbanParksStaff> theUrbanStaff) {
+		this.myUrbanStaff = theUrbanStaff;
+		
+	}
+
+	public void logout() {
+		//explicitly set to null for logout
+	    myCurrentUser = null;
+	    myUserController = null;
+	    //Want to make sure these objects are not kept in memory, this might not be necessary
+	    
+	}
+	
+	/*public static AbstractUser FindVolunteer(String theUserName) {
+	    for (Volunteer aVolunteer : myVolunteers) {
+	        //integer.toString();
+	        if (aVolunteer.getMyUserName().equals(theUserName) ) {
+	            return aVolunteer;
+	            
+	        }
+	        
+	    }
+	    
+	    AbstractUser UserToRet = new Volunteer(); //return a null user.  Check elsewhere if the user is null to stop login routine
+        return UserToRet;	    
+	        
+	    } */
+
 }

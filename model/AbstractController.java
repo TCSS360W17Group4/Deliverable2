@@ -6,6 +6,7 @@ package model;
  */ 
  
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,8 +18,28 @@ import java.util.List;
  */
 
 
-public abstract class AbstractController {
+public abstract class AbstractController implements Serializable {
     protected final AbstractUser myUser;
+    public AbstractUser getMyUser() {
+        return myUser;
+    }
+
+    public List<Volunteer> getMyVolunteers() {
+        return myVolunteers;
+    }
+
+    public List<ParkManager> getMyParkManagers() {
+        return myParkManagers;
+    }
+
+    public List<UrbanParksStaff> getMyUrbanParksStaff() {
+        return myUrbanParksStaff;
+    }
+
+    public JobController getMyJobController() {
+        return myJobController;
+    }
+
     protected final List<Volunteer> myVolunteers;
     protected final List<ParkManager> myParkManagers;
     protected final List<UrbanParksStaff> myUrbanParksStaff;
