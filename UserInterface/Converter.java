@@ -13,7 +13,12 @@ public class Converter {
     
     private ParksSystem mySystem;
 
-    
+    /**
+     * Executes a system action that is decided based on the string parameter
+     * 
+     * @param theString string that needs interpreting into a system action
+     * @return string that should be displayed to the user: created by the system action
+     */
     public String ioCalls(String theString) {
         
         //user will input commands and arguments, all separated by whitespace

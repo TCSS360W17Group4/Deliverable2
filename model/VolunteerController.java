@@ -11,17 +11,16 @@ public class VolunteerController extends AbstractController {
     
     public VolunteerController(Volunteer theUser, 
             List<Volunteer> theVolunteers, List<ParkManager> theParkManagers,
-            List<UrbanParksStaff> theUrbanParksStaff,
             JobController theJobController) { 
-        super(theUser, theVolunteers, theParkManagers, theUrbanParksStaff, theJobController);
+        super(theUser, theVolunteers, theParkManagers, theJobController);
     }
 
-    public void signUpForJob(Job theJob) {
-        if( ! JobController.isJobFullForSignUp(theJob) ) {
-            //this is where the design fails
-            
-        }
-        
-    }
+//    public void signUpForJob(Job theJob) {
+//        if( ! JobController.isJobFullForSignUp(theJob) ) {
+//            //this is where the design fails
+//            
+//        }
+//        
+//    }
     
 }

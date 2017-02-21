@@ -1,11 +1,8 @@
 package UserInterface;
 
-import model.ParkManager;
+import model.AbstractController;
 import model.ParkManagerController;
 import model.ParksSystem;
-import model.UrbanParksStaff;
-import model.UrbanParksStaffController;
-import model.Volunteer;
 import model.VolunteerController;
 
 public class HomeView {
@@ -15,7 +12,13 @@ public class HomeView {
 	public HomeView(ParksSystem theSystem) {
 	    mySystem = theSystem;
     }
-
+	/**
+	 * I/O Interaction with user before one of the three Views take over
+	 * 
+	 * Displays the initial Urban Parks prompt to the user for login
+	 * 
+	 * Tries to pass control over to one of the "views" once user is logged in
+	 */
     public void run() {
         String result = "";
         String command;
@@ -34,7 +37,12 @@ public class HomeView {
 		
 	}
 	
-    
+    /**
+     * Executes the command received by the user, taking the action relevant to the command
+     * 
+     * @param theString the command entered by the user that needs interpreting and executing
+     * @return a string to be displayed to the user so that he can know what has happened
+     */
     public String ProcessInput(String theString) {
         String[] tokens = theString.split(" ");
         String result = "";
@@ -42,55 +50,36 @@ public class HomeView {
         if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
             result="\tWelcome to Urban Parks\n";
             result+="\t-------------------\n";
-            result+="\t1 Login Volunteer \t\t(Vol) <username>\n";
-            result+="\t2 Login Manager\t\t\t(Mgr) <username>\n";
-            result+="\t3 Login Urban Parks Staff\t(USt) <username>\n";
+            result+="\t1 Login\t\t(LOG) <email>\n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
             result+="\n";
-            result+="\tExample input: 2 MyUserName, or VOL MyUserName\n";
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("VOL") ) {
-            VolunteerController myVolunteerController = (VolunteerController)mySystem.loginSuccessful(tokens[1]);
-            if (myVolunteerController == null || myVolunteerController.getMyUser() == null){
+            result+="\tExample input: 1 myname@myemail.com, or LOG arealemail@gmail.com\n";
+        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("LOG") ) {
+            AbstractController myController = (VolunteerController)mySystem.loginSuccessful(tokens[1]);
+            if (myController == null || myController.getMyUser() == null){
                 return "Login Failed, User not Found";
+            }
+            if (myController instanceof VolunteerController){
+                VolunteerView myVolunteerView = new VolunteerView(mySystem, (VolunteerController)myController);
+                myVolunteerView.run(); 
                 
             }
-            
-            VolunteerView myVolunteerView = new VolunteerView(mySystem, myVolunteerController);
-           myVolunteerView.run();
-            
-        } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("MGR") ) {
+            if (myController instanceof ParkManagerController){
+                ParkManagerView myParkManagerView = new ParkManagerView(mySystem, (ParkManagerController)myController);
+                myParkManagerView.run(); 
+                
+            }
 
-            ParkManagerController myParkManagerController = (ParkManagerController)mySystem.loginSuccessful(tokens[1]);
-            if (myParkManagerController == null || myParkManagerController.getMyUser() == null){
-                return "Login Failed, User not Found";
-                
-            }
             
-            ParkManagerView myParkManagerView = new ParkManagerView(mySystem, myParkManagerController);
-            myParkManagerView.run();
-            
-        } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("UST") ) {
-            UrbanParksStaffController myUrbanParksStaffController = (UrbanParksStaffController)mySystem.loginSuccessful(tokens[1]);
-            if (myUrbanParksStaffController == null || myUrbanParksStaffController.getMyUser() == null) {
-                return "Login Failed, User not Found";
-                
-            }
-            UrbanParksStaffView myUrbanParksStaffView = new UrbanParksStaffView(mySystem, myUrbanParksStaffController);
-            myUrbanParksStaffView.run();
-            
-        } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
+        }  else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
             mySystem.logout();
             result += "Logging Out";
             
         } else {
             result += "Unrecognized Command";
-            
         }
  
-        
-        
-        
         return result;
         
     }
