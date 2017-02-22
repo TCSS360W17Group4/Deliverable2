@@ -279,7 +279,6 @@ public class ParksSystem implements Serializable{
 	  * 
 	  * @param theUserName the username to be checked for login
 	  */
-//we need to return a user SOMEHOW otherwise when is the Controller ever going to be built?
 	public AbstractController loginSuccessful(String theUserName) {
 		//parse the user name
 		String userType = theUserName.substring(0,3);

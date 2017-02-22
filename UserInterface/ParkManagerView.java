@@ -1,5 +1,6 @@
 package UserInterface;
 
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -242,8 +243,7 @@ public class ParkManagerView {
 	/*********************************************
      * Methods for Managers to view list of Volunteers
      *********************************************/
-    
-    
+
     
     /**
      * This method used to look much different. Now it is kind of silly. Needs refactoring
@@ -266,79 +266,127 @@ public class ParkManagerView {
 	
     
     /**
-     * This needs refactoring into sub-problems badly
+     * Routine to carry out the subproblems associated with showing a manager a list of his volunteers
      * 
-     * @return string of volunteers table to be displayed to the user
+     * @return empty string   - probably indicates that more refactoring is needed
      */
     public String ViewMyVolunteersHelper() {
         String result = "";
-        
-        
-        ArrayList<Job> tempJobs = (ArrayList<Job>)mySystem.getMyJobs();
         ArrayList<Job> jobsForThisManager = new ArrayList<Job>();
-        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription"); //header of the table of volunteers
-        Integer counter = 1;
+        
         try {
-            for (Job tempJob : tempJobs ) {
-                if (tempJob.getMyJobManagerId() == myCurrentManager.getMyUserId()) {
-                    LocalDate tempDate = tempJob.getMyStartDate();
-                    System.out.printf("%d)\t%s\t%s\t%s\n", 
-                            counter,
-                            tempJob.getMyPark().getMyName(),    
-                            tempDate.toString(),
-                            //myFormat.format( tempJob.getMyStartDate() ),
-                            tempJob.getMyDescription());
-                    counter++;
-                    jobsForThisManager.add(tempJob);
-                    }
-                }
-            
+            jobsForThisManager = FindMyJobs(); //no guarantee of finding anything
+        
         } catch (NullPointerException e) {
             return "\nError: no jobs found for you\n";
         }
         
-        result+="\n\tEnter a Job number from above >";
-        System.out.printf(result);
+        Job tempJob = ChooseMyJob(jobsForThisManager);
         
-      //this is the most awful thing I have had to do in this entire project. This line right here.
-        Job tempJob = new Job(new Park());  
-        try {
-            Integer i;
-            String command = CommandLine.myScanner.nextLine();
-            i = Integer.valueOf(command) - 1;
-            if (i < jobsForThisManager.size() ) {
-                tempJob = jobsForThisManager.get(i);
-                
-            } else {
-                System.out.println("Not a valid job number.");
-                return "";
-            }
-                
-        } catch (Exception e){
-            e.printStackTrace();
+        //check if previous call was successful
+        if(tempJob == null){
+            return "";
         }
-        
-        ArrayList<Integer> IndexList = new ArrayList<Integer>();
-        IndexList = (ArrayList<Integer>)tempJob.getMyVolunteerList();
-        List<Volunteer> VolunteersList = (ArrayList<Volunteer>)mySystem.getMyVolunteers();
-        System.out.println("\tName\t\tPhone\t\tEmail");
-        Volunteer tempVol;
-        counter = 1;
-        for (Integer i : IndexList) {
-            tempVol = VolunteersList.get(i);
-            System.out.printf("%d) %s\t%s\t%s\n",
-                    counter,
-                    tempVol.getMyName(),
-                    tempVol.getMyPhone(),
-                    tempVol.getMyEmail() );
-            counter++;
-        }
+        List<Volunteer> VolunteersListForPrinting = GetVolunteersFromJob(tempJob);        
+        DisplayMyVolunteers(VolunteersListForPrinting);
 
         return "";
-        
-        
-        
+          
     }
+    
+    /**
+     * Accepts a Job from the manager, and returns all the volunteers associated with the job
+     * 
+     * @param theJob a Job that was chosen previously by the manager
+     * @return retVolunteers an array of Volunteers associated with this job
+     */
+    public List<Volunteer> GetVolunteersFromJob(Job theJob){
+        List<Volunteer> retVolunteers = new ArrayList<Volunteer>();
+        ArrayList<Integer> IndexList = new ArrayList<Integer>();
+        
+        //this list holds the IDs for the volunteers that need printing
+        IndexList = (ArrayList<Integer>)theJob.getMyVolunteerList(); 
+        
+        List<Volunteer> VolunteersList = (ArrayList<Volunteer>)mySystem.getMyVolunteers();
+        for (Integer i : IndexList) {
+            retVolunteers.add(VolunteersList.get(i));
+        }
+        return retVolunteers;
+    }
+    
+    /**
+     * Give the manager a list of his associated jobs to choose from
+     * 
+     * @param theJobs a list of jobs associated with this manager
+     * @return Job the job chosen by the manager 
+     */
+    public Job ChooseMyJob(ArrayList<Job> theJobs){
+        Job aJob = new Job(new Park() );
+        String result = "";
+        result+="\n\tEnter a Job number from above >";
+        System.out.printf(result);
+         
+        Integer i;
+        String command = CommandLine.myScanner.nextLine();
+        i = Integer.valueOf(command) - 1;
+        if (i < theJobs.size() ) {
+            aJob = theJobs.get(i);
+            
+        } else {
+            System.out.println("Not a valid job number.");
+            return aJob; //pass back an empty job
+        }
+            
+        return aJob;
+    }
+   
+    
+    /**
+     * Gets every job associated with the manager who is logged in
+     * 
+     * @return ArrayList<Job> the list of jobs associated with the View's manager
+     */
+    public ArrayList<Job> FindMyJobs(){
+        ArrayList<Job> tempJobs = (ArrayList<Job>)mySystem.getMyJobs();
+        ArrayList<Job> jobsForThisManager = new ArrayList<Job>();
+        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription"); //header of the table of jobs
+        Integer counter = 1;
+        
+            for (Job tempJob : tempJobs ) {
+                if (tempJob.getMyJobManagerId() == myCurrentManager.getMyUserId()) {
+                    LocalDate tempDate = tempJob.getMyStartDate();
+                    System.out.printf("%d)\t%s\t%s\t%s\n", 
+                        counter,
+                        tempJob.getMyPark().getMyName(),    
+                        tempDate.toString(),
+                        //myFormat.format( tempJob.getMyStartDate() ),
+                        tempJob.getMyDescription());
+                    counter++;
+                    jobsForThisManager.add(tempJob);
+                    
+                }
+                
+            }
+         return jobsForThisManager;
+    }
+    
+    
+    /**
+     * Prints a table of volunteers specifically for managers to see
+     * 
+     * @param theVolunteersList the volunteers intended for a manager to see
+     */
+    public void DisplayMyVolunteers(List<Volunteer> theVolunteersList) {
+        System.out.println("\tName\t\tPhone\t\tEmail");
+        int counter = 1;
+        for (Volunteer tempVol : theVolunteersList)
+        System.out.printf("%d) %s\t%s\t%s\n",
+                counter,
+                tempVol.getMyName(),
+                tempVol.getMyPhone(),
+                tempVol.getMyEmail() );
+    }
+    
     
     
     /***********************

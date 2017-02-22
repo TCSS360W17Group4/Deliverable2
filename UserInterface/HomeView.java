@@ -1,5 +1,6 @@
 package UserInterface;
 
+
 import model.AbstractController;
 import model.ParkManagerController;
 import model.ParksSystem;
@@ -56,7 +57,7 @@ public class HomeView {
             result+="\n";
             result+="\tExample input: 1 myname@myemail.com, or LOG arealemail@gmail.com\n";
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("LOG") ) {
-            AbstractController myController = (VolunteerController)mySystem.loginSuccessful(tokens[1]);
+            AbstractController myController = mySystem.loginSuccessful(tokens[1]);
             if (myController == null || myController.getMyUser() == null){
                 return "Login Failed, User not Found";
             }

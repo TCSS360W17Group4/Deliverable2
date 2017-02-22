@@ -1,9 +1,6 @@
 package model;
-/*
- * Stub for AbstractController
- * everyone feel free to use, fix, enhance, whatever 
- * 
- */ 
+
+ 
  
 
 import java.io.Serializable;
