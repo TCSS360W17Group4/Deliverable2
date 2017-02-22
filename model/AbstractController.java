@@ -32,9 +32,6 @@ public abstract class AbstractController implements Serializable {
         return myParkManagers;
     }
 
-    public List<UrbanParksStaff> getMyUrbanParksStaff() {
-        return myUrbanParksStaff;
-    }
 
     public JobController getMyJobController() {
         return myJobController;
@@ -42,7 +39,6 @@ public abstract class AbstractController implements Serializable {
 
     protected final List<Volunteer> myVolunteers;
     protected final List<ParkManager> myParkManagers;
-    protected final List<UrbanParksStaff> myUrbanParksStaff;
     protected final JobController myJobController;
     
     //should not get called explicitly, this exists to prevent compile errors
@@ -57,13 +53,11 @@ public abstract class AbstractController implements Serializable {
     */
     
     public AbstractController(AbstractUser theUser, 
-            List<Volunteer> theVolunteers, List<ParkManager> theParkManagers,
-            List<UrbanParksStaff> theUrbanParksStaff,
+            List<Volunteer> theVolunteers, List<ParkManager> theParkManagers,           
             JobController theJobController) {
         myUser = theUser;
         myVolunteers = theVolunteers;
         myParkManagers = theParkManagers;
-        myUrbanParksStaff = theUrbanParksStaff;
         myJobController = theJobController;
     }
     

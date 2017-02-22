@@ -8,8 +8,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
   JobControllerTest.class,
   ParksSystemTest.class,
-  VolunteerTest.class,
-  UrbanParksStaffControllerTest.class
+  VolunteerTest.class
 })
 
 public class UpTestSuite {

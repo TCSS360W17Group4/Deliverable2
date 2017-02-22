@@ -19,19 +19,17 @@ public class ParkManagerView {
 	//private  Scanner myScanner;
 	private JobController myJobController;
 	private  List<Job>myParkSystemJobs;
-	private List<Volunteer>myParksSystemVolunteer;
 	private ParkManager myCurrentManager;
 	private Scanner myReader;
 
-	public ParkManagerView(ParkManager theManager, List<Volunteer>theVolunteers, List<Job> theJobs) {
-		myParkSystemJobs = theJobs;
-		myParksSystemVolunteer = theVolunteers;
-		myCurrentManager = theManager;
-		//init initial page for this user
-		myJobController = new JobController(mySystem.getMyJobs());
-		myReader = new Scanner(System.in);
-		//initManagerHomeView(theManager);
-	}
+//	public ParkManagerView(ParkManager theManager, List<Volunteer>theVolunteers, List<Job> theJobs) {
+//		myParkSystemJobs = theJobs;
+//		myCurrentManager = theManager;
+//		//init initial page for this user
+//		myJobController = new JobController(mySystem.getMyJobs());
+//		myReader = new Scanner(System.in);
+//		//initManagerHomeView(theManager);
+//	}
 	
 	public ParkManagerView(ParksSystem theSystem, ParkManagerController theParkManagerController){
 	    mySystem = theSystem;
@@ -41,14 +39,19 @@ public class ParkManagerView {
 		myParkSystemJobs = mySystem.getMyJobs();
 	}
 	
+	
+	/************************************
+     * Methods for submitting a new job
+     *********************************/
+	
 	//I don't think this does anything -chris
-	/*private void initManagerHomeView(ParkManager theManager){
+	private void initManagerHomeView(ParkManager theManager){
 		
 		System.out.println("Welcome to Urban Parks");
 		//todays date ...manager name ...logged in as Manager
 		//what would you like to do? show options 
 		
-			if(myJobController.isNewJobAccepted(myParkSystemJobs)) {
+			if(myJobController.isNewJobAccepted()) {
 				//print menu with submit job
 			} else {
 				//show menu without submit job
@@ -58,14 +61,18 @@ public class ParkManagerView {
 		//display return option and exit
 	}
 	
-	
+	/**
+     * This needs to be documented by Dereje
+     */
 	public void myVolunteersMenuView() {
 		StringBuilder menuOptions = new StringBuilder();
 		//getVolunteersByManagerId()
 		menuOptions.append("Your current volunteers list");
 		
-	}*/
-	
+	}
+	/**
+	 * This needs to be documented by Dereje
+	 */
 	public void sumbitJobView(){
 		//park name and city, job manager id
 		Job newJob = null;
@@ -99,7 +106,9 @@ public class ParkManagerView {
 		
 		
 	}
-	
+    /**
+     * This needs to be documented by Dereje
+     */
 	public boolean acceptDateView(Job theJob) {
 
 		System.out.println("Enter dates between " + LocalDate.now() + " and " + LocalDate.now().plusDays(30)+" inclusive");
@@ -107,7 +116,7 @@ public class ParkManagerView {
 		for (int retries = 0;retries < 3; retries++) {
 		
 		    	String line = myReader.nextLine();
-		    	if(!myJobController.isStartDateAdded(line, theJob, myParkSystemJobs)) {
+		    	if(!myJobController.isStartDateAdded(line, theJob)) {
 		    		System.out.println("Please enter again");
 		    		continue;
 		    	} else {
@@ -129,7 +138,7 @@ public class ParkManagerView {
 			int jobDuration = myReader.nextInt();
 			myReader.nextLine();//consume newline break
 			
-	    	if(!myJobController.isEndDateAdded(jobDuration, theJob, myParkSystemJobs)) {
+	    	if(!myJobController.isEndDateAdded(jobDuration, theJob)) {
 	    		System.out.println("Enter again");
 	    		continue;
 	    	} else {
@@ -227,91 +236,47 @@ public class ParkManagerView {
 			return false;
 		}
 	}
-    public void run() {
+	
+	
+	
+	/*********************************************
+     * Methods for Managers to view list of Volunteers
+     *********************************************/
+    
+    
+    
+    /**
+     * This method used to look much different. Now it is kind of silly. Needs refactoring
+     * 
+     * @return string of volunteers table to be displayed to the user
+     */
+    public String ViewMyVolunteers() {
         String result = "";
-        String command;
 
-        result = ProcessInput("HELP");
         System.out.println(result + "\n");
-        do
-        {
-            System.out.printf("Enter a Command >");
-            command = CommandLine.myScanner.nextLine();
-            result = ProcessInput(command);
-            System.out.println(result + "\n");
-            
-        } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
-        
-        
-    }
-    
-
-    public String ProcessInput(String theString) {
-        String[] tokens = theString.split(" ");
-        String result = "";
-        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
-            System.out.printf("\tWelcome, Park Manager %s\n",myCurrentManager.getMyName());
-            result="\t-------------------\n";
-            result+="\t1 Submit a new Job (NEW) \n";
-            result+="\t2 Search Jobs\t\t(JOB) \n";
-            result+="\t3 View My Upcoming Jobs\t(PND) \n";
-            result+="\t4 View my Volunteers\t(VOL) \n";
-            result+="\tHELP(H)\n";
-            result+="\tQUIT(Q)\n";
-        
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
-            //do the user story routine
-        	sumbitJobView();
-        } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOB") ) {
-            //not implemented
-            
-        } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("PND") ) {
-            //not implemented
-            
-        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("VOL") ) {
-            result += ViewMyVolunteers();
-            
-        } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
-            mySystem.logout();
-            result += "Logging Out";
-            
-        } else {
-            result += "Unrecognized Command";
-            
-        }
-        
-        return result;
-    }
-    
-    
-    
-    //heavily modified version of other UI loops
-    public String ViewMyVolunteers(){
-        String result = "";
-        String command = "";
-
-        //result = ViewMyVolunteersHelper("HELP");
-        System.out.println(result + "\n");
-        result = ViewMyVolunteersHelper(command);
+        result = ViewMyVolunteersHelper();
         System.out.println(result + "\n");
         
-         if (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) ) {
-             //we have a number from before, get the volunteers based on this number
+         if (!( result.equalsIgnoreCase("QUIT") || result.equalsIgnoreCase("Q") ) ) {
+             //catches the case where manager does not want to continue looking for his volunteers
          }
         
         return result;
     }
 	
     
-    //This is the second most awful thing I have had to do in this entire project
-    public String ViewMyVolunteersHelper(String theString) {
+    /**
+     * This needs refactoring into sub-problems badly
+     * 
+     * @return string of volunteers table to be displayed to the user
+     */
+    public String ViewMyVolunteersHelper() {
         String result = "";
         
-        String[] tokens = theString.split(" ");
         
         ArrayList<Job> tempJobs = (ArrayList<Job>)mySystem.getMyJobs();
         ArrayList<Job> jobsForThisManager = new ArrayList<Job>();
-        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription");
+        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription"); //header of the table of volunteers
         Integer counter = 1;
         try {
             for (Job tempJob : tempJobs ) {
@@ -374,6 +339,75 @@ public class ParkManagerView {
         
         
     }
+    
+    
+    /***********************
+     * Menu methods for Managers
+     *******************/
+    
+    /**
+     * I/O Interaction with Park Manager type users
+     */
+    public void run() {
+        String result = "";
+        String command;
+
+        result = ProcessInput("HELP");
+        System.out.println(result + "\n");
+        do
+        {
+            System.out.printf("Enter a Command >");
+            command = CommandLine.myScanner.nextLine();
+            result = ProcessInput(command);
+            System.out.println(result + "\n");
+            
+        } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
+        
+        
+    }
+    
+    /**
+     * 
+     * @param theString command entered by the user that needs interpreting and executing
+     * @return a string to be displayed to the user so that he can know what has happened
+     */
+    public String ProcessInput(String theString) {
+        String[] tokens = theString.split(" ");
+        String result = "";
+        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
+            System.out.printf("\tWelcome, Park Manager %s\n",myCurrentManager.getMyName());
+            result="\t-------------------\n";
+            result+="\t1 Submit a new Job (NEW) \n";
+            result+="\t2 Search Jobs\t\t(JOB) \n";
+            result+="\t3 View My Upcoming Jobs\t(PND) \n";
+            result+="\t4 View my Volunteers\t(VOL) \n";
+            result+="\tHELP(H)\n";
+            result+="\tQUIT(Q)\n";
+        
+        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
+            //do the user story routine
+            sumbitJobView();
+        } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOB") ) {
+            //not implemented
+            
+        } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("PND") ) {
+            //not implemented
+            
+        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("VOL") ) {
+            result += ViewMyVolunteers();
+            
+        } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
+            mySystem.logout();
+            result += "Logging Out";
+            
+        } else {
+            result += "Unrecognized Command";
+            
+        }
+        
+        return result;
+    }
+    
     
 
 }

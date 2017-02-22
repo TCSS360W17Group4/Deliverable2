@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +19,17 @@ public class DataRunner {
 	private static List<Job> myJobs;
 	private static List<Volunteer> myVolunteers;
 	private static List<ParkManager> myParkManagers;
-	private static List<UrbanParksStaff> myUrbanStaff;
+	//private static List<UrbanParksStaff> myUrbanStaff;
 	public static void main(String[] args) {
 		 myJobs = new ArrayList<Job>();
 		 myVolunteers = new ArrayList<Volunteer>();
 		    myParkManagers = new ArrayList<ParkManager>();
-		    myUrbanStaff = new ArrayList<UrbanParksStaff>();
+		    //myUrbanStaff = new ArrayList<UrbanParksStaff>();
 		  
 		
 		ParksSystem uParks = new ParksSystem();
-		//urban parks--total 2																																					
+		//urban parks--total 2	
+		/*
 		UrbanParksStaff ub0 = new UrbanParksStaff();
 		ub0.setMyAddress("61st Ave Smith St.");ub0.setMyEmail("jerry0@up.com");ub0.setMyName("Justin Frazier");ub0.setMyPhone("(747)111-6643");ub0.setMyType(UserType.Staff);ub0.setMyUserId(0);ub0.setMyUserName("stf0");
 		
@@ -39,10 +39,12 @@ public class DataRunner {
 		/*
 		 * add Urban staff to the arraylist
 		 */
-
+		/*
 		myUrbanStaff.add(ub0);myUrbanStaff.add(ub1);
 		
 		uParks.setMyUrbanStaff(myUrbanStaff);
+		
+		*/
 		//parks total 4
 		Park p0 = new Park();p0.setMyCity("Seattle");p0.setMyManagerId(0);p0.setMyName("Alki Beach and Park");p0.setMyParkId(0);
 		Park p1 = new Park();p1.setMyCity("Renton");p1.setMyManagerId(2);p1.setMyName("Gene Coulon memorial Beach Park");p1.setMyParkId(1);

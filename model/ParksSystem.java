@@ -19,7 +19,6 @@ public class ParksSystem implements Serializable{
 	private  List<Job> myJobs;
 	private  List<Volunteer> myVolunteers;
 	private  List<ParkManager> myParkManagers;
-	private  List<UrbanParksStaff> myUrbanStaff;
 	
 	
 	private JobController myJobController;
@@ -30,7 +29,6 @@ public class ParksSystem implements Serializable{
 	    myJobs = new ArrayList<Job>();
 	    myVolunteers = new ArrayList<Volunteer>();
 	    myParkManagers = new ArrayList<ParkManager>();
-	    myUrbanStaff = new ArrayList<UrbanParksStaff>();
 	    myJobController = new JobController(myJobs);
 	    ///myUserController = new AbstractController();
 	}
@@ -112,7 +110,7 @@ public class ParksSystem implements Serializable{
 		 		if (myVolunteers.get(theVolunteerId).getMyBlackballStatus() || 
 		 		        volunteerHasTheJob(theVolunteerId,theJobId) || 
 		 				myJobController.isSignUpDayPassed(myJobs.get(theJobId)) || 
-		 				JobController.isJobFullForSignUp(myJobs.get(theJobId))) {
+		 				myJobController.isJobFullForSignUp(myJobs.get(theJobId))) {
 		 			//already volunteered or sign up date passed(BR.6C) or full or blackball(6B)
 		 		    return false;
 		 		    
@@ -150,7 +148,7 @@ public class ParksSystem implements Serializable{
 					//job is not full and signing up day not passed and 
 					//the volunteer does not have the job
 					if(!myJobController.isSignUpDayPassed(jobChecked) &&
-							!JobController.isJobFullForSignUp(jobChecked) &&
+							!myJobController.isJobFullForSignUp(jobChecked) &&
 							!volunteerHasTheJob(theVolunteerId, jobChecked.getMyJobId())) {
 						//add it to pending
 						pendingJobs.add(jobChecked);
@@ -306,7 +304,6 @@ public class ParksSystem implements Serializable{
 			        (Volunteer)myCurrentUser, 
 		            myVolunteers, 
 		            myParkManagers, 
-		            myUrbanStaff, 
 		            myJobController);
 		    
 		} else if(userType.equals(UserType.Manager.getMyType())
@@ -317,22 +314,9 @@ public class ParksSystem implements Serializable{
 		            (ParkManager)myCurrentUser, 
                     myVolunteers, 
                     myParkManagers, 
-                    myUrbanStaff, 
                     myJobController);
              
-		} else if (userType.equals(UserType.Staff.getMyType()) 
-				&& id < myUrbanStaff.size()
-				&& myUrbanStaff.contains(myUrbanStaff.get(id)) ) {
-		    myCurrentUser = myUrbanStaff.get(id);
-		    myUserController = new UrbanParksStaffController(
-                    (UrbanParksStaff)myCurrentUser, 
-                    myVolunteers, 
-                    myParkManagers, 
-                    myUrbanStaff, 
-                    myJobController, 
-                    myJobs /*whatever*/);               
-	    	
-		 } else {
+		} else {
 		     //I think we already have a 'else' block that prevents this block from ever being reached
 		     return myUserController;
 		 }
@@ -396,11 +380,6 @@ public class ParksSystem implements Serializable{
 		
 	}
 
-	public List<UrbanParksStaff> getMyUrbanStaff() {
-		return myUrbanStaff;
-		
-	}
-
 	public List<Job> getMyJobs() {
 		return myJobs;
 	}
@@ -408,12 +387,10 @@ public class ParksSystem implements Serializable{
 	public void setMyJobs(List<Job> theJobs) {
 		this.myJobs = theJobs;
 	}
-
-	public void setMyUrbanStaff(List<UrbanParksStaff> theUrbanStaff) {
-		this.myUrbanStaff = theUrbanStaff;
-		
-	}
-
+	
+	/**
+	 * For a logout method, we need to clear the user that was chosen for the Controller. 
+	 */
 	public void logout() {
 		//explicitly set to null for logout
 	    myCurrentUser = null;
