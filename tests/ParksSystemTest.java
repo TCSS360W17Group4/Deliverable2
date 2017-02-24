@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import model.ParkManager;
 import model.ParksSystem;
+
 import model.Volunteer;
 public class ParksSystemTest {
 
@@ -46,7 +47,13 @@ public class ParksSystemTest {
 		String nonExistantMgr = "mgr2";
 		uSystem.setMyParkManagers(myParkManagers);
 		
-
+		//Urban Parks
+//		List<UrbanParksStaff> myUrbanParks = new ArrayList<>();
+//		UrbanParksStaff stfTwo = new UrbanParksStaff();
+//		stfTwo.setMyUserName("sft0");
+//		myUrbanParks.add(0,stfTwo);
+//		String nonExistantStf = "stf1";
+//		uSystem.setMyUrbanStaff(myUrbanParks);
 		
 //		assertTrue("login failed with valid username",uSystem.loginSuccessful("vol0"));
 //		assertFalse("login failed with valid username",uSystem.loginSuccessful(nonExistantVol));

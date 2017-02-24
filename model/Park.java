@@ -49,9 +49,4 @@ public class Park implements Serializable{
 	public void setMyManagerId(int theManagerId) {
 		this.myManagerId = theManagerId;
 	}
-	
-	public String toString() {
-		return "Park Name: " + getMyName() + " Park City:" + getMyCity();
-		
-	}
 }

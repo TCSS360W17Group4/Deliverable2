@@ -1,122 +1,123 @@
 package UserInterface;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import model.AbstractUser;
 import model.Job;
 import model.JobController;
-import model.Park;
 import model.ParkManager;
 import model.ParkManagerController;
-import model.ParksSystem;
 import model.Volunteer;
 
-public class ParkManagerView {
-	
-	private ParksSystem mySystem;
-	//private  Scanner myScanner;
-	private JobController myJobController;
-	private  List<Job>myParkSystemJobs;
-	private ParkManager myCurrentManager;
-	private Scanner myReader;
 
-//	public ParkManagerView(ParkManager theManager, List<Volunteer>theVolunteers, List<Job> theJobs) {
-//		myParkSystemJobs = theJobs;
-//		myCurrentManager = theManager;
-//		//init initial page for this user
-//		myJobController = new JobController(mySystem.getMyJobs());
-//		myReader = new Scanner(System.in);
-//		//initManagerHomeView(theManager);
-//	}
+public class ParkManagerView extends HomeView{
 	
-	public ParkManagerView(ParksSystem theSystem, ParkManagerController theParkManagerController){
-	    mySystem = theSystem;
-	    myCurrentManager = (ParkManager) theParkManagerController.getMyUser();
-	    myJobController = new JobController(mySystem.getMyJobs());
-		myReader = new Scanner(System.in);
-		myParkSystemJobs = mySystem.getMyJobs();
+	private  ParkManager myManager;
+	private  JobController jobValidator;
+	private  ParkManagerController myController;
+	private Scanner myReader;
+	//private boolean isLogoutChoosen;
+	private boolean isReturnChoosen;
+	
+	public ParkManagerView(ParkManagerController theController, JobController theJobValidator, ParkManager theUser){
+		super();
+		this.myManager = theUser;
+		this.jobValidator = theJobValidator;
+		this.myController = theController;
+		//isLogoutChoosen = false;
+		isReturnChoosen = false;
 	}
 	
-	
-	/************************************
-     * Methods for submitting a new job
-     *********************************/
-	
-	//I don't think this does anything -chris
-	private void initManagerHomeView(ParkManager theManager){
-		
-		System.out.println("Welcome to Urban Parks");
-		//todays date ...manager name ...logged in as Manager
-		//what would you like to do? show options 
-		
-			if(myJobController.isNewJobAccepted()) {
-				//print menu with submit job
-			} else {
-				//show menu without submit job
-			}
-			//read line
-		//call the actions depending on the choice
-		//display return option and exit
-	}
-	
-	/**
-     * This needs to be documented by Dereje
-     */
-	public void myVolunteersMenuView() {
-		StringBuilder menuOptions = new StringBuilder();
-		//getVolunteersByManagerId()
-		menuOptions.append("Your current volunteers list");
-		
-	}
-	/**
-	 * This needs to be documented by Dereje
-	 */
-	public void sumbitJobView(){
-		//park name and city, job manager id
-		Job newJob = null;
-		Park thePark = null;
-		
-		if(myCurrentManager.getMyParks().size() == 1){
-			thePark = myJobController.getMySinglePark(myCurrentManager);
-			newJob = new Job(thePark);
-			newJob.setMyPark(thePark);
-			System.out.println(thePark.toString());
-		
+
+	public void initHome(Scanner theScanner){
+
+		myReader = theScanner;
+		StringBuilder managerMenu = new StringBuilder();
+		managerMenu.append("Welcome " + myManager.getMyName() + " \n");
+		managerMenu.append("Choose the command option, and press enter:\n");
+		if(myController.isNewJobAccepted()) {
+			managerMenu.append("s Submit a job\n");
+			managerMenu.append("v View Volunteers\n");
+			managerMenu.append("l logout");
 		} else {
-			System.out.println("Enter 1: for " + myCurrentManager.getMyParks().get(0)
-					+ " enter 2 for " + myCurrentManager.getMyParks().get(0));
-			int userChoice = myReader.nextInt();
+			managerMenu.append("We are not accepting new job currently\n");
+			managerMenu.append("v View my Jobs\n");
+			//show the jobs already created and 1 option
+			managerMenu.append("l logout");
+		}
+		System.out.println(managerMenu);
+		String userChoice = myReader.nextLine();
+		
+	
+		showChoosenCommand(userChoice);
+	}
+
+	public void showChoosenCommand(String userInput) {
+		//System.out.println(userInput.equalsIgnoreCase(userInput));
+		if(userInput.equalsIgnoreCase("s")) {
+			sumbitJobView();
 			
-			thePark = myJobController.pickAPark(myCurrentManager, userChoice);
-			newJob = new Job(thePark);
-			newJob.setMyJobManagerId(myCurrentManager.getMyUserId());
-			thePark.toString();
+			exitOrReturnView();
+	
+		}  else if(userInput.equalsIgnoreCase("l")) {
+			myController.logout();
+		} else if (userInput.equalsIgnoreCase("v")) {
 			
-			
+			viewManagerJobs();
+			exitOrReturnView();
+		}
+	}
+	
+	public void exitOrReturnView() {
+		
+		StringBuilder exitString = new StringBuilder();
+		exitString.append("What would you like to do?\n");
+		exitString.append("r Return to prior menu\n");
+		exitString.append("l Logout");
+		
+		System.out.println(exitString);
+		String userInput = myReader.nextLine();
+		if (userInput.equalsIgnoreCase("l")) {
+			myController.logout();
+		} else if(userInput.equalsIgnoreCase("r")) {
+			initHome(myReader);
 		}
 		
+		
+	}
+	//??after completion update controller joblist, and create new jobValidator for new pha
+	public void sumbitJobView(){
+		//park name and city, job manager id
+		
+		if(!jobValidator.isParkAdded()){
+			System.out.println("Enter 1: for " + myManager.getMyParks().get(0)
+					+ " enter 2 for " + myManager.getMyParks().get(0));
+			int userChoice = myReader.nextInt();
+			
+			jobValidator.pickAPark(userChoice);
+		
+		} 
+		
 		//assume initial view is solid
-		acceptDateView(newJob);
-		acceptEndDateView(newJob);
-		acceptDescriptionView(newJob);
-		acceptNumOfVolunteers(newJob);
-		confirmSubmitView(newJob);
+		acceptDateView();
+		acceptEndDateView();
+		acceptDescriptionView();
+		acceptNumOfVolunteers();
+		confirmSubmitView();
 		
 		
 	}
-    /**
-     * This needs to be documented by Dereje
-     */
-	public boolean acceptDateView(Job theJob) {
+	
+	public boolean acceptDateView() {
 
 		System.out.println("Enter dates between " + LocalDate.now() + " and " + LocalDate.now().plusDays(30)+" inclusive");
 		System.out.println("Enter Start date(format MM/dd/yy Eg: 2/10/17 same as Feb 10, 2017");
 		for (int retries = 0;retries < 3; retries++) {
 		
-		    	String line = myReader.nextLine();
-		    	if(!myJobController.isStartDateAdded(line, theJob)) {
+		    	String date = myReader.nextLine();
+		    	if(!jobValidator.isStartDateAdded(date)) {
 		    		System.out.println("Please enter again");
 		    		continue;
 		    	} else {
@@ -130,7 +131,7 @@ public class ParkManagerView {
 		return false;
 	}
 	
-	public boolean acceptEndDateView(Job theJob) {
+	public boolean acceptEndDateView() {
 		System.out.println("Enter job duration: 1 or 2");
 		
 		for (int retries = 0;retries < 3; retries++) {
@@ -138,7 +139,7 @@ public class ParkManagerView {
 			int jobDuration = myReader.nextInt();
 			myReader.nextLine();//consume newline break
 			
-	    	if(!myJobController.isEndDateAdded(jobDuration, theJob)) {
+	    	if(!jobValidator.isEndDateAdded(jobDuration)) {
 	    		System.out.println("Enter again");
 	    		continue;
 	    	} else {
@@ -152,14 +153,14 @@ public class ParkManagerView {
 		return false;
 	}
 
-	public boolean acceptDescriptionView(Job theJob) {
+	public boolean acceptDescriptionView() {
 		System.out.println("Enter job Description:");
 		
 		for (int retries = 0;retries < 3; retries++) {
 			
 			String jobDescription = myReader.nextLine();
 
-	    	if(!myJobController.isJobDescriptionAdded(theJob, jobDescription)) {
+	    	if(!jobValidator.isJobDescriptionAdded(jobDescription)) {
 	    		System.out.println("Enter again");
 	    		continue;
 	    	} else {
@@ -173,7 +174,7 @@ public class ParkManagerView {
 		return false;
 	}
 
-	public boolean acceptNumOfVolunteers(Job theJob) {
+	public boolean acceptNumOfVolunteers() {
 		//not complete
 		boolean allNumAdded = false;
 		System.out.println("Enter max volunteers for each category: Total less than 30");
@@ -183,7 +184,7 @@ public class ParkManagerView {
 		for (int retries = 0;retries < 3; retries++) {
 			System.out.println("Light: ");
 			int light = myReader.nextInt();
-			if(!myJobController.isMaxLightVolNumberValid(theJob, light)) {
+			if(!jobValidator.isMaxLightVolNumberValid(light)) {
 				System.out.println("Enter valid number again");
 	    		continue;
 			} else {
@@ -197,7 +198,7 @@ public class ParkManagerView {
 			System.out.println("Medium: ");
 			int med = myReader.nextInt();
 			
-			if(!myJobController.isMaxMediumVolNumValid(theJob, med)) {
+			if(!jobValidator.isMaxMediumVolNumValid(med)) {
 				System.out.println("Enter valid number again");
 	    		continue;
 			} else {
@@ -211,7 +212,7 @@ public class ParkManagerView {
 			System.out.println("Heavy: ");
 			int heavy = myReader.nextInt();
 			myReader.nextLine();
-			if(!myJobController.isMaxHeavyVolNumValid(theJob, heavy)) {
+			if(!jobValidator.isMaxHeavyVolNumValid(heavy)) {
 				System.out.println("Enter valid number again");
 	    		continue;
 			} else {
@@ -224,190 +225,39 @@ public class ParkManagerView {
 	}
 	
 	
-	public boolean confirmSubmitView(Job theJob) {
-		
-		System.out.println("Enter Y to submit the job or Enter N to cancel submission");
+	public boolean confirmSubmitView() {
+		boolean jobSubSuccess = false;
+		System.out.println("Enter y/n to accept or reject the job submission");
 		
 		String userConfirmation = myReader.nextLine();
 		if(userConfirmation.equalsIgnoreCase("Y")) {
-			myJobController.addJob(theJob, myParkSystemJobs);
-			return true;
+			jobValidator.addJob();
+			jobSubSuccess = true;
 		} else {
-			return false;
+			jobSubSuccess = false;
 		}
+		//clean it for new job Validation
+		jobValidator = new JobController(new Job(null), myController.getJobs(),myManager);
+		return jobSubSuccess;
 	}
 	
-	
-	
-	/*********************************************
-     * Methods for Managers to view list of Volunteers
-     *********************************************/
-    
-    
-    
-    /**
-     * This method used to look much different. Now it is kind of silly. Needs refactoring
-     * 
-     * @return string of volunteers table to be displayed to the user
-     */
-    public String ViewMyVolunteers() {
-        String result = "";
-
-        System.out.println(result + "\n");
-        result = ViewMyVolunteersHelper();
-        System.out.println(result + "\n");
-        
-         if (!( result.equalsIgnoreCase("QUIT") || result.equalsIgnoreCase("Q") ) ) {
-             //catches the case where manager does not want to continue looking for his volunteers
-         }
-        
-        return result;
-    }
-	
-    
-    /**
-     * This needs refactoring into sub-problems badly
-     * 
-     * @return string of volunteers table to be displayed to the user
-     */
-    public String ViewMyVolunteersHelper() {
-        String result = "";
-        
-        
-        ArrayList<Job> tempJobs = (ArrayList<Job>)mySystem.getMyJobs();
-        ArrayList<Job> jobsForThisManager = new ArrayList<Job>();
-        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription"); //header of the table of volunteers
-        Integer counter = 1;
-        try {
-            for (Job tempJob : tempJobs ) {
-                if (tempJob.getMyJobManagerId() == myCurrentManager.getMyUserId()) {
-                    LocalDate tempDate = tempJob.getMyStartDate();
-                    System.out.printf("%d)\t%s\t%s\t%s\n", 
-                            counter,
-                            tempJob.getMyPark().getMyName(),    
-                            tempDate.toString(),
-                            //myFormat.format( tempJob.getMyStartDate() ),
-                            tempJob.getMyDescription());
-                    counter++;
-                    jobsForThisManager.add(tempJob);
-                    }
-                }
-            
-        } catch (NullPointerException e) {
-            return "\nError: no jobs found for you\n";
-        }
-        
-        result+="\n\tEnter a Job number from above >";
-        System.out.printf(result);
-        
-      //this is the most awful thing I have had to do in this entire project. This line right here.
-        Job tempJob = new Job(new Park());  
-        try {
-            Integer i;
-            String command = CommandLine.myScanner.nextLine();
-            i = Integer.valueOf(command) - 1;
-            if (i < jobsForThisManager.size() ) {
-                tempJob = jobsForThisManager.get(i);
-                
-            } else {
-                System.out.println("Not a valid job number.");
-                return "";
-            }
-                
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        
-        ArrayList<Integer> IndexList = new ArrayList<Integer>();
-        IndexList = (ArrayList<Integer>)tempJob.getMyVolunteerList();
-        List<Volunteer> VolunteersList = (ArrayList<Volunteer>)mySystem.getMyVolunteers();
-        System.out.println("\tName\t\tPhone\t\tEmail");
-        Volunteer tempVol;
-        counter = 1;
-        for (Integer i : IndexList) {
-            tempVol = VolunteersList.get(i);
-            System.out.printf("%d) %s\t%s\t%s\n",
-                    counter,
-                    tempVol.getMyName(),
-                    tempVol.getMyPhone(),
-                    tempVol.getMyEmail() );
-            counter++;
-        }
-
-        return "";
-        
-        
-        
-    }
-    
-    
-    /***********************
-     * Menu methods for Managers
-     *******************/
-    
-    /**
-     * I/O Interaction with Park Manager type users
-     */
-    public void run() {
-        String result = "";
-        String command;
-
-        result = ProcessInput("HELP");
-        System.out.println(result + "\n");
-        do
-        {
-            System.out.printf("Enter a Command >");
-            command = CommandLine.myScanner.nextLine();
-            result = ProcessInput(command);
-            System.out.println(result + "\n");
-            
-        } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
-        
-        
-    }
-    
-    /**
-     * 
-     * @param theString command entered by the user that needs interpreting and executing
-     * @return a string to be displayed to the user so that he can know what has happened
-     */
-    public String ProcessInput(String theString) {
-        String[] tokens = theString.split(" ");
-        String result = "";
-        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
-            System.out.printf("\tWelcome, Park Manager %s\n",myCurrentManager.getMyName());
-            result="\t-------------------\n";
-            result+="\t1 Submit a new Job (NEW) \n";
-            result+="\t2 Search Jobs\t\t(JOB) \n";
-            result+="\t3 View My Upcoming Jobs\t(PND) \n";
-            result+="\t4 View my Volunteers\t(VOL) \n";
-            result+="\tHELP(H)\n";
-            result+="\tQUIT(Q)\n";
-        
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
-            //do the user story routine
-            sumbitJobView();
-        } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("JOB") ) {
-            //not implemented
-            
-        } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("PND") ) {
-            //not implemented
-            
-        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("VOL") ) {
-            result += ViewMyVolunteers();
-            
-        } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
-            mySystem.logout();
-            result += "Logging Out";
-            
-        } else {
-            result += "Unrecognized Command";
-            
-        }
-        
-        return result;
-    }
-    
-    
-
+	public void viewManagerJobs(){
+		List<Job>managerJobs = myController.getJobsByManagerId();
+		StringBuilder managerJobsString = new StringBuilder();
+		managerJobsString.append("Job Id-----Job Description-------Start Date-------End Date-----Current Volunters # \n");
+		String shortDescription = "";
+		for(int i = 0; i < managerJobs.size(); i++) {
+			if(!(managerJobs.get(i).getMyDescription().length() < 20)){
+				shortDescription = managerJobs.get(i).getMyDescription().substring(0, 20);
+			} else {
+				 shortDescription = managerJobs.get(i).getMyDescription();
+			}
+			managerJobsString.append(managerJobs.get(i).getMyJobId() +" ------------ " + shortDescription + "------" +
+		         managerJobs.get(i).getMyStartDate()+ " ------- "+ managerJobs.get(i).getMyEndDate()+" ----- "
+					+ managerJobs.get(i).getMyCurrentTotalVolunteers() + " \n");
+			
+		}
+		System.out.println(managerJobsString);
+		
+	}
 }

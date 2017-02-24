@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,32 +20,18 @@ public class DataRunner {
 	private static List<Job> myJobs;
 	private static List<Volunteer> myVolunteers;
 	private static List<ParkManager> myParkManagers;
-	//private static List<UrbanParksStaff> myUrbanStaff;
+
 	public static void main(String[] args) {
 		 myJobs = new ArrayList<Job>();
 		 myVolunteers = new ArrayList<Volunteer>();
 		    myParkManagers = new ArrayList<ParkManager>();
-		    //myUrbanStaff = new ArrayList<UrbanParksStaff>();
+	
 		  
 		
 		ParksSystem uParks = new ParksSystem();
-		//urban parks--total 2	
-		/*
-		UrbanParksStaff ub0 = new UrbanParksStaff();
-		ub0.setMyAddress("61st Ave Smith St.");ub0.setMyEmail("jerry0@up.com");ub0.setMyName("Justin Frazier");ub0.setMyPhone("(747)111-6643");ub0.setMyType(UserType.Staff);ub0.setMyUserId(0);ub0.setMyUserName("stf0");
+	
 		
-		UrbanParksStaff ub1 = new UrbanParksStaff();
-		ub1.setMyAddress("Lakeside Blv. S");ub1.setMyEmail("jerry0@up.com");ub1.setMyName("Eugene Henryr");ub1.setMyPhone("(220)491-535");ub1.setMyType(UserType.Staff);ub1.setMyUserId(1);ub1.setMyUserName("stf1");
-		
-		/*
-		 * add Urban staff to the arraylist
-		 */
-		/*
-		myUrbanStaff.add(ub0);myUrbanStaff.add(ub1);
-		
-		uParks.setMyUrbanStaff(myUrbanStaff);
-		
-		*/
+
 		//parks total 4
 		Park p0 = new Park();p0.setMyCity("Seattle");p0.setMyManagerId(0);p0.setMyName("Alki Beach and Park");p0.setMyParkId(0);
 		Park p1 = new Park();p1.setMyCity("Renton");p1.setMyManagerId(2);p1.setMyName("Gene Coulon memorial Beach Park");p1.setMyParkId(1);
@@ -61,7 +48,7 @@ public class DataRunner {
 		ParkManager pm1 = new ParkManager();
 		List<Park> pm1Parks = new ArrayList<>();
 		pm1Parks.add(p2);
-        pm1.setMyAddress("63321 S West James St.");pm1.setMyEmail("charles1@angel.com");;pm1.setMyName("Charles J. Riley");pm1.setMyPhone("111-222-4444");pm1.setMyType(UserType.Manager);pm1.setMyUserId(1);pm1.setMyUserName("mgr1");pm1.setMyParks(pm1Parks);
+        pm1.setMyAddress("63321 S West James St.");pm1.setMyEmail("charles1@angel.com");pm1.setMyName("Charles J. Riley");pm1.setMyPhone("111-222-4444");pm1.setMyType(UserType.Manager);pm1.setMyUserId(1);pm1.setMyUserName("mgr1");pm1.setMyParks(pm1Parks);
         
 		ParkManager pm2 = new ParkManager();
 		List<Park> pm2Parks = new ArrayList<>();
