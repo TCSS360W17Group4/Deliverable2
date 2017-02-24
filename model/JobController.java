@@ -20,15 +20,15 @@ import java.util.Locale;
 public class JobController implements Serializable{
 
 	
-	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 30;
-	private static final int MAX_NUM_VOLUNTEERS_PER_JOB = 30;
+	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 20;
+	private static final int MAX_NUM_VOLUNTEERS_PER_JOB = 10;
 	private static final int MAX_DAYS_FOR_FUTURE_JOB_DATE = 30;
 	private static final int MAX_JOB_LENGTH_IN_DAYS = 2;
 	private static final int MAX_JOBS_PER_DAY_PER_MANAGER = 2;
 	private static final int MIN_JOB_POST_DAY_LENGTH = 3; 
 	private static final int ONE_DAY_OFFSET = 1;
 	private int myMaxNumberOfPendingJobs ;
-	private static List<Job> myJobsList;
+	private List<Job> myJobsList;
 	
 	/**
 	 * 
@@ -37,10 +37,10 @@ public class JobController implements Serializable{
 		this.myMaxNumberOfPendingJobs = DEFAULT_MAX_NUM_PENDING_JOBS;
 		myJobsList = new ArrayList<Job>();
 	}
-	   
+	   //currently in use with refactoring 
 	public JobController(List<Job> theJobs) {
 	    this.myMaxNumberOfPendingJobs = DEFAULT_MAX_NUM_PENDING_JOBS;
-	    JobController.myJobsList = theJobs;
+	    this.myJobsList = theJobs;
 	    
 	}
 	
@@ -68,8 +68,8 @@ public class JobController implements Serializable{
 	 * @return true if job if new job is allowed
 	 */
 	 //new jobs not accepted BR: 2A
-	 public boolean isNewJobAccepted(List<Job> theJobs) {
-		 List<Job> pendingJobs = getMyPendingJobs(theJobs);
+	 public boolean isNewJobAccepted() {
+		 List<Job> pendingJobs = getMyPendingJobs();
 		 
 		 return pendingJobs.size() < myMaxNumberOfPendingJobs;
 	 }
@@ -110,7 +110,7 @@ public Park pickAPark(ParkManager theManager, int theManagerChoice) {
 	 * @param theJob the job the starting assigned
 	 * @param theJobs the jobs already exist
 	 */
-	public boolean isStartDateAdded(String theDate, Job theJob, List<Job>theJobs) {
+	public boolean isStartDateAdded(String theDate, Job theJob) {
 		boolean dateAdded = false;
 		//check the job is future, minus -current 3 days//assumption based on BR volunteer
 		LocalDate jobStartDate = convertStringToDate(theDate);
@@ -120,7 +120,7 @@ public Park pickAPark(ParkManager theManager, int theManagerChoice) {
 			if (betweenDates(currentDate,jobStartDate)>= MIN_JOB_POST_DAY_LENGTH && 
 					betweenDates(currentDate,jobStartDate)<= MAX_DAYS_FOR_FUTURE_JOB_DATE){
 				//BR:D
-				if(isDuplicateStartDatePassed(jobStartDate, theJob.getMyJobManagerId(),theJobs)) {
+				if(isDuplicateStartDatePassed(jobStartDate, theJob.getMyJobManagerId(),myJobsList)) {
 					theJob.setMyStartDate(jobStartDate);
 					dateAdded = true;
 				} 
@@ -139,7 +139,7 @@ public Park pickAPark(ParkManager theManager, int theManagerChoice) {
 	 * @param theJob the job the duration is assigned
 	 * @param theJobs theJobs the jobs already exist
 	 */
-	public boolean isEndDateAdded(int theDuration, Job theJob,List<Job>theJobs) {
+	public boolean isEndDateAdded(int theDuration, Job theJob) {
 		//accept user input duration of the job/ 2 is MAX=> 1 or 2 only option
 		boolean dateAdded = false;
 		if(theDuration <= 0 || theDuration > MAX_JOB_LENGTH_IN_DAYS) {
@@ -151,7 +151,7 @@ public Park pickAPark(ParkManager theManager, int theManagerChoice) {
 		//add duration to startDate
 		LocalDate endDate = theJob.getMyStartDate().plusDays(theDuration);
 		//check for duplicates
-		if(isDuplicateEndDatePassed(endDate, theJob.getMyJobManagerId(),theDuration,theJobs)) {
+		if(isDuplicateEndDatePassed(endDate, theJob.getMyJobManagerId(),theDuration)) {
 			theJob.setMyEndDate(endDate);
 			dateAdded = true;
 		} else {
@@ -314,7 +314,7 @@ public Park pickAPark(ParkManager theManager, int theManagerChoice) {
 	  * @return
 	  */
 		 //BR:2D
-	 public boolean isDuplicateEndDatePassed(LocalDate theEndDate, int managerId, int theDuration,List<Job>theJobs) {
+	 public boolean isDuplicateEndDatePassed(LocalDate theEndDate, int managerId, int theDuration) {
 		 
 		 boolean dateHasPassed = true;
 		 if(theDuration == 1) {
@@ -323,9 +323,9 @@ public Park pickAPark(ParkManager theManager, int theManagerChoice) {
 		 }
 			//check job with the same manager exists same LocalDate more than twice
 				int sameEndDate = 0;
-				for (int i = 0; i < theJobs.size(); i++) {
-					if(theJobs.get(i).getMyJobManagerId()== managerId){
-						if(theJobs.get(i).getMyEndDate() == theEndDate){
+				for (int i = 0; i < myJobsList.size(); i++) {
+					if(myJobsList.get(i).getMyJobManagerId()== managerId){
+						if(myJobsList.get(i).getMyEndDate() == theEndDate){
 							sameEndDate += ONE_DAY_OFFSET;
 						}
 					}
@@ -370,7 +370,7 @@ public Park pickAPark(ParkManager theManager, int theManagerChoice) {
 	  * @return true if job reached maximum volunteer limit, false otherwise
 	  */
 	 //job is full for sign up BR: 2B
-	 public static boolean isJobFullForSignUp(Job theJob) {
+	 public  boolean isJobFullForSignUp(Job theJob) {
 		 
 		 int totalVolunteersNeeded = totalVolunteersPerJob(theJob);
 		 int currentTotal = theJob.getMyCurrentTotalVolunteers();
@@ -434,11 +434,11 @@ public Park pickAPark(ParkManager theManager, int theManagerChoice) {
 	  * @return List of jobs that are pending
 	  */
 	 //get pending jobs(open for sign up + is not full)
-	 public List<Job> getMyPendingJobs(List<Job> theJobs) {
+	 public List<Job> getMyPendingJobs() {
 		 List<Job> pendingJobs = new ArrayList<Job>(); 
 		 
-		 for (int i = 0; i < theJobs.size(); i++) {
-			 	Job jobChecked = theJobs.get(i);
+		 for (int i = 0; i < myJobsList.size(); i++) {
+			 	Job jobChecked = myJobsList.get(i);
 				if(!jobChecked.getMyJobIsPast()) {
 					//job is not full and signing up day not passed
 					if(!isSignUpDayPassed(jobChecked) &&

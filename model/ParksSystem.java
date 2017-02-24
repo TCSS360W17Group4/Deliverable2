@@ -110,7 +110,7 @@ public class ParksSystem implements Serializable{
 		 		if (myVolunteers.get(theVolunteerId).getMyBlackballStatus() || 
 		 		        volunteerHasTheJob(theVolunteerId,theJobId) || 
 		 				myJobController.isSignUpDayPassed(myJobs.get(theJobId)) || 
-		 				JobController.isJobFullForSignUp(myJobs.get(theJobId))) {
+		 				myJobController.isJobFullForSignUp(myJobs.get(theJobId))) {
 		 			//already volunteered or sign up date passed(BR.6C) or full or blackball(6B)
 		 		    return false;
 		 		    
@@ -148,7 +148,7 @@ public class ParksSystem implements Serializable{
 					//job is not full and signing up day not passed and 
 					//the volunteer does not have the job
 					if(!myJobController.isSignUpDayPassed(jobChecked) &&
-							!JobController.isJobFullForSignUp(jobChecked) &&
+							!myJobController.isJobFullForSignUp(jobChecked) &&
 							!volunteerHasTheJob(theVolunteerId, jobChecked.getMyJobId())) {
 						//add it to pending
 						pendingJobs.add(jobChecked);
@@ -279,6 +279,7 @@ public class ParksSystem implements Serializable{
 	  * 
 	  * @param theUserName the username to be checked for login
 	  */
+
 	public AbstractController loginSuccessful(String theUserName) {
 		//parse the user name
 		String userType = theUserName.substring(0,3);

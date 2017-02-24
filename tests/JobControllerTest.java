@@ -40,20 +40,20 @@ public class JobControllerTest {
 		
 		Job job1 = new Job(new Park());
 		Job job2 = new Job(new Park());
-		jobController.isStartDateAdded("02/14/17", job1, myJobs);
-		jobController.isStartDateAdded("02/15/17", job2, myJobs);
+		jobController.isStartDateAdded("02/14/17", job1);
+		jobController.isStartDateAdded("02/15/17", job2);
 		job1.setMyHeavyVolunteerNumber(2);
 		job2.setMyHeavyVolunteerNumber(2);
-		jobController.isEndDateAdded(1, job1, myJobs);
-		jobController.isEndDateAdded(1, job2, myJobs);
+		jobController.isEndDateAdded(1, job1);
+		jobController.isEndDateAdded(1, job2);
 
 		
 		myJobs.add(0,job1);
-		assertTrue("fail new job can be added",jobController.isNewJobAccepted(myJobs));
+		assertTrue("fail new job can be added",jobController.isNewJobAccepted());
 		myJobs.add(0,job2);
 		
 		//jobController.isNewJobAccepted(myJobs);
-		assertFalse("fail new job cannot be added",jobController.isNewJobAccepted(myJobs));
+		assertFalse("fail new job cannot be added",jobController.isNewJobAccepted());
 	}
 
 	/*

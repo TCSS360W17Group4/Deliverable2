@@ -75,7 +75,7 @@ public class VolunteerView {
         
         //this is not the best, or even a good way of doing this
         try {
-            for (Job j : myJobController.getMyPendingJobs(mySystem.getMyJobs())) {
+            for (Job j : myJobController.getMyPendingJobs()) {
                 if (j.isPending() && 
                     // compares start date to current date right now
                     //j.getMyStartDate().compareTo(j.getMyStartDate().now()) > 0 &&

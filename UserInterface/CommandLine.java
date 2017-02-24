@@ -1,6 +1,5 @@
 package UserInterface;
 
-
 import java.util.Scanner;
 
 //most of the interface should be done here, converter handles interpreting user commands, and making calls to the model

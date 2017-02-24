@@ -52,7 +52,7 @@ public class ParkManagerView {
 		//todays date ...manager name ...logged in as Manager
 		//what would you like to do? show options 
 		
-			if(myJobController.isNewJobAccepted(myParkSystemJobs)) {
+			if(myJobController.isNewJobAccepted()) {
 				//print menu with submit job
 			} else {
 				//show menu without submit job
@@ -117,7 +117,7 @@ public class ParkManagerView {
 		for (int retries = 0;retries < 3; retries++) {
 		
 		    	String line = myReader.nextLine();
-		    	if(!myJobController.isStartDateAdded(line, theJob, myParkSystemJobs)) {
+		    	if(!myJobController.isStartDateAdded(line, theJob)) {
 		    		System.out.println("Please enter again");
 		    		continue;
 		    	} else {
@@ -139,7 +139,7 @@ public class ParkManagerView {
 			int jobDuration = myReader.nextInt();
 			myReader.nextLine();//consume newline break
 			
-	    	if(!myJobController.isEndDateAdded(jobDuration, theJob, myParkSystemJobs)) {
+	    	if(!myJobController.isEndDateAdded(jobDuration, theJob)) {
 	    		System.out.println("Enter again");
 	    		continue;
 	    	} else {
