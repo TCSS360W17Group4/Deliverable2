@@ -11,27 +11,12 @@ public class CommandLine {
         
     }
     
-    /**
-     * I/O Interaction with user before one of the three Views take over
-     * 
-     * Displays the initial Urban Parks prompt to the user for login
-     * 
-     * Tries to pass control over to one of the "views" once user is logged in
-     */
-    public void run(Converter theConverter){
-        String command = "";
-        String result;
-        
-        //emulate a help command
-        System.out.println(theConverter.ioCalls("HELP"));
-        do
-        {
-            System.out.printf(">");
-            command = myScanner.nextLine();
-            result = theConverter.ioCalls(command);
-            System.out.println(result + "\n");
-        } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
 
+    public void run(Converter theConverter){
+
+        theConverter.ioCalls("LOAD uparksdata.bin");
+        theConverter.ioCalls("SS");
+        theConverter.ioCalls("SAVE uparksdata.bin");
         myScanner.close();
     }
 }

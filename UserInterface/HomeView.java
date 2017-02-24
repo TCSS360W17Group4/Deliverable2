@@ -49,14 +49,14 @@ public class HomeView {
         String[] tokens = theString.split(" ");
         String result = "";
         
-        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
+        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") || tokens[0].equalsIgnoreCase("2") ) {
             result="\tWelcome to Urban Parks\n";
             result+="\t-------------------\n";
-            result+="\t1 Login\t\t(LOG) <email>\n";
-            result+="\tHELP(H)\n";
-            result+="\tQUIT(Q)\n";
+            result+="\t1 Login\t\t(LOG) <username>\n";
+            result+="\t2 HELP(H)\n";
+            result+="\t3 QUIT(Q)\n";
             result+="\n";
-            result+="\tExample input: 1 myname@myemail.com, or LOG arealemail@gmail.com\n";
+            result+="\tExample input: 1 myusername, or LOG myusername\n";
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("LOG") ) {
             AbstractController myController = mySystem.loginSuccessful(tokens[1]);
             if (myController == null || myController.getMyUser() == null){
@@ -74,9 +74,9 @@ public class HomeView {
             }
 
             
-        }  else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
+        }  else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") || tokens[0].equalsIgnoreCase("3")) {
             mySystem.logout();
-            result += "Logging Out";
+            result += "Goodbye";
             
         } else {
             result += "Unrecognized Command";

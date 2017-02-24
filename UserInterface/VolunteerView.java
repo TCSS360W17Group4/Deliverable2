@@ -58,72 +58,110 @@ public class VolunteerView {
         return result;
     }
     
+    /***************************************
+     * Job Signup methods for Volunteers
+     ****************************************/
+    
     
     /**
-     * Routine to allow users to sign up for jobs
-     * Needs refactoring into sub-problems
+     * Routine to allow users to sign up for jobs.
+     * Should be called directly after the relevant choice is entered by the user at the UI screen
      * 
-     * @return string to be displayed to the user
-     */
+     * @return "signup successful" or "not successful" string to be displayed to the user
+     */ 
     public String SignUpForAJob() {
-        String result = "";
-        
-        List<Job> pendingJobs = new ArrayList<Job>();
         System.out.println("\n\t\tPark\t\t\tDate\t\tDescription");
-        Integer counter = 1;
+
         ArrayList<Job> someJobs = (ArrayList<Job>)myJobController.getMyJobsList();
-        
-        //this is not the best, or even a good way of doing this
+        List<Job> pendingJobs = new ArrayList<Job>();
+
         try {
-            for (Job j : myJobController.getMyPendingJobs()) {
-                if (j.isPending() && 
-                    // compares start date to current date right now
-                    //j.getMyStartDate().compareTo(j.getMyStartDate().now()) > 0 &&
-                    // compares start date to date of one month from right now
-                    j.getMyStartDate().compareTo(LocalDate.now().plusMonths(1)) <= 0) {
-                    pendingJobs.add(j);
-                    //should print to screen now
-                    LocalDate tempDate = j.getMyStartDate();
-                    System.out.printf("%d)\t%s\t%s\t%s\n", 
-                            counter,
-                            j.getMyPark().getMyName(),    
-                            tempDate.toString(),
-                            j.getMyDescription());
-                    counter++;
-                }
-            }
+            pendingJobs = GetPendingJobsForThisMonth();
         } catch (NullPointerException e) {
             return "\nError: no jobs found for you\n";
         }
+
+        PrintChoicesToVolunteer(pendingJobs);
+        System.out.printf("\n\tEnter a Job number from above >");
         
-        result+="\n\tEnter a Job number from above >";
-        System.out.printf(result);
-        Job tempJob = new Job(new Park());  
-        
-        try {
-            Integer i;
-            String command = CommandLine.myScanner.nextLine();
-            i = Integer.valueOf(command) - 1;
-            if (i < someJobs.size() ) {
-                tempJob = pendingJobs.get(i);  //need to sign up for this job. the volunteer has to be added to the job, and the job needs to be added to the volunteer
-                ArrayList<Integer> tempInts = (ArrayList<Integer>) tempJob.getMyVolunteerList();
-                tempInts.add(myCurrentVolunteer.getMyUserId() ); //hnow the job has a reference to the volunteer
-                tempInts = (ArrayList<Integer>) myCurrentVolunteer.getMyVolunteerJobs();
-                tempInts.add(myCurrentVolunteer.getMyUserId() ); //now the volunteer has a reference to the job
-            } else {
-                System.out.println("Not a valid job number.");
-                return "";
-            }
-                
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        
-        
-        
-        return "\nSuccessfully Signed Up for Job at\t" + tempJob.getMyPark().getMyName();
+        Job aJob = GetTheChosenJob(pendingJobs);
+        SignMeUp(aJob); //this method probably needs to exist inside the volunteerController instead
+        return "\nSuccessfully Signed Up for Job at\t" + aJob.getMyPark().getMyName();
     }
     
+    /**
+     * Adds references to the user inside of the job, as well as references to the job, inside the user.
+     * Both references need to exist for a signup to be complete.
+     * 
+     * @param theJob that the user wants to sign up for
+     */
+    public void SignMeUp(Job theJob){
+        ArrayList<Integer> tempInts = (ArrayList<Integer>) theJob.getMyVolunteerList();
+        tempInts.add(myCurrentVolunteer.getMyUserId() ); //now the job has a reference to the volunteer
+        tempInts = (ArrayList<Integer>) myCurrentVolunteer.getMyVolunteerJobs();
+        tempInts.add(theJob.getMyJobId() ); //now the volunteer has a reference to the job
+    }
+    
+    
+    
+    /**
+     * Grabs the specific job that the volunteer is choosing
+     * 
+     * @param theJobs the pending jobs that were presented to the user
+     * @return the one that the user chooses
+     */
+    public Job GetTheChosenJob(List<Job> theJobs){
+        Job aJob = new Job(new Park());
+        Integer i;
+        String command = CommandLine.myScanner.nextLine();
+        i = Integer.valueOf(command) - 1;
+        if (i < theJobs.size() ) {
+            aJob = theJobs.get(i);  //need to sign up for this job. the volunteer has to be added to the job, and the job needs to be added to the volunteer
+            
+        } else {
+            System.out.println("Not a valid job number.");
+        }
+        return aJob;
+    }
+    
+    /**
+     * Takes a list of pending jobs and prints them out for a volunteer
+     * 
+     * @param theJobs a list of jobs for a volunteer to choose. This method assumes the jobs are relevant to the user for volunteering
+     */
+    public void PrintChoicesToVolunteer(List<Job> theJobs){
+        Integer counter = 1;
+        for (Job j : theJobs) {
+            
+            LocalDate tempDate = j.getMyStartDate();
+            
+            System.out.printf("%d)\t%s\t%s\t%s\n", 
+                    counter,
+                    j.getMyPark().getMyName(),    
+                    tempDate.toString(),
+                    j.getMyDescription());
+            counter++;
+        }
+    }
+    
+    /**
+     * Be sure to handle a NullPointerException, in the case where no jobs are found
+     * 
+     * @return pendingJobs a list of jobs that are both pending, and starting within one month from now
+     * 
+     */
+    public List<Job> GetPendingJobsForThisMonth(){
+        List<Job> pendingJobs = new ArrayList<Job>();
+        for (Job j : myJobController.getMyPendingJobs()) {
+            if (j.isPending() && 
+                // compares start date to date of one month from right now
+                j.getMyStartDate().compareTo(LocalDate.now().plusMonths(1)) <= 0) {
+                pendingJobs.add(j);
+
+            }
+        }
+        return pendingJobs;
+    }
     
     
     /***********************

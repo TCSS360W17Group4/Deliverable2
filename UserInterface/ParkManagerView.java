@@ -431,6 +431,7 @@ public class ParkManagerView {
             result+="\t4 View my Volunteers\t(VOL) \n";
             result+="\tHELP(H)\n";
             result+="\tQUIT(Q)\n";
+            result+="\n\n\tExample: type 1 or NEW and press Enter\n";
         
         } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("NEW") ) {
             //do the user story routine
