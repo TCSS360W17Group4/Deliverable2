@@ -13,33 +13,36 @@ import model.Volunteer;
 
 
 public class ParkManagerView extends HomeView{
-	
+	private static final int MAX_USER_INPUT_TRIAL = 3;
 	private  ParkManager myManager;
 	private  JobController jobValidator;
 	private  ParkManagerController myController;
 	private Scanner myReader;
-	//private boolean isLogoutChoosen;
-	private boolean isReturnChoosen;
+	
 	
 	public ParkManagerView(ParkManagerController theController, JobController theJobValidator, ParkManager theUser){
 		super();
 		this.myManager = theUser;
 		this.jobValidator = theJobValidator;
 		this.myController = theController;
-		//isLogoutChoosen = false;
-		isReturnChoosen = false;
+	
+		HomeHeaderTitle();
 	}
 	
-
+	private void HomeHeaderTitle() {
+		System.out.println("Today, " + myController.convertLocalDatetToReadableString(LocalDate.now())+
+				" Welcome to UParks " + myManager.getMyName());
+	   
+	}
 	public void initHome(Scanner theScanner){
 
 		myReader = theScanner;
 		StringBuilder managerMenu = new StringBuilder();
-		managerMenu.append("Welcome " + myManager.getMyName() + " \n");
+
 		managerMenu.append("Choose the command option, and press enter:\n");
 		if(myController.isNewJobAccepted()) {
 			managerMenu.append("s Submit a job\n");
-			managerMenu.append("v View Volunteers\n");
+			managerMenu.append("v View my Jobs\n");
 			managerMenu.append("l logout");
 		} else {
 			managerMenu.append("We are not accepting new job currently\n");
@@ -87,7 +90,7 @@ public class ParkManagerView extends HomeView{
 		
 		
 	}
-	//??after completion update controller joblist, and create new jobValidator for new pha
+	
 	public void sumbitJobView(){
 		//park name and city, job manager id
 		
@@ -114,7 +117,7 @@ public class ParkManagerView extends HomeView{
 
 		System.out.println("Enter dates between " + LocalDate.now() + " and " + LocalDate.now().plusDays(30)+" inclusive");
 		System.out.println("Enter Start date(format MM/dd/yy Eg: 2/10/17 same as Feb 10, 2017");
-		for (int retries = 0;retries < 3; retries++) {
+		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 		
 		    	String date = myReader.nextLine();
 		    	if(!jobValidator.isStartDateAdded(date)) {
@@ -132,9 +135,9 @@ public class ParkManagerView extends HomeView{
 	}
 	
 	public boolean acceptEndDateView() {
-		System.out.println("Enter job duration: 1 or 2");
+		System.out.println("Enter job duration: 1 2 or 3");
 		
-		for (int retries = 0;retries < 3; retries++) {
+		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 			
 			int jobDuration = myReader.nextInt();
 			myReader.nextLine();//consume newline break
@@ -156,7 +159,7 @@ public class ParkManagerView extends HomeView{
 	public boolean acceptDescriptionView() {
 		System.out.println("Enter job Description:");
 		
-		for (int retries = 0;retries < 3; retries++) {
+		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 			
 			String jobDescription = myReader.nextLine();
 
@@ -181,7 +184,7 @@ public class ParkManagerView extends HomeView{
 		
 		//each question has max 3 trials
 		
-		for (int retries = 0;retries < 3; retries++) {
+		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 			System.out.println("Light: ");
 			int light = myReader.nextInt();
 			if(!jobValidator.isMaxLightVolNumberValid(light)) {
@@ -194,7 +197,7 @@ public class ParkManagerView extends HomeView{
 		}	
 		
 		
-		for (int retries = 0;retries < 3; retries++) {
+		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 			System.out.println("Medium: ");
 			int med = myReader.nextInt();
 			
@@ -208,7 +211,7 @@ public class ParkManagerView extends HomeView{
 		}	
 		
 
-		for (int retries = 0;retries < 3; retries++) {
+		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 			System.out.println("Heavy: ");
 			int heavy = myReader.nextInt();
 			myReader.nextLine();
@@ -232,6 +235,7 @@ public class ParkManagerView extends HomeView{
 		String userConfirmation = myReader.nextLine();
 		if(userConfirmation.equalsIgnoreCase("Y")) {
 			jobValidator.addJob();
+			
 			jobSubSuccess = true;
 		} else {
 			jobSubSuccess = false;

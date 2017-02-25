@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 import model.Job;
@@ -11,15 +12,19 @@ import model.ParkManager;
 import model.ParkManagerController;
 import model.ParksSystem;
 import model.Volunteer;
+import model.VolunteerController;
 
 public class MainGUI {
 
 	private static Scanner myReader;
 	private static ParksSystem mySystem;
 	private static HomeView home;
+	private static ObjectInputStream myInputStream;
+	private static ObjectOutputStream myOutPutStream;
+	
 	public static void main(String[] args) {
 		myReader = new Scanner(System.in);
-		
+		boolean quit = false;
 		try {
 			readFile();
 		} catch (FileNotFoundException e) {
@@ -29,34 +34,41 @@ public class MainGUI {
 	
 			e.printStackTrace();
 		}
-		//accept parkSystem pass views accordingly
-		
+		//initially launched redirected to Home screen so true
+	 while(mySystem.isPageRedirected()) {	
 		home = new HomeView();
 		home.initHome(myReader);
 		//mySystem.isPageRedirected();true as long as we are not logged out
 		if(home.loginTrialView(mySystem)) {
-			System.out.println(mySystem.getMyCurrentUser());
+		
 			
 			if (mySystem.getMyCurrentUser() instanceof ParkManager) {
-//				home = new ParkManagerView((ParkManagerController) mySystem.getMyUserController(), 
-//						  mySystem.getMyJobController(), (ParkManager)mySystem.getMyCurrentUser());
-//			
-//				home.initHome(myReader);
-				//mySystem.getMyUserController().logout();
-				parkManagerView();
+				System.out.println(mySystem.getMyJobs().size());
+				displayManagerView();
 			} else if (mySystem.getMyCurrentUser() instanceof Volunteer){
-				System.out.println("volunteer loggin");
+				displayVolunteerView();
+				
 			} else {
 				System.out.println("Unknown");
 			}
+		
+			//after user view return back to home screen
 		} else {
 			
 			//make system logout
 		}
-
+	 }
+	 
+	try {
+		myInputStream.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	 
 	}
 
-	public static void parkManagerView() {
+	public static void displayManagerView() {
 		
 		home = new ParkManagerView((ParkManagerController) mySystem.getMyUserController(), 
 				  mySystem.getMyJobController(), (ParkManager)mySystem.getMyCurrentUser());
@@ -66,16 +78,30 @@ public class MainGUI {
 			home.initHome(myReader);
 			
 		}
-		Job j = mySystem.getMyJobs().get(mySystem.getMyJobs().size()-1);
-		System.out.println(j.getMyDescription());
+		
+		mySystem.getMyUserController().writeToFile(mySystem, myOutPutStream);
 	}
 	
+	public static void displayVolunteerView() {
+		
+		home = new VolunteerView((VolunteerController)mySystem.getMyUserController(), 
+				(Volunteer)mySystem.getMyCurrentUser());
+		//while we are not logged out
+		while(!mySystem.getMyUserController().getIsPageRedicrected()) {
+			home.initHome(myReader);
+			
+		}
+		
+		mySystem.getMyUserController().writeToFile(mySystem, myOutPutStream);
+		
+	}
 	public static void readFile() throws FileNotFoundException, IOException{
-		ObjectInputStream input = new ObjectInputStream(new FileInputStream("uparksdata.bin"));
+		myInputStream = new ObjectInputStream(new FileInputStream("uparksdata.bin"));
+	
 		try {
-			mySystem = (ParksSystem)input.readObject();
+			mySystem = (ParksSystem)myInputStream.readObject();
 		} catch (ClassNotFoundException e) {
-			input.close();
+			myInputStream.close();
 			e.printStackTrace();
 		}
 	}

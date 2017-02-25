@@ -24,7 +24,6 @@ public class JobController implements Serializable{
 	private static final int MAX_NUM_VOLUNTEERS_PER_JOB = 10;
 	private static final int MAX_ALLOWED_DATE_INTO_FUTURE = 75;
 	private static final int MAX_JOB_LENGTH_IN_DAYS = 3;
-	private static final int MAX_JOBS_PER_DAY_PER_MANAGER = 2;
 	private static final int SYSTEM_MAX_JOBS_IN_ANY_GIVEN_DAY = 4;
 	private static final int MIN_JOB_POST_DAY_LENGTH = 3; 
 	private static final int ONE_DAY_OFFSET = 1;
@@ -79,6 +78,10 @@ public class JobController implements Serializable{
 		myJob.setMyJobManagerId(myJobCreator.getMyUserId());
 	}
 	
+	//this is our assumption-job need to be well in the future to get volunteers--min MIN_JOB_POST_DAY_LENGTH
+	public boolean hasJobStartDateAllowVolunteerSignUp(LocalDate theCurrentDate, LocalDate theJobStartDate) {
+		return betweenDates(theCurrentDate,theJobStartDate)>= MIN_JOB_POST_DAY_LENGTH;
+	}
 	/**
 	 * assign the starting date of the job
 	 * 
@@ -88,21 +91,25 @@ public class JobController implements Serializable{
 	 */
 	public boolean isStartDateAdded(String theDate) {
 		boolean dateAdded = false;
-		//check the job is future, minus -current 3 days//assumption based on BR volunteer
+		
 		LocalDate jobStartDate = convertStringToDate(theDate);
+	
 		if(jobStartDate != null) {
 			LocalDate currentDate = LocalDate.now();
 			 //MIN_JOB_POST_DAY_LENGTH at least more than MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE
-			if (betweenDates(currentDate,jobStartDate)>= MIN_JOB_POST_DAY_LENGTH && 
+			System.out.println(betweenDates(currentDate,jobStartDate));
+			if (hasJobStartDateAllowVolunteerSignUp(currentDate, jobStartDate) && 
 					betweenDates(currentDate,jobStartDate)<= MAX_ALLOWED_DATE_INTO_FUTURE){
-				
+				//dont have max jobs on start date
 				if(hasMaxJobsNotOnJobsDate(jobStartDate)) {
 					myJob.setMyStartDate(jobStartDate);
 					dateAdded = true;
 				} 
 				
 			}
-		} 
+		} else {
+			System.out.println("Wrong date");
+		}
 		
 		return dateAdded;
 		
@@ -111,15 +118,15 @@ public class JobController implements Serializable{
 	public boolean isJobDurationNumWithinAllowedRange(int theDuration) {
 		
 		
-		return (theDuration <= 1 || theDuration > MAX_JOB_LENGTH_IN_DAYS);
+		return (theDuration <= MAX_JOB_LENGTH_IN_DAYS && theDuration >= 1);
 		
 	}
 	
 	//new docmentation needed
 	public boolean isEndDateAdded(int theDuration) {
-		//accept user input duration of the job/ 2 is MAX=> 1 or 2 only option
+		
 		boolean dateAdded = false;
-		if(isJobDurationNumWithinAllowedRange(theDuration)) {
+		if(!isJobDurationNumWithinAllowedRange(theDuration)) {
 			
 			dateAdded = false;
 			return dateAdded;
@@ -272,7 +279,7 @@ public class JobController implements Serializable{
 				return dateHasPassed;
 		 }
 
-		 //system job limit passed for the duration of the days
+		 //system job limit passed for the duration of the days--check each day in the duration
 	 public boolean hasDurationDayshasNoMaxJobs(LocalDate theEndDate,int theDuration) {
 		 
 		 boolean dateHasPassed = true;
@@ -384,6 +391,7 @@ public class JobController implements Serializable{
 			return localDate;
 			} catch(Exception e) {
 				//return past date so test fails, instead of exception
+				
 				return null;
 			}
 
@@ -407,7 +415,9 @@ public class JobController implements Serializable{
 	    return  ChronoUnit.DAYS.between(firstDate,secondDate);
 	 }
 	 
-	
-	 
+	//this simplify testing but our application users--volunteer and manager cant use it
+	 public void setMyMaxNumberOfPendingJobs(int theMaxPendingJobsAllowed) {
+			this.myMaxNumberOfPendingJobs = theMaxPendingJobsAllowed;
+	 }
 	
 }

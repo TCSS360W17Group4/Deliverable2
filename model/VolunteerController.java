@@ -2,7 +2,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VolunteerController extends AbstractController {
+public class VolunteerController2 extends AbstractController {
 	
     private Volunteer myUser;    
     private List<Job>myJobs;
@@ -10,7 +10,7 @@ public class VolunteerController extends AbstractController {
     
    
     
-    public VolunteerController(Volunteer theUser, 
+    public VolunteerController2(Volunteer theUser, 
            List<Job> theJobs, List<Volunteer> theVolunteers) { 
     	
         super(theJobs,theUser);
@@ -113,10 +113,10 @@ public class VolunteerController extends AbstractController {
 	 * @param theVolunteerId the volunteer signing for the job
 	 * @return true if volunteer has no job with that date, false otherwise
 	 */
-	//BR 6A
-	public boolean duplicateSignUpIsPassed(int theNewJobId, int theVolunteerId) {
+	
+	public boolean duplicateSignUpIsPassed(int theNewJobId) {
 		
-		List<Integer> currentJobsIds = myVolunteers.get(theVolunteerId).getMyVolunteerJobs();
+		List<Integer> currentJobsIds = myVolunteers.get(myUser.getMyUserId()).getMyVolunteerJobs();
 		
 		for(int i = 0; i < currentJobsIds.size(); i++) {
 			
@@ -142,7 +142,7 @@ public class VolunteerController extends AbstractController {
 	 * @param theVolunteerId volunteer job searched for
 	 * @return jobs the volunteer signed up
 	 */
-	//story 7
+	
 	public List<Job> getJobsByVolunteerId(int theVolunteerId) {
 		
 		List<Integer> currentJobsIds = myVolunteers.get(theVolunteerId).getMyVolunteerJobs();

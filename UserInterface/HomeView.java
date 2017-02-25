@@ -1,15 +1,12 @@
 package UserInterface;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+
 import java.util.Scanner;
 
 import model.ParksSystem;
 
 public class HomeView {
-	
+	private static final int MAX_USER_INPUT_TRIAL = 3;
 	private static Scanner myReader;
 	private static ParksSystem mySystem;
 
@@ -17,56 +14,43 @@ public class HomeView {
 	
 	public HomeView() {
 		
-		//mySystem = new ParksSystem();
-
+		HomeHeaderTitle();
+	}
+	private void HomeHeaderTitle() {
+		System.out.println("Welcome to UParks");
 	}
 	
 	public void initHome(Scanner theScanner) {
 		myReader = theScanner;
-//		try {
-//			//readFile();
-//		} catch (FileNotFoundException e) {
-//			
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//	
-//			e.printStackTrace();
-//		}
-		System.out.println("Welcome to UParks");
-		System.out.println("Enter User name");
-		
-		
-		
-//		for (int retries = 0; retries < 3; retries++) {
-//			String textUserInput = myReader.nextLine();
-//			if(mySystem.loginSuccessful(textUserInput)) {
-//				
-//				//pageRedirected = true;
-//				break;
-//			} else {
-//				System.out.println("Login failed: try again!");
-//			}
-//		}
-//	
-		
+
+		System.out.println("Enter Email or press q to quit system!");
 	}
-	
+
+
 	public boolean loginTrialView(ParksSystem theSystem) {
 		mySystem = theSystem;
 		boolean pageRedirected = false;
-		for (int retries = 0; retries < 3; retries++) {
-			String textUserInput = myReader.nextLine();
-			//myReader.nextLine();
-			if(mySystem.loginSuccessful(textUserInput)) {
+		for (int retries = 0; retries < MAX_USER_INPUT_TRIAL; retries++) {
+			String userCredential = myReader.nextLine();
+			
+			if(userCredential.equalsIgnoreCase("q")){
+				mySystem.logout();
+				break;
+			}
+			if(mySystem.loginSuccessful(userCredential)) {
 				
 				pageRedirected = true;
 				System.out.println("Login Successful");
 				break;
 			} else {
 			
-				System.out.println("Login failed: try again!");
-				if ( retries == 2) {
+				if ( retries == MAX_USER_INPUT_TRIAL -1) {
+					System.out.println("Failed max trial system exiting....");
 					mySystem.logout();
+				} else {
+
+					System.out.println("Login failed: try again! or ");
+					System.out.println("press q to quit!");
 				}
 			}
 		}
@@ -76,24 +60,7 @@ public class HomeView {
 		return pageRedirected;
 	}
 
-//	public static void readFile() throws FileNotFoundException, IOException{
-//		ObjectInputStream input = new ObjectInputStream(new FileInputStream("uparksdata.bin"));
-//		try {
-//			mySystem = (ParksSystem)input.readObject();
-//		} catch (ClassNotFoundException e) {
-//			input.close();
-//			e.printStackTrace();
-//		}
-//	}
-	
-//	public boolean isPageRedirected(){
-//		
-//		return pageRedirected;
-//	}
-//	
-//	public void logOut() {
-//		//system exit
-//		this.pageRedirected = true;
-//	
-//	}
+	public void exitSystem(){
+		mySystem.logout();
+	}
 }

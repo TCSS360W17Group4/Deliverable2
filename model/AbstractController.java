@@ -6,8 +6,12 @@ package model;
  */ 
  
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -90,7 +94,7 @@ public abstract class AbstractController implements Serializable {
 		 return pendingJobs;
 	 }
     
-    public List<Job> getJobsById(int theJobID) {
+    public List<Job> getListOfJobsByGivenId(int theJobID) {
         List<Job> list = new ArrayList<Job>();
         Iterator<Job> iterator = list.iterator();
         Job job;
@@ -105,6 +109,11 @@ public abstract class AbstractController implements Serializable {
         return list;
         
     }
+    
+    public Job getSingleJobByGivenId(Integer id){
+	     return myJobs.get(id);
+	     
+	 }
     
  
     
@@ -194,17 +203,47 @@ public abstract class AbstractController implements Serializable {
 
 	 }
 	 
+	public AbstractUser getMyUser() {
 
-		public AbstractUser getMyUser() {
+		return this.myUser;
+	}
+
+
+	public String convertLocalDatetToReadableString(LocalDate theDate) {
 		
-			return this.myUser;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+		String formattedString = theDate.format(formatter);
+		
+		return formattedString;
+	}
+
+	public List<Job> getJobs() {
+		return myJobs;
+	}
+
+	public void logout() {
+		this.pageRedirected = true;
+	}
+	public void writeToFile(ParksSystem theSystem, ObjectOutputStream theOuts)  {
+	
+		
+		try{
+			theOuts = new ObjectOutputStream(new FileOutputStream("uparksdata.bin"));
+			theOuts.writeObject(theSystem);
+			
+			theOuts.close();
+			
+		} catch(Exception e) {
+			try {
+	
+				theOuts.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+			
+				e1.printStackTrace();
+			}
 		}
-		public List<Job> getJobs() {
-			return myJobs;
-		}
-	 public void logout() {
-		 this.pageRedirected = true;
-	 }
+	}
 	 
 	 public boolean getIsPageRedicrected() {
 		 
