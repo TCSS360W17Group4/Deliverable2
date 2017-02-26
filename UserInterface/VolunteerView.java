@@ -140,12 +140,12 @@ public class VolunteerView extends HomeView {
 			 	String userChoice = myReader.nextLine();
 		    	int theId = Integer.parseInt(userChoice);
 		    	
-				//if (myController.isSignupForJobSuccesful(theId)) { I should use this has a bug
-			
-			if (!myController.volunteerHasTheJob(theId) && !myController.hasJobViolateMaxJobPerDayPerVolunteer(theId)) {
-					//add it to my list of jobs
+				if (myController.isSignupForJobSuccesful(theId)) { 
 					myVolunteer.getMyVolunteerJobs().add(new Integer(userChoice));
-					
+					//update current total for the job
+					int currenTotal = (myController.getSingleJobByGivenId(new Integer(theId)).getMyCurrentTotalVolunteers())+1;
+					Job jobAdded = myController.getSingleJobByGivenId(new Integer(theId));
+					jobAdded.setMyCurrentTotalVolunteers(currenTotal);
 					System.out.println("You have successfully signed up for the job");
 					break;
 			

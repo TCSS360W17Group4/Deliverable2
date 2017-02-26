@@ -210,6 +210,22 @@ public class DataRunner {
 			myVolunteers.add(vol);//volunteers added here,
 		}
 		
+		//volunteer should be added one after the other
+
+		//this added volunteer with no job scenario
+		Volunteer vol30 = new Volunteer();
+		List<Integer>vol30Jobs = new ArrayList<>();
+		vol30.setMyAddress("846 Artisan Road");
+		vol30.setMyBlackballStatus(false);
+		vol30.setMyEmail("bpowell10@reference.com");
+		vol30.setMyName("Brenda Powell");
+		vol30.setMyPhone("(349)464-4234");
+		vol30.setMyType(UserType.Volunteer);
+		vol30.setMyUserId(30);
+		vol30.setMyUserName("vol30");
+		vol30.setMyVolunteerJobs(vol30Jobs);//no job for blackballed volunteer
+		myVolunteers.add(vol30);
+		
 		//list of volunteers we alreayd have add different job id to different list of volunteers
 		//job id 0 vol
 		for(int i = 1; i <= 8;i++) {

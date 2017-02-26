@@ -64,14 +64,14 @@ public class VolunteerController extends AbstractController {
 		 		 
 		 		} else {
 		 		
-		 		    //add to the bucket
-		 		    currentJobsList.add(new Integer(theJobId));
-		 		    //make job list the current one
-		 		    myVolunteers.get(myUser.getMyUserId()).setMyVolunteerJobs(currentJobsList);
-                   	
-               	//update total volunteers for the job
-               	int currenTotal = myJobs.get(theJobId).getMyCurrentTotalVolunteers()+1;
-   	 			myJobs.get(theJobId).setMyCurrentTotalVolunteers(currenTotal);
+//		 		    //add to the bucket
+//		 		    currentJobsList.add(new Integer(theJobId));
+//		 		    //make job list the current one
+//		 		    myVolunteers.get(myUser.getMyUserId()).setMyVolunteerJobs(currentJobsList);
+//                   	
+//               	//update total volunteers for the job
+//               	int currenTotal = myJobs.get(theJobId).getMyCurrentTotalVolunteers()+1;
+//   	 			myJobs.get(theJobId).setMyCurrentTotalVolunteers(currenTotal);
    	 			signUpSuccess = true;
                    	 			
                    }
@@ -226,36 +226,36 @@ public class VolunteerController extends AbstractController {
 	}
 	
 	
-	
-	/**
-	 * Checks if Volunteer already has a job with the same date
-	 * 
-	 * @param theNewJobId the new job to be signed up for
-	 * @param theVolunteerId the volunteer signing for the job
-	 * @return true if volunteer has no job with that date, false otherwise
-	 */
-	
-	public boolean duplicateSignUpIsPassed(int theNewJobId) {
-		
-		List<Integer> currentJobsIds = myVolunteers.get(myUser.getMyUserId()).getMyVolunteerJobs();
-		
-		for(int i = 0; i < currentJobsIds.size(); i++) {
-			
-			Job prevJob = myJobs.get(currentJobsIds.get(i));
-			Job newJob = myJobs.get(theNewJobId);
-			
-			//the volunteer has no start and end date
-			if(!prevJob.getMyStartDate().equals(newJob.getMyStartDate()) &&
-					!prevJob.getMyEndDate().equals(newJob.getMyEndDate())) {
-				return true;
-				
-			}
-			
-		}
-		
-		return false;
-	}
-	
+//	
+//	/**
+//	 * Checks if Volunteer already has a job with the same date
+//	 * 
+//	 * @param theNewJobId the new job to be signed up for
+//	 * @param theVolunteerId the volunteer signing for the job
+//	 * @return true if volunteer has no job with that date, false otherwise
+//	 */
+//	
+//	public boolean duplicateSignUpIsPassed(int theNewJobId) {
+//		
+//		List<Integer> currentJobsIds = myVolunteers.get(myUser.getMyUserId()).getMyVolunteerJobs();
+//		
+//		for(int i = 0; i < currentJobsIds.size(); i++) {
+//			
+//			Job prevJob = myJobs.get(currentJobsIds.get(i));
+//			Job newJob = myJobs.get(theNewJobId);
+//			
+//			//the volunteer has no start and end date
+//			if(!prevJob.getMyStartDate().equals(newJob.getMyStartDate()) &&
+//					!prevJob.getMyEndDate().equals(newJob.getMyEndDate())) {
+//				return true;
+//				
+//			}
+//			
+//		}
+//		
+//		return false;
+//	}
+//	
 
 
 }
