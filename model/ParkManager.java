@@ -1,6 +1,6 @@
 package model;
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +11,11 @@ import java.util.List;
  */
 public class ParkManager extends AbstractUser {
 	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**list of parks managed by the manager**/
 	private List<Park> myParks = new ArrayList<Park>();
 

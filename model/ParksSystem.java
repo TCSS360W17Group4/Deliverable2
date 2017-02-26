@@ -1,7 +1,6 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +17,8 @@ import java.util.List;
 public class ParksSystem implements Serializable{
 
 
+	
+	private static final long serialVersionUID = 1L;
 	//private  AbstractUser myCurrentUser;
 	private  List<Job> myJobs;
 	private  List<Volunteer> myVolunteers;

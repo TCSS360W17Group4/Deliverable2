@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
-import model.Job;
 import model.ParkManager;
 import model.ParkManagerController;
 import model.ParksSystem;
@@ -24,7 +23,7 @@ public class MainGUI {
 	
 	public static void main(String[] args) {
 		myReader = new Scanner(System.in);
-		boolean quit = false;
+		
 		try {
 			readFile();
 		} catch (FileNotFoundException e) {
@@ -38,12 +37,13 @@ public class MainGUI {
 	 while(mySystem.isPageRedirected()) {	
 		home = new HomeView();
 		home.initHome(myReader);
+		
 		//mySystem.isPageRedirected();true as long as we are not logged out
 		if(home.loginTrialView(mySystem)) {
 		
 			
 			if (mySystem.getMyCurrentUser() instanceof ParkManager) {
-				System.out.println(mySystem.getMyJobs().size());
+				
 				displayManagerView();
 			} else if (mySystem.getMyCurrentUser() instanceof Volunteer){
 				displayVolunteerView();
@@ -53,16 +53,14 @@ public class MainGUI {
 			}
 		
 			//after user view return back to home screen
-		} else {
-			
-			//make system logout
-		}
+		} 
 	 }
 	 
 	try {
 		myInputStream.close();
+		
 	} catch (IOException e) {
-		// TODO Auto-generated catch block
+	
 		e.printStackTrace();
 	}
 	 
@@ -72,6 +70,7 @@ public class MainGUI {
 		
 		home = new ParkManagerView((ParkManagerController) mySystem.getMyUserController(), 
 				  mySystem.getMyJobController(), (ParkManager)mySystem.getMyCurrentUser());
+		
 		//while we are not logged out
 	
 		while(!mySystem.getMyUserController().getIsPageRedicrected()) {

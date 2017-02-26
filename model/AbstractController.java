@@ -26,14 +26,10 @@ import java.util.List;
 
 public abstract class AbstractController implements Serializable {
   
-
-	private static final int MIN_JOB_POST_DAY_LENGTH = 3; 
-
+	private static final long serialVersionUID = 1L;
 	private static final int MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE = 2; 
 	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 20;
 	
-	
-
     private  List<Job> myJobs;
     private  AbstractUser myUser;
     
@@ -75,6 +71,7 @@ public abstract class AbstractController implements Serializable {
 	 
 	 
 	 //get pending jobs(open for sign up + is not full)
+	 //this query not volunteer specific but general
 	 public List<Job> getMyPendingJobs() {
 		 List<Job> pendingJobs = new ArrayList<Job>(); 
 		 
@@ -115,7 +112,18 @@ public abstract class AbstractController implements Serializable {
 	     
 	 }
     
- 
+    
+ /**
+  * checks violation of min days in advance 
+  *  required before job sign up
+  * 
+  * @param theJob the job checked for sign up
+  * @return true if the job start date fails to qualify for 
+  *        MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE 
+  */
+    public boolean hasMinSignupDaysBeforeJobStartPassed(Job theJob) {
+    	 return ChronoUnit.DAYS.between(LocalDate.now(), theJob.getMyStartDate()) < MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE;
+    }
     
     /**
 	  * Checks a job has passed signing up date, 
@@ -126,13 +134,13 @@ public abstract class AbstractController implements Serializable {
 	  */
 	//signup day passed = job is past or sign up date less than 2 days to job start time
 	 public boolean isSignUpDayPassed(Job theJob) {
-		 LocalDate currentDate = LocalDate.now();
+		 //LocalDate currentDate = LocalDate.now();
 		 //CHECK NOT PAST
 		 if(!isMyJobPast(theJob)){
 		 //job is no longer open for sign up
 
 			 //make it different method
-			 return ChronoUnit.DAYS.between(currentDate,theJob.getMyStartDate()) < MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE;
+			 return hasMinSignupDaysBeforeJobStartPassed(theJob);
 		 }
 		 
 		 //no need to check exit
@@ -140,6 +148,16 @@ public abstract class AbstractController implements Serializable {
 		 
 	 }
 	 
+	 public String truncateJobDescriptionForDisplay(Job theJob) {
+		 String shortDescription = "";
+		 if(!(theJob.getMyDescription().length() < 20)){
+				shortDescription = theJob.getMyDescription().substring(0, 20);
+			} else {
+				 shortDescription = theJob.getMyDescription();
+			}
+		 
+		 return shortDescription;
+	 }
 	 //???This can go to volunteers 
 	 /**
 	  * checks if job reached full capacity for volunteering
@@ -173,7 +191,24 @@ public abstract class AbstractController implements Serializable {
 		 
 	 } 
 	 
-	 //???this can go to abstract controller
+
+	 /**
+		 * calcualte the difference between two days 
+		 * Example,given 02/06/2017(first date) and 02/08/2017
+		 *  will return 2(exclude end date), but not 3
+		 * 
+		 * @param firstDate the first date
+		 * @param secondDate the second date, latest
+		 * 
+		 * @return the difference between the two days, exclusive of the second date
+		 */
+		//calculate difference between dates
+		 public  long numOfDaysBetweenTwoDays(LocalDate firstDate, LocalDate secondDate) {
+			
+		    return  ChronoUnit.DAYS.between(firstDate,secondDate);
+		 }
+		 
+		 
 	 /**
 	  * checks if the job is older than current date
 	  * 
@@ -184,7 +219,7 @@ public abstract class AbstractController implements Serializable {
 	 public boolean isMyJobPast(Job theJob){
 		 LocalDate currentDate = LocalDate.now();
 		 //-ve means past,true
-		 return ChronoUnit.DAYS.between(currentDate,theJob.getMyEndDate()) < 0;
+		 return this.numOfDaysBetweenTwoDays(currentDate,theJob.getMyEndDate()) < 0;
 		// return (betweenDates(currentDate,theJob.getMyEndDate()) < 0);
 			 
 	 }
@@ -228,7 +263,7 @@ public abstract class AbstractController implements Serializable {
 	
 		
 		try{
-			theOuts = new ObjectOutputStream(new FileOutputStream("uparksdata.bin"));
+			theOuts = new ObjectOutputStream(new FileOutputStream("uparksdata.bin",false));
 			theOuts.writeObject(theSystem);
 			
 			theOuts.close();

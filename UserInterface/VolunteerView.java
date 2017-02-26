@@ -1,6 +1,7 @@
 package UserInterface;
 
 import java.time.LocalDate;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,9 +11,17 @@ import model.VolunteerController;
 
 public class VolunteerView extends HomeView {
 
+	private static final int MAX_USER_INPUT_TRIAL = 3;
+	private static final int OFFSET = 1;
+	private static final String V_FOR_VIEW_COMMAND = "v";
+	private static final String S_FOR_SUBMIT_OR_SINGUP_COMMAND = "s";
+	private static final String L_FOR_LOGOUT_USER_VIEW_COMMAND = "l";
+	private static final String R_FOR_RETURN_PREV_VIEW_FOR_USERS = "r";
 	private Volunteer myVolunteer;
 	private VolunteerController myController;
 	private Scanner myReader;
+	
+	
 	public VolunteerView(VolunteerController theController, Volunteer theUser){
 	
 		super();
@@ -34,15 +43,17 @@ public class VolunteerView extends HomeView {
 		
 		StringBuilder volunteerMenu = new StringBuilder();
 		volunteerMenu.append("Choose the command option, and press enter:\n");
-		if(myController.isNewJobAccepted()) {
-			volunteerMenu.append("s Sign up for a job\n");
-			volunteerMenu.append("v View my jobs\n");
-			volunteerMenu.append("l logout");
+		if(myController.isJobAvailableToSignUp()) {
+			volunteerMenu.append(S_FOR_SUBMIT_OR_SINGUP_COMMAND + " Sign up for a job\n");
+			if (!myVolunteer.getMyVolunteerJobs().isEmpty()) {
+				volunteerMenu.append(V_FOR_VIEW_COMMAND + " View my jobs\n");
+			}
+			volunteerMenu.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " logout");
 		} else {
-			volunteerMenu.append("You current do not have any jobs\n");
-			volunteerMenu.append("v View my Jobs\n");
+			volunteerMenu.append("No jobs available for sign up\n");
+			volunteerMenu.append(V_FOR_VIEW_COMMAND + " View my Jobs\n");
 			//show the jobs already created and 1 option
-			volunteerMenu.append("l logout");
+			volunteerMenu.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " logout");
 		}
 		System.out.println(volunteerMenu);
 		String userChoice = myReader.nextLine();
@@ -53,13 +64,13 @@ public class VolunteerView extends HomeView {
 
 	public void showChoosenCommand(String userInput) {
 		//System.out.println(userInput.equalsIgnoreCase(userInput));
-		if(userInput.equalsIgnoreCase("s")) {
-		
+		if(userInput.equalsIgnoreCase(S_FOR_SUBMIT_OR_SINGUP_COMMAND)) {
+			signUpForJobView();
 			exitOrReturnView();
 	
-		}  else if(userInput.equalsIgnoreCase("l")) {
+		}  else if(userInput.equalsIgnoreCase(L_FOR_LOGOUT_USER_VIEW_COMMAND)) {
 			myController.logout();
-		} else if (userInput.equalsIgnoreCase("v")) {
+		} else if (userInput.equalsIgnoreCase(V_FOR_VIEW_COMMAND)) {
 			
 			viewMyJobs();
 			exitOrReturnView();
@@ -70,14 +81,14 @@ public class VolunteerView extends HomeView {
 		
 		StringBuilder exitString = new StringBuilder();
 		exitString.append("What would you like to do?\n");
-		exitString.append("r Return to prior menu\n");
-		exitString.append("l Logout");
+		exitString.append(R_FOR_RETURN_PREV_VIEW_FOR_USERS + " Return to prior menu\n");
+		exitString.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " Logout");
 		
 		System.out.println(exitString);
 		String userInput = myReader.nextLine();
-		if (userInput.equalsIgnoreCase("l")) {
+		if (userInput.equalsIgnoreCase(L_FOR_LOGOUT_USER_VIEW_COMMAND)) {
 			myController.logout();
-		} else if(userInput.equalsIgnoreCase("r")) {
+		} else if(userInput.equalsIgnoreCase(R_FOR_RETURN_PREV_VIEW_FOR_USERS)) {
 			initHome(myReader);
 		}
 		
@@ -111,30 +122,93 @@ public class VolunteerView extends HomeView {
         return result;
     }
     
+   
+ 
+    public void signUpForJobView(){
+    	
+    	System.out.println("Please choose number to sign up for a job\n");
+    	
+    	showAvailableJobs();
+    	
+   
+    	
+		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
+			
+		
+			try {
+				
+			 	String userChoice = myReader.nextLine();
+		    	int theId = Integer.parseInt(userChoice);
+		    	
+				//if (myController.isSignupForJobSuccesful(theId)) { I should use this has a bug
+			
+			if (!myController.volunteerHasTheJob(theId) && !myController.hasJobViolateMaxJobPerDayPerVolunteer(theId)) {
+					//add it to my list of jobs
+					myVolunteer.getMyVolunteerJobs().add(new Integer(userChoice));
+					
+					System.out.println("You have successfully signed up for the job");
+					break;
+			
+				}  else {
+					
+					if ( retries == MAX_USER_INPUT_TRIAL - OFFSET) {
+						
+						System.out.println("Failed max trial redirecting to main menu...");
+						
+						initHome(myReader);
+					} else {
+
+						System.out.println("You have job on the same day, choose another ");
+						
+					}
+				}
+			} catch (IndexOutOfBoundsException |InputMismatchException | NumberFormatException exception) {
+				
+				System.out.println("Job Id doesnt exist");
+			}
+			   
+		}
+    }
     
     /**
-     * Routine to allow users to sign up for jobs.
-     * Should be called directly after the relevant choice is entered by the user at the UI screen
      * 
-     * @return "signup successful" or "not successful" string to be displayed to the user
-     */ 
-//    public String SignUpForAJob() {
-//        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription");
-//
-//        ArrayList<Job> someJobs = (ArrayList<Job>)myJobController.getMyJobsList();
-//        List<Job> pendingJobs = new ArrayList<Job>();
-//
-//        try {
-//            pendingJobs = GetPendingJobsForThisMonth();
-//        } catch (NullPointerException e) {
-//            return "\nError: no jobs found for you\n";
-//        }
-//
-//        PrintChoicesToVolunteer(pendingJobs);
-//        System.out.printf("\n\tEnter a Job number from above >");
-//        
-//        Job aJob = GetTheChosenJob(pendingJobs);
-//        SignMeUp(aJob); //this method probably needs to exist inside the volunteerController instead
-//        return "\nSuccessfully Signed Up for Job at\t" + aJob.getMyPark().getMyName();
-//    }
+     * @return true jobs displayed false otherwise 
+     */
+    
+    public boolean showAvailableJobs() {
+    	
+    	boolean jobsAvailable = true;
+    	
+    	StringBuilder jobSignUpString = new StringBuilder();
+    	StringBuilder output = new StringBuilder();
+    	
+    	jobSignUpString.append("Job Id------Job Description------------------Start Date------EndDate-------City----Park\n");
+    	
+    	System.out.println(jobSignUpString);
+    	List<Job> pendingJobs = myController.getMyPendingJobsForVolunteer();
+    	String shortDescription = "";
+    	
+    	if(pendingJobs.isEmpty()) {
+    		System.out.println("There are no jobs available currently");
+    		jobsAvailable = false;
+    		return jobsAvailable;
+    	}
+    	
+    	
+    	//loop if pending jobs has 1 job at least?? check that
+    	for(int i = 0; i < pendingJobs.size(); i++) {
+    		shortDescription = myController.truncateJobDescriptionForDisplay(pendingJobs.get(i));
+    		
+    				output.append(pendingJobs.get(i).getMyJobId() + "---" + shortDescription
+    				        + " --- " + pendingJobs.get(i).getMyStartDate() + " to " + 
+    				pendingJobs.get(i).getMyEndDate() + " --- "+ 
+    				            pendingJobs.get(i).getMyPark().getMyCity() + "------- " + pendingJobs.get(i).getMyPark().getMyName() + " \n");
+    		
+    		
+    	}
+    	//output final list of jobs
+    	System.out.println(output);
+    	
+    	return jobsAvailable;
+    }
 }

@@ -5,10 +5,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
+
 
 /**
  * JobController handles job creation,
@@ -20,6 +19,8 @@ import java.util.Scanner;
 public class JobController implements Serializable{
 
 	
+
+	private static final long serialVersionUID = 1L;
 	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 20;
 	private static final int MAX_NUM_VOLUNTEERS_PER_JOB = 10;
 	private static final int MAX_ALLOWED_DATE_INTO_FUTURE = 75;
@@ -35,10 +36,6 @@ public class JobController implements Serializable{
 	private ParkManager myJobCreator;
 	
 	
-	
-	/**
-	 * 
-	 */
 
 	public JobController(Job theJob, List<Job>theJobs, ParkManager theCreator) {
 		this.myJob = theJob;
@@ -80,7 +77,7 @@ public class JobController implements Serializable{
 	
 	//this is our assumption-job need to be well in the future to get volunteers--min MIN_JOB_POST_DAY_LENGTH
 	public boolean hasJobStartDateAllowVolunteerSignUp(LocalDate theCurrentDate, LocalDate theJobStartDate) {
-		return betweenDates(theCurrentDate,theJobStartDate)>= MIN_JOB_POST_DAY_LENGTH;
+		return numOfDaysBetweenTwoDays(theCurrentDate,theJobStartDate)>= MIN_JOB_POST_DAY_LENGTH;
 	}
 	/**
 	 * assign the starting date of the job
@@ -97,9 +94,9 @@ public class JobController implements Serializable{
 		if(jobStartDate != null) {
 			LocalDate currentDate = LocalDate.now();
 			 //MIN_JOB_POST_DAY_LENGTH at least more than MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE
-			System.out.println(betweenDates(currentDate,jobStartDate));
+		
 			if (hasJobStartDateAllowVolunteerSignUp(currentDate, jobStartDate) && 
-					betweenDates(currentDate,jobStartDate)<= MAX_ALLOWED_DATE_INTO_FUTURE){
+					numOfDaysBetweenTwoDays(currentDate,jobStartDate)<= MAX_ALLOWED_DATE_INTO_FUTURE){
 				//dont have max jobs on start date
 				if(hasMaxJobsNotOnJobsDate(jobStartDate)) {
 					myJob.setMyStartDate(jobStartDate);
@@ -280,16 +277,16 @@ public class JobController implements Serializable{
 		 }
 
 		 //system job limit passed for the duration of the days--check each day in the duration
-	 public boolean hasDurationDayshasNoMaxJobs(LocalDate theEndDate,int theDuration) {
+	 public boolean hasDurationDayshasNoMaxJobs(LocalDate theStartDate,int theDuration) {
 		 
 		 boolean dateHasPassed = true;
 		 if(theDuration == 1) {
 			 //no need to check already passed in checking start date
 			 return dateHasPassed;
 		 }
-			//loop and call isDuplicateStartDatePassed the duration time and check each date
-		 for(int i = 1; i <= theDuration; i++) {
-			LocalDate checkedDate = theEndDate.plusDays(i);
+			//loop and call hasMaxJobsNotOnJobsDate the duration time and check each date
+		 for(int i = 0; i < theDuration; i++) {
+			LocalDate checkedDate = theStartDate.plusDays(i);
 			//if it doesnt pass ,exit, the end date not accepted
 			 if(!hasMaxJobsNotOnJobsDate(checkedDate)){
 				 dateHasPassed = false;
@@ -314,8 +311,8 @@ public class JobController implements Serializable{
 	 public boolean isMyJobPast(Job theJob){
 		 LocalDate currentDate = LocalDate.now();
 		 //-ve means past,true
-		 return (betweenDates(currentDate,theJob.getMyEndDate()) < 0);
-			 
+		 return (numOfDaysBetweenTwoDays(currentDate,theJob.getMyEndDate()) < 0);
+			
 	 }
 	 /**
 	  * update job status(past status and pending status)
@@ -410,7 +407,7 @@ public class JobController implements Serializable{
 	 * @return the difference between the two days, exclusive of the second date
 	 */
 	//calculate difference between dates
-	 public static long betweenDates(LocalDate firstDate, LocalDate secondDate) {
+	 public static long numOfDaysBetweenTwoDays(LocalDate firstDate, LocalDate secondDate) {
 		
 	    return  ChronoUnit.DAYS.between(firstDate,secondDate);
 	 }

@@ -7,6 +7,8 @@ import java.util.List;
 
 public class ParkManagerController extends AbstractController implements Serializable{
     
+	
+	private static final long serialVersionUID = 1L;
 	private List<Job>myJobs;
 	private List<Volunteer>myVolunteers;
 	private ParkManager myUser;

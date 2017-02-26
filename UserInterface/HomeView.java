@@ -6,6 +6,9 @@ import java.util.Scanner;
 import model.ParksSystem;
 
 public class HomeView {
+	
+	private static final String Q_FOR_QUIT_SYSTEM_COMMAND = "q";
+	private static final int OFFSET = 1;
 	private static final int MAX_USER_INPUT_TRIAL = 3;
 	private static Scanner myReader;
 	private static ParksSystem mySystem;
@@ -23,7 +26,8 @@ public class HomeView {
 	public void initHome(Scanner theScanner) {
 		myReader = theScanner;
 
-		System.out.println("Enter Email or press q to quit system!");
+		System.out.println("Enter Email or press " + 
+		  Q_FOR_QUIT_SYSTEM_COMMAND + " to quit system!");
 	}
 
 
@@ -33,7 +37,7 @@ public class HomeView {
 		for (int retries = 0; retries < MAX_USER_INPUT_TRIAL; retries++) {
 			String userCredential = myReader.nextLine();
 			
-			if(userCredential.equalsIgnoreCase("q")){
+			if(userCredential.equalsIgnoreCase(Q_FOR_QUIT_SYSTEM_COMMAND)){
 				mySystem.logout();
 				break;
 			}
@@ -44,13 +48,13 @@ public class HomeView {
 				break;
 			} else {
 			
-				if ( retries == MAX_USER_INPUT_TRIAL -1) {
+				if ( retries == MAX_USER_INPUT_TRIAL - OFFSET) {
 					System.out.println("Failed max trial system exiting....");
 					mySystem.logout();
 				} else {
 
 					System.out.println("Login failed: try again! or ");
-					System.out.println("press q to quit!");
+					System.out.println("press "+ Q_FOR_QUIT_SYSTEM_COMMAND +" to quit!");
 				}
 			}
 		}

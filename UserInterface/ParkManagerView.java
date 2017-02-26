@@ -4,16 +4,20 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-import model.AbstractUser;
 import model.Job;
 import model.JobController;
 import model.ParkManager;
 import model.ParkManagerController;
-import model.Volunteer;
 
 
-public class ParkManagerView extends HomeView{
+
+public class ParkManagerView extends HomeView {
+	
 	private static final int MAX_USER_INPUT_TRIAL = 3;
+	private static final String V_FOR_VIEW_COMMAND = "v";
+	private static final String S_FOR_SUBMIT_OR_SINGUP_COMMAND = "s";
+	private static final String L_FOR_LOGOUT_USER_VIEW_COMMAND = "L";
+	private static final String R_FOR_RETURN_PREV_VIEW_FOR_USERS = "r";
 	private  ParkManager myManager;
 	private  JobController jobValidator;
 	private  ParkManagerController myController;
@@ -41,14 +45,14 @@ public class ParkManagerView extends HomeView{
 
 		managerMenu.append("Choose the command option, and press enter:\n");
 		if(myController.isNewJobAccepted()) {
-			managerMenu.append("s Submit a job\n");
-			managerMenu.append("v View my Jobs\n");
-			managerMenu.append("l logout");
+			managerMenu.append(S_FOR_SUBMIT_OR_SINGUP_COMMAND +" Submit a job\n");
+			managerMenu.append(V_FOR_VIEW_COMMAND + " View my Jobs\n");
+			managerMenu.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " logout");
 		} else {
 			managerMenu.append("We are not accepting new job currently\n");
-			managerMenu.append("v View my Jobs\n");
+			managerMenu.append(V_FOR_VIEW_COMMAND+ " View my Jobs\n");
 			//show the jobs already created and 1 option
-			managerMenu.append("l logout");
+			managerMenu.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " logout");
 		}
 		System.out.println(managerMenu);
 		String userChoice = myReader.nextLine();
@@ -58,15 +62,15 @@ public class ParkManagerView extends HomeView{
 	}
 
 	public void showChoosenCommand(String userInput) {
-		//System.out.println(userInput.equalsIgnoreCase(userInput));
-		if(userInput.equalsIgnoreCase("s")) {
+		
+		if(userInput.equalsIgnoreCase(S_FOR_SUBMIT_OR_SINGUP_COMMAND)) {
 			sumbitJobView();
 			
 			exitOrReturnView();
 	
-		}  else if(userInput.equalsIgnoreCase("l")) {
+		}  else if(userInput.equalsIgnoreCase(L_FOR_LOGOUT_USER_VIEW_COMMAND)) {
 			myController.logout();
-		} else if (userInput.equalsIgnoreCase("v")) {
+		} else if (userInput.equalsIgnoreCase(V_FOR_VIEW_COMMAND)) {
 			
 			viewManagerJobs();
 			exitOrReturnView();
@@ -77,14 +81,14 @@ public class ParkManagerView extends HomeView{
 		
 		StringBuilder exitString = new StringBuilder();
 		exitString.append("What would you like to do?\n");
-		exitString.append("r Return to prior menu\n");
-		exitString.append("l Logout");
+		exitString.append(R_FOR_RETURN_PREV_VIEW_FOR_USERS + " Return to prior menu\n");
+		exitString.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " Logout");
 		
 		System.out.println(exitString);
 		String userInput = myReader.nextLine();
-		if (userInput.equalsIgnoreCase("l")) {
+		if (userInput.equalsIgnoreCase(L_FOR_LOGOUT_USER_VIEW_COMMAND)) {
 			myController.logout();
-		} else if(userInput.equalsIgnoreCase("r")) {
+		} else if(userInput.equalsIgnoreCase(R_FOR_RETURN_PREV_VIEW_FOR_USERS)) {
 			initHome(myReader);
 		}
 		
@@ -110,7 +114,7 @@ public class ParkManagerView extends HomeView{
 		acceptNumOfVolunteers();
 		confirmSubmitView();
 		
-		
+	
 	}
 	
 	public boolean acceptDateView() {
@@ -249,13 +253,12 @@ public class ParkManagerView extends HomeView{
 		List<Job>managerJobs = myController.getJobsByManagerId();
 		StringBuilder managerJobsString = new StringBuilder();
 		managerJobsString.append("Job Id-----Job Description-------Start Date-------End Date-----Current Volunters # \n");
+		
 		String shortDescription = "";
 		for(int i = 0; i < managerJobs.size(); i++) {
-			if(!(managerJobs.get(i).getMyDescription().length() < 20)){
-				shortDescription = managerJobs.get(i).getMyDescription().substring(0, 20);
-			} else {
-				 shortDescription = managerJobs.get(i).getMyDescription();
-			}
+			
+			shortDescription = myController.truncateJobDescriptionForDisplay(managerJobs.get(i));
+			
 			managerJobsString.append(managerJobs.get(i).getMyJobId() +" ------------ " + shortDescription + "------" +
 		         managerJobs.get(i).getMyStartDate()+ " ------- "+ managerJobs.get(i).getMyEndDate()+" ----- "
 					+ managerJobs.get(i).getMyCurrentTotalVolunteers() + " \n");

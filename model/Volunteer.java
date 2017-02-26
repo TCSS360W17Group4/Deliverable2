@@ -1,13 +1,15 @@
 package model;
 
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Volunteer extends AbstractUser {
 	
-	 private boolean isUserBlackBalled = false;
+	
+	private static final long serialVersionUID = 1L;
+	private boolean isUserBlackBalled = false;
 	 private List<Integer> myVolunteerJobs = new ArrayList<>();
 	
 	 public boolean getMyBlackballStatus() {
