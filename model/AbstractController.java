@@ -29,6 +29,7 @@ public abstract class AbstractController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final int MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE = 2; 
 	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 20;
+
 	
     private  List<Job> myJobs;
     private  AbstractUser myUser;
@@ -51,6 +52,10 @@ public abstract class AbstractController implements Serializable {
     		 if(isMyJobPast(job)) {
     			 job.setMyJobIsPast(true);
     			 //past no longer pending too
+    			 job.setMyJobIsPending(false);
+    		 }
+    		 
+    		 if(isSignUpDayPassed(job) && isJobFullForSignUp(job)){
     			 job.setMyJobIsPending(false);
     		 }
     	}
@@ -165,12 +170,14 @@ public abstract class AbstractController implements Serializable {
 	  * @param theJob the job to be checked 
 	  * @return true if job reached maximum volunteer limit, false otherwise
 	  */
-	 //job is full for sign up BR: 2B
+	
 	 public static boolean isJobFullForSignUp(Job theJob) {
 		 
 		 int totalVolunteersNeeded = totalVolunteersPerJob(theJob);
 		 int currentTotal = theJob.getMyCurrentTotalVolunteers();
-		 return totalVolunteersNeeded == currentTotal;
+		 //checked when job is submitted but extra validation
+		 //&& currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB;
+		 return (totalVolunteersNeeded == currentTotal) ;
 	 }
 	 
 	 //this can go to volunteers

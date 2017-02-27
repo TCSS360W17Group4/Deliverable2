@@ -63,7 +63,7 @@ public class VolunteerView extends HomeView {
 	}
 
 	public void showChoosenCommand(String userInput) {
-		//System.out.println(userInput.equalsIgnoreCase(userInput));
+		
 		if(userInput.equalsIgnoreCase(S_FOR_SUBMIT_OR_SINGUP_COMMAND)) {
 			signUpForJobView();
 			exitOrReturnView();
@@ -146,6 +146,8 @@ public class VolunteerView extends HomeView {
 					int currenTotal = (myController.getSingleJobByGivenId(new Integer(theId)).getMyCurrentTotalVolunteers())+1;
 					Job jobAdded = myController.getSingleJobByGivenId(new Integer(theId));
 					jobAdded.setMyCurrentTotalVolunteers(currenTotal);
+					//add volunteer to Job arrayList of volunteers
+					jobAdded.getMyVolunteerList().add(myVolunteer.getMyUserId());
 					System.out.println("You have successfully signed up for the job");
 					break;
 			
@@ -158,7 +160,12 @@ public class VolunteerView extends HomeView {
 						initHome(myReader);
 					} else {
 
-						System.out.println("You have job on the same day, choose another ");
+						
+						System.out.println("Signup failed. Reasons:You may have the job already, \n"
+								+ "sign up date passed for the job,\n "
+								+ "you have the another job on the same date\n"
+								+ "or the job could be full");
+						System.out.println("Try again, add job from available list only");
 						
 					}
 				}
@@ -182,7 +189,8 @@ public class VolunteerView extends HomeView {
     	StringBuilder jobSignUpString = new StringBuilder();
     	StringBuilder output = new StringBuilder();
     	
-    	jobSignUpString.append("Job Id------Job Description------------------Start Date------EndDate-------City----Park\n");
+    	jobSignUpString.append("Job Id-----current total Volunteers-------Job Description-------"
+    			+ "-----------Start Date------EndDate-------City----Park\n");
     	
     	System.out.println(jobSignUpString);
     	List<Job> pendingJobs = myController.getMyPendingJobsForVolunteer();
@@ -199,10 +207,12 @@ public class VolunteerView extends HomeView {
     	for(int i = 0; i < pendingJobs.size(); i++) {
     		shortDescription = myController.truncateJobDescriptionForDisplay(pendingJobs.get(i));
     		
-    				output.append(pendingJobs.get(i).getMyJobId() + "---" + shortDescription
+    				output.append(pendingJobs.get(i).getMyJobId() + "---"+ 
+    				 pendingJobs.get(i).getMyCurrentTotalVolunteers()+"-------" + shortDescription
     				        + " --- " + pendingJobs.get(i).getMyStartDate() + " to " + 
     				pendingJobs.get(i).getMyEndDate() + " --- "+ 
-    				            pendingJobs.get(i).getMyPark().getMyCity() + "------- " + pendingJobs.get(i).getMyPark().getMyName() + " \n");
+    				            pendingJobs.get(i).getMyPark().getMyCity() + "------- " + 
+    				pendingJobs.get(i).getMyPark().getMyName() + " \n");
     		
     		
     	}

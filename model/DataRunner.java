@@ -61,36 +61,36 @@ public class DataRunner {
 		uParks.setMyParkManagers(myParkManagers);
 		
 		//Jobs
-		//past job
+		//job with 9 vol, still available for sign up 
 		Job j0 = new Job(p0);
 		List<Integer> j0Vol = new ArrayList<>();
-		j0Vol.add(1);j0Vol.add(2);j0Vol.add(3);j0Vol.add(4);j0Vol.add(5);j0Vol.add(6);j0Vol.add(7);j0Vol.add(8);
-		j0.setMyCreationDate(JobController.convertStringToDate("02/05/17"));
-		j0.setMyCurrentTotalVolunteers(8);
+		j0Vol.add(1);j0Vol.add(2);j0Vol.add(3);j0Vol.add(4);j0Vol.add(5);j0Vol.add(6);j0Vol.add(7);j0Vol.add(8);j0Vol.add(9);
+		j0.setMyCreationDate(JobController.convertStringToDate("02/28/17"));
+		j0.setMyCurrentTotalVolunteers(9);
 		j0.setMyDescription("Free Lunch Program for kids-need guides and energetic volunteers who plays with the kids");
-		j0.setMyStartDate(JobController.convertStringToDate("02/09/17"));
-		j0.setMyEndDate(JobController.convertStringToDate("02/10/17"));
-		j0.setMyLightVolunteerNumber(2);
+		j0.setMyStartDate(JobController.convertStringToDate("03/11/17"));
+		j0.setMyEndDate(JobController.convertStringToDate("03/13/17"));
+		j0.setMyLightVolunteerNumber(4);
 		j0.setMyMediumVolunteerNumber(5);
 		j0.setMyHeavyVolunteerNumber(1);
 		j0.setMyJobId(0);
-		j0.setMyJobIsPast(true);
-		j0.setMyJobIsPending(false);
+		j0.setMyJobIsPast(false);
+		j0.setMyJobIsPending(true);
 		j0.setMyJobManagerId(0);
 		j0.setMyPark(p0);
 		j0.setMyVolunteerList(j0Vol);
 		j0.setMyTime(JobController.convertStringToTime("09:35"));
 		
-		//1 already full job
+		//1 5 volunteers job
 		Job j1 = new Job(p0);
 		List<Integer> j1Vol = new ArrayList<>();
-		j1Vol.add(1);j1Vol.add(2);
-		j1.setMyCreationDate(JobController.convertStringToDate("02/10/17"));
+		j1Vol.add(4);j1Vol.add(5);
+		j1.setMyCreationDate(JobController.convertStringToDate("02/28/17"));
 		j1.setMyCurrentTotalVolunteers(2);
 		j1.setMyDescription("volunteer reception and registration");
-		j1.setMyStartDate(JobController.convertStringToDate("02/17/17"));
-		j1.setMyEndDate(JobController.convertStringToDate("02/18/17"));
-		j1.setMyLightVolunteerNumber(2);
+		j1.setMyStartDate(JobController.convertStringToDate("03/08/17"));
+		j1.setMyEndDate(JobController.convertStringToDate("03/10/17"));
+		j1.setMyLightVolunteerNumber(3);
 		j1.setMyMediumVolunteerNumber(0);
 		j1.setMyHeavyVolunteerNumber(0);
 		j1.setMyJobId(1);
@@ -101,42 +101,41 @@ public class DataRunner {
 		j1.setMyVolunteerList(j1Vol);
 		j1.setMyTime(JobController.convertStringToTime("08:00"));
 		
-		//job with 29 volunteers
+		//job with 10 volunteers, past
 		Job j2 = new Job(p0);
-		List<Integer> j1Vo2 = new ArrayList<>();
-		j1Vo2.add(1);j1Vo2.add(2);
-		for (int i = 1 ; i <= 29; i++) {
-			j1Vo2.add(i);
+		List<Integer> j2Vo1 = new ArrayList<>();
+	
+		for (int i = 1 ; i <= 10; i++) {
+			j2Vo1.add(i);
 		}
 		j2.setMyCreationDate(JobController.convertStringToDate("02/10/17"));
-		j2.setMyCurrentTotalVolunteers(2);
+		j2.setMyCurrentTotalVolunteers(10);
 		j2.setMyDescription("Coastal cleanup Day-beaches, lakes and rivers");
 		j2.setMyStartDate(JobController.convertStringToDate("02/17/17"));
 		j2.setMyEndDate(JobController.convertStringToDate("02/18/17"));
 		j2.setMyLightVolunteerNumber(0);
-		j2.setMyMediumVolunteerNumber(30);
+		j2.setMyMediumVolunteerNumber(10);
 		j2.setMyHeavyVolunteerNumber(0);
 		j2.setMyJobId(2);
-		j2.setMyJobIsPast(false);
-		j2.setMyJobIsPending(true);
+		j2.setMyJobIsPast(true);
+		j2.setMyJobIsPending(false);
 		j2.setMyJobManagerId(0);
 		j2.setMyPark(p0);
-		j2.setMyVolunteerList(j1Vo2);
+		j2.setMyVolunteerList(j2Vo1);
 		j2.setMyTime(JobController.convertStringToTime("09:35"));
 		
-		//very long future date job..for showing calendar 
-		//demo creating job with this or volunteers volunteering 
+		//job 3 
 		Job j3 = new Job(p3);
 		List<Integer> j3Vo2 = new ArrayList<>();
-		j3Vo2.add(9);j3Vo2.add(10);j3Vo2.add(11);j3Vo2.add(12);
+		j3Vo2.add(1);j3Vo2.add(2);j3Vo2.add(3);j3Vo2.add(4);
 		
 		j3.setMyCreationDate(JobController.convertStringToDate("02/10/17"));
-		j3.setMyCurrentTotalVolunteers(2);
+		j3.setMyCurrentTotalVolunteers(4);
 		j3.setMyDescription("recycling, tree trimming, lawn mowing, trail maintenance");
-		j3.setMyStartDate(JobController.convertStringToDate("03/07/17"));
-		j3.setMyEndDate(JobController.convertStringToDate("03/08/17"));
+		j3.setMyStartDate(JobController.convertStringToDate("03/17/17"));
+		j3.setMyEndDate(JobController.convertStringToDate("03/20/17"));
 		j3.setMyLightVolunteerNumber(0);
-		j3.setMyMediumVolunteerNumber(30);
+		j3.setMyMediumVolunteerNumber(10);
 		j3.setMyHeavyVolunteerNumber(0);
 		j3.setMyJobId(3);
 		j3.setMyJobIsPast(false);
@@ -152,6 +151,7 @@ public class DataRunner {
 		myJobs.add(j0);myJobs.add(j1); myJobs.add(j2);myJobs.add(j3);
 		//volunteer list with their jobs
 		uParks.setMyJobs(myJobs);
+		
 		String[] names = { "Carolyn Griffin","Elizabeth Banks","Helen Montgomery","Sarah Richards","Nancy Simmons","Jeremy Kennedy","Robin Howard"
 		,"Lisa Cunningham","Harold Ruiz","Carl Thompson","Terry Rose","Kathryn Carter","Judith Jacobs","Willie Arnold","Henry Fuller","Antonio Ramirez"
 		,"Craig Berry","Paul Matthews","Craig Carter","Bobby Baker","Antonio Watkins","Kevin Diaz","Linda Coleman","Ryan Taylor","Howard Freeman"
@@ -189,11 +189,28 @@ public class DataRunner {
 		myVolunteers.add(vol0);
 		
 		
-		//job id 2 vol
+		//creating volunteers with different attributes
+		//11-29 has no job 
 		for(int i = 1; i <= 29;i++) {
 			Volunteer vol = new Volunteer();
 			List<Integer>volJobs = new ArrayList<>();
-			volJobs.add(2);//1 to 29 id vol has 2 jobid
+	
+		
+			if(i >=1 && i <=9) {
+				volJobs.add(0);//1 to 9 has job 0
+				volJobs.add(2);// 1- 9 has job 2 too
+			}
+			if(i == 4 || i == 5) {
+				volJobs.add(1);//4 and 5 has job 1
+			}
+			if(i == 10) {
+				volJobs.add(2);//10 has job 2
+			}
+			
+			if(i >=1 && i <=4) {
+				volJobs.add(3);//1 to 4 has job 
+			}
+			
 			vol.setMyAddress(address[i]);
 			vol.setMyBlackballStatus(false);
 			vol.setMyEmail(email[i]);
@@ -210,78 +227,7 @@ public class DataRunner {
 			myVolunteers.add(vol);//volunteers added here,
 		}
 		
-		//volunteer should be added one after the other
-
-		//this added volunteer with no job scenario
-		Volunteer vol30 = new Volunteer();
-		List<Integer>vol30Jobs = new ArrayList<>();
-		vol30.setMyAddress("846 Artisan Road");
-		vol30.setMyBlackballStatus(false);
-		vol30.setMyEmail("bpowell10@reference.com");
-		vol30.setMyName("Brenda Powell");
-		vol30.setMyPhone("(349)464-4234");
-		vol30.setMyType(UserType.Volunteer);
-		vol30.setMyUserId(30);
-		vol30.setMyUserName("vol30");
-		vol30.setMyVolunteerJobs(vol30Jobs);//no job for blackballed volunteer
-		myVolunteers.add(vol30);
-		
-		//list of volunteers we alreayd have add different job id to different list of volunteers
-		//job id 0 vol
-		for(int i = 1; i <= 8;i++) {
-			Volunteer vol = new Volunteer();
-			List<Integer>volJobs = new ArrayList<>();
-			volJobs.add(0);//1 to 8 has job id 0
-			vol.setMyAddress(address[i]);
-			vol.setMyBlackballStatus(false);
-			vol.setMyEmail(email[i]);
-			vol.setMyName(names[i]);
-			vol.setMyPhone(phones[i]);
-			vol.setMyType(UserType.Volunteer);
-			vol.setMyUserId(i);
-			String username = "vol"+i;
-			vol.setMyUserName(username);
-			vol.setMyVolunteerJobs(volJobs);
-			
-			
-		}
-		
-		//job id 1 vol
-		for(int i = 1; i <= 2;i++) {
-			Volunteer vol = new Volunteer();
-			List<Integer>volJobs = new ArrayList<>();
-			volJobs.add(1);//1 and 2 has job id 1
-			vol.setMyAddress(address[i]);
-			vol.setMyBlackballStatus(false);
-			vol.setMyEmail(email[i]);
-			vol.setMyName(names[i]);
-			vol.setMyPhone(phones[i]);
-			vol.setMyType(UserType.Volunteer);
-			vol.setMyUserId(i);
-			String username = "vol"+i;
-			vol.setMyUserName(username);
-			vol.setMyVolunteerJobs(volJobs);
-			
-		
-		}
-		//job id 3 vol
-		for(int i = 9; i <= 12;i++) {
-			Volunteer vol = new Volunteer();
-			List<Integer>volJobs = new ArrayList<>();
-			volJobs.add(3);//9,10,11, 12 has job id 3
-			vol.setMyAddress(address[i]);
-			vol.setMyBlackballStatus(false);
-			vol.setMyEmail(email[i]);
-			vol.setMyName(names[i]);
-			vol.setMyPhone(phones[i]);
-			vol.setMyType(UserType.Volunteer);
-			vol.setMyUserId(i);
-			String username = "vol"+i;
-			vol.setMyUserName(username);
-			vol.setMyVolunteerJobs(volJobs);
-			
-		
-		}
+	
 		
 		uParks.setMyVolunteers(myVolunteers);
 		/**************************

@@ -51,8 +51,7 @@ public class VolunteerController extends AbstractController {
 	 public boolean isSignupForJobSuccesful(int theJobId) {
 		 
 		 boolean signUpSuccess = true;
-		 //check user already signed up/ in case number not listed entered
-		 List<Integer> currentJobsList = myVolunteers.get(myUser.getMyUserId()).getMyVolunteerJobs();
+		
 		 
 		 		if (myVolunteers.get(myUser.getMyUserId()).getMyBlackballStatus() || 
 		 		        volunteerHasTheJob(theJobId) || 
@@ -64,17 +63,11 @@ public class VolunteerController extends AbstractController {
 		 		 
 		 		} else {
 		 		
-//		 		    //add to the bucket
-//		 		    currentJobsList.add(new Integer(theJobId));
-//		 		    //make job list the current one
-//		 		    myVolunteers.get(myUser.getMyUserId()).setMyVolunteerJobs(currentJobsList);
-//                   	
-//               	//update total volunteers for the job
-//               	int currenTotal = myJobs.get(theJobId).getMyCurrentTotalVolunteers()+1;
-//   	 			myJobs.get(theJobId).setMyCurrentTotalVolunteers(currenTotal);
-   	 			signUpSuccess = true;
+
+		 			signUpSuccess = true;
                    	 			
-                   }
+                }
+		 		
 		 		return signUpSuccess;
 	 }
 	 
