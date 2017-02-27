@@ -157,7 +157,7 @@ public class VolunteerController extends AbstractController {
 		 *  checks each days of the new job with current 
 		 *  calendar days of the volunteer
 		 *  
-		 * @param theNewJobId
+		 * @param theNewJobId to be signed up
 		 * @return true if the new job id violates MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY
 		 * 
 		 * @throws ArrayIndexOutOfBoundsException
@@ -179,22 +179,25 @@ public class VolunteerController extends AbstractController {
 		 
 		 //loop the duration of the new job, and check each days with volunteer calendar days
 		 for(int i = 0; i < jobCheckedDuration; i++) {
-			 
-			 LocalDate dateChecked = jobChecked.getMyEndDate().plusDays(i);
+			 //Bug, I should be adding the day to start date, not end date
+			 LocalDate dateChecked = jobChecked.getMyStartDate().plusDays(i);
 			 
 			 //count occurence of new job date in booked calendar days
 			 int countDateCheckedOccurence = 0;
-			 
-			 if(bookedListOfDays.contains(dateChecked)) {
-				 
-				 countDateCheckedOccurence += 1;
-				 
-				 if(countDateCheckedOccurence > MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY) {
+			 //Need another for loop to if MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY becomes >1
+			 for(int j = 0; j < bookedListOfDays.size(); j++) {
+				 if(bookedListOfDays.get(j).equals(dateChecked)) {
 					 
-					 maxDayViolated = true;
+					 countDateCheckedOccurence += 1;
 					 
-					 break;
+					 if(countDateCheckedOccurence >= MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY) {
+						 
+						 maxDayViolated = true;
+						 
+						 break;
+					 }
 				 }
+			 
 			 }
 		 }
 		 
