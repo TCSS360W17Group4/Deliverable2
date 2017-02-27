@@ -20,7 +20,7 @@ public class VolunteerControllerTest {
 
 	private int JOB_ID_WITH_NO_CONFLICTING_DATE = 0;
 	private int JOB_ID_WITH_CONFLICTING_DATE_AS_JOB_ID_ONE = 1;
-	
+	private int INVALID_JOB_ID_NEGATIVE_VALUE = -1;
 	private Job nonConflictingJob;
 	private Job conflictingJob;
 	private Volunteer volunteer;
@@ -79,22 +79,6 @@ public class VolunteerControllerTest {
 		
 	}
 	
-
-	/**
-	 * @author Dereje Bireda
-	 * 
-	 *{@link model.VolunteerController#hasJobViolateMaxJobPerDayPerVolunteer(int)}
-	 */
-	@Test
-	public void hasJobViolatedMaxJobPerDayPerVolunteer_Expecting_IntegerId() {
-		
-		assertFalse("Fail! with no jobs adding a job", 
-				controller.hasJobViolateMaxJobPerDayPerVolunteer(nonConflictingJob.getMyJobId()));
-		
-		
-		
-	}
-	
 	
 	
 	/**
@@ -112,7 +96,19 @@ public class VolunteerControllerTest {
 		assertTrue("Fail! new Job added schedule violate max Job limit per day", 
 				controller.hasJobViolateMaxJobPerDayPerVolunteer(conflictingJob.getMyJobId()));
 		
-		
-		
 	}
+	
+	
+
+	/**
+	 * @author Dereje Bireda
+	 * 
+	 *{@link model.VolunteerController#hasJobViolateMaxJobPerDayPerVolunteer(int)}
+	 */
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
+	public void hasJobViolatedMaxJobPerDayPerVolunteer_Expecting_Positive_IntegerId() {
+		
+				controller.hasJobViolateMaxJobPerDayPerVolunteer(INVALID_JOB_ID_NEGATIVE_VALUE);
+	}
+	
 }
