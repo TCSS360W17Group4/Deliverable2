@@ -1,89 +1,70 @@
-
 package UserInterface;
 
 
-import model.AbstractController;
-import model.ParkManagerController;
+import java.util.Scanner;
+
 import model.ParksSystem;
-import model.VolunteerController;
 
 public class HomeView {
 	
+	private static final String Q_FOR_QUIT_SYSTEM_COMMAND = "q";
+	private static final int OFFSET = 1;
+	private static final int MAX_USER_INPUT_TRIAL = 3;
+	private static Scanner myReader;
 	private static ParksSystem mySystem;
 
-	public HomeView(ParksSystem theSystem) {
-	    mySystem = theSystem;
-    }
-	/**
-	 * I/O Interaction with user before one of the three Views take over
-	 * 
-	 * Displays the initial Urban Parks prompt to the user for login
-	 * 
-	 * Tries to pass control over to one of the "views" once user is logged in
-	 */
-    public void run() {
-        String result = "";
-        String command;
-
-		result = ProcessInput("HELP");
-        System.out.println(result + "\n");
-        do
-        {
-            System.out.printf("Enter a Command >");
-            command = CommandLine.myScanner.nextLine();
-            result = ProcessInput(command);
-            System.out.println(result + "\n");
-        } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
+	//private boolean pageRedirected = false;
+	
+	public HomeView() {
 		
-		//if user quit, do a ParksSystem.logout() call
-		
+		HomeHeaderTitle();
+	}
+	private void HomeHeaderTitle() {
+		System.out.println("Welcome to UParks");
 	}
 	
-    /**
-     * Executes the command received by the user, taking the action relevant to the command
-     * 
-     * @param theString the command entered by the user that needs interpreting and executing
-     * @return a string to be displayed to the user so that he can know what has happened
-     */
-    public String ProcessInput(String theString) {
-        String[] tokens = theString.split(" ");
-        String result = "";
-        
-        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") || tokens[0].equalsIgnoreCase("2") ) {
-            result="\tWelcome to Urban Parks\n";
-            result+="\t-------------------\n";
-            result+="\t1 Login\t\t(LOG) <username>\n";
-            result+="\t2 HELP(H)\n";
-            result+="\t3 QUIT(Q)\n";
-            result+="\n";
-            result+="\tExample input: 1 myusername, or LOG myusername\n";
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("LOG") ) {
-            AbstractController myController = mySystem.loginSuccessful(tokens[1]);
-            if (myController == null || myController.getMyUser() == null){
-                return "Login Failed, User not Found";
-            }
-            if (myController instanceof VolunteerController){
-                VolunteerView myVolunteerView = new VolunteerView(mySystem, (VolunteerController)myController);
-                myVolunteerView.run(); 
-                
-            }
-            if (myController instanceof ParkManagerController){
-                ParkManagerView myParkManagerView = new ParkManagerView(mySystem, (ParkManagerController)myController);
-                myParkManagerView.run(); 
-                
-            }
+	public void initHome(Scanner theScanner) {
+		myReader = theScanner;
 
-            
-        }  else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") || tokens[0].equalsIgnoreCase("3")) {
-            mySystem.logout();
-            result += "Goodbye";
-            
-        } else {
-            result += "Unrecognized Command";
-        }
- 
-        return result;
-        
-    }
+		System.out.println("Enter Email or press " + 
+		  Q_FOR_QUIT_SYSTEM_COMMAND + " to quit system!");
+	}
 
+
+	public boolean loginTrialView(ParksSystem theSystem) {
+		mySystem = theSystem;
+		boolean pageRedirected = false;
+		for (int retries = 0; retries < MAX_USER_INPUT_TRIAL; retries++) {
+			String userCredential = myReader.nextLine();
+			
+			if(userCredential.equalsIgnoreCase(Q_FOR_QUIT_SYSTEM_COMMAND)){
+				mySystem.logout();
+				break;
+			}
+			if(mySystem.loginSuccessful(userCredential)) {
+				
+				pageRedirected = true;
+				System.out.println("Login Successful");
+				break;
+			} else {
+			
+				if ( retries == MAX_USER_INPUT_TRIAL - OFFSET) {
+					System.out.println("Failed max trial system exiting....");
+					mySystem.logout();
+				} else {
+
+					System.out.println("Login failed: try again! or ");
+					System.out.println("press "+ Q_FOR_QUIT_SYSTEM_COMMAND +" to quit!");
+				}
+			}
+		}
+		//return pageRedirected;
+		pageRedirected = mySystem.isPageRedirected();
+	
+		return pageRedirected;
+	}
+
+	public void exitSystem(){
+		mySystem.logout();
+	}
 }
