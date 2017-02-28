@@ -11,23 +11,27 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import model.Job;
-import model.JobController;
 import model.Park;
 import model.Volunteer;
 import model.VolunteerController;
 
-public class VolunteerControllerTest {
-
-	private int JOB_ID_WITH_NO_CONFLICTING_DATE = 0;
-	private int JOB_ID_WITH_CONFLICTING_DATE_AS_JOB_ID_ONE = 1;
-	private int VOLUNTEER_ID = 0;
-	private int INVALID_JOB_ID_NEGATIVE_VALUE = -1;
-	private int NON_ASSIGNED_JOB_ID = 2;
+public class VolunteerControllerTest { 
+	private static final int JOB_ID_WITH_NO_CONFLICTING_DATE = 0;
+	private static final  int JOB_ID_WITH_CONFLICTING_DATE_AS_JOB_ID_ONE = 1;
+	
+	private static final int VOLUNTEER_ID = 0;
+	private static final int INVALID_JOB_ID_NEGATIVE_VALUE = -1;
+	private static final int NOT_USED_JOB_ID = 2;
+	private static final int MIN_NUM_DAYS_FOR_JOB_SIGNUP = 2;
+	private static final int ONE_DAY_OFFSET = 1;
+	
 	private Job nonConflictingJob;
 	private Job conflictingJob;
 	private Volunteer volunteer;
 	private VolunteerController controller;
-	
+	private List<Job>emptyJobList;
+	private List<Job>JobWithTwoPendingJobs;
+	private LocalDate myCurrentDate;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -36,33 +40,41 @@ public class VolunteerControllerTest {
 	
 	public void setUp() {
 		volunteer = new Volunteer();
-		List<Job>systemJobs = new ArrayList<>();
+		JobWithTwoPendingJobs = new ArrayList<>();
+		emptyJobList = new ArrayList<>();
+		
+		//makes date testing future 
+		myCurrentDate = LocalDate.now();
 		
 		/*set up non conflicting job that could be added with no issue*/
 		nonConflictingJob = new Job(new Park());
 		nonConflictingJob.setMyJobId(JOB_ID_WITH_NO_CONFLICTING_DATE);
-		LocalDate firstJobStartDate = JobController.convertStringToDate("03/20/17");
-		LocalDate firstJobEndDate = JobController.convertStringToDate("03/23/17");
+		LocalDate firstJobStartDate = myCurrentDate.plusDays(3);
+		LocalDate firstJobEndDate = myCurrentDate.plusDays(5);
 	
 		nonConflictingJob.setMyStartDate(firstJobStartDate);
 		nonConflictingJob.setMyEndDate(firstJobEndDate);
+		//number of volunteers needed
+		nonConflictingJob.setMyLightVolunteerNumber(1);
 		
 		volunteer = new Volunteer();
 		volunteer.setMyUserId(VOLUNTEER_ID);
 		/*set up non conflicting job that could be added with no issue*/
 		conflictingJob = new Job(new Park());
 		conflictingJob.setMyJobId(JOB_ID_WITH_CONFLICTING_DATE_AS_JOB_ID_ONE);
-		LocalDate secondJobStartDate = JobController.convertStringToDate("03/20/17");
-		LocalDate secondJobEndDate = JobController.convertStringToDate("03/23/17");
+		LocalDate secondJobStartDate = myCurrentDate.plusDays(3);
+		LocalDate secondJobEndDate =  myCurrentDate.plusDays(5);
 	
 		conflictingJob.setMyStartDate(secondJobStartDate);
 		conflictingJob.setMyEndDate(secondJobEndDate);
-		systemJobs.add(nonConflictingJob);
-		systemJobs.add(conflictingJob);
+		//number of volunteers needed
+		conflictingJob.setMyLightVolunteerNumber(1);
+		JobWithTwoPendingJobs.add(nonConflictingJob);
+		JobWithTwoPendingJobs.add(conflictingJob);
 		
 	
 		/*set up controller*/
-		 controller = new VolunteerController(volunteer, systemJobs, null);
+		 controller = new VolunteerController(volunteer, JobWithTwoPendingJobs, null);
 	}
 
 
@@ -120,9 +132,9 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#hasJobViolateMaxJobPerDayPerVolunteer(int)}
 	 */
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void hasJobViolatedMaxJobPerDayPerVolunteer_Adding_Non_Assigned_JobId() {
+	public void hasJobViolatedMaxJobPerDayPerVolunteer_Adding_NOT_USED_JobId() {
 		volunteer.getMyVolunteerJobs().add(JOB_ID_WITH_NO_CONFLICTING_DATE);
-			controller.hasJobViolateMaxJobPerDayPerVolunteer(NON_ASSIGNED_JOB_ID);
+			controller.hasJobViolateMaxJobPerDayPerVolunteer(NOT_USED_JOB_ID);
 	}
 	/**
 	 * @author Dereje Bireda
@@ -134,13 +146,8 @@ public class VolunteerControllerTest {
 	public void hasMinSignupDaysBeforeJobStartPassed_Signup_When_Job_IsPast() {
 		Job pastJob = new Job(new Park());
 		
-		LocalDate startDate = JobController.convertStringToDate("02/10/17");
-		LocalDate endDate = JobController.convertStringToDate("02/13/17");
-	
-		pastJob.setMyStartDate(startDate);
-		pastJob.setMyEndDate(endDate);
-		
-		
+		pastJob.setMyStartDate(myCurrentDate.minusDays(ONE_DAY_OFFSET));
+		pastJob.setMyEndDate(myCurrentDate.plusDays(ONE_DAY_OFFSET));
 		assertTrue("Fail! signed up for a past job", controller.hasMinSignupDaysBeforeJobStartPassed(pastJob));
 		
 		
@@ -154,14 +161,11 @@ public class VolunteerControllerTest {
 	 */
 	
 	@Test
-	public void hasMinSignupDaysBeforeJobStartPassed_Job_Has_MoreThan_Min_Days_For_Signup() {
+	public void hasMinSignupDaysBeforeJobStartPassed_Job_Has_At_Least_Min_Days_For_Signup() {
 		Job futureJobStillOpen = new Job(new Park());
-		
-		LocalDate startDate = JobController.convertStringToDate("03/02/17");
-		LocalDate endDate = JobController.convertStringToDate("03/03/17");
 	
-		futureJobStillOpen.setMyStartDate(startDate);
-		futureJobStillOpen.setMyEndDate(endDate);
+		futureJobStillOpen.setMyStartDate(myCurrentDate.plusDays(MIN_NUM_DAYS_FOR_JOB_SIGNUP));
+		futureJobStillOpen.setMyEndDate(myCurrentDate.plusDays(ONE_DAY_OFFSET));
 		
 		
 		assertFalse("Fail! sign up for still open job", controller.hasMinSignupDaysBeforeJobStartPassed(futureJobStillOpen));
@@ -178,12 +182,10 @@ public class VolunteerControllerTest {
 	@Test
 	public void hasMinSignupDaysBeforeJobStartPassed_Job_Start_Date_Below_Min_Days_For_Signup() {
 		Job futureJobClosed = new Job(new Park());
-		
-		LocalDate startDate = JobController.convertStringToDate("02/29/17");
-		LocalDate endDate = JobController.convertStringToDate("02/29/17");
+
 	
-		futureJobClosed.setMyStartDate(startDate);
-		futureJobClosed.setMyEndDate(endDate);
+		futureJobClosed.setMyStartDate(myCurrentDate.plusDays(MIN_NUM_DAYS_FOR_JOB_SIGNUP - ONE_DAY_OFFSET ));
+		futureJobClosed.setMyEndDate(myCurrentDate);
 		
 		
 		assertTrue("Fail! sign up for future job, but sign up date passed",
@@ -252,7 +254,7 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#volunteerHasTheJob(Job)}
 	 */
 	@Test
-	public void volunteerHasTheJob_Job_Belongs_To_Volunteer() {
+	public void volunteerHasTheJob_Job_Is_Previously_Signedup() {
 		
 		int jobId = 1;
 		Job volunteerJob = new Job(new Park());
@@ -283,4 +285,31 @@ public class VolunteerControllerTest {
 	
 		assertFalse("Fail!Volunteer does not have the job",controller.volunteerHasTheJob(jobId));
 	}
+	
+	/**
+	 * @author Dereje Bireda
+	 * 
+	 *{@link model.VolunteerController#isJobAvailableToSignUp()}
+	 */
+	@Test
+	public void isJobAvailableToSignUp_When_Job_List_Is_Empty() {
+		//reset controller with empty job list 
+		controller = new VolunteerController(volunteer,emptyJobList,null);
+		assertFalse("Fail! no jobs available",controller.isJobAvailableToSignUp());
+	}
+	
+	/**
+	 * @author Dereje Bireda
+	 * 
+	 *{@link model.VolunteerController#isJobAvailableToSignUp()}
+	 */
+	@Test
+	public void isJobAvailableToSignUp_When_There_Is_A_Job_For_Sign_Up() {
+		//reset controller with empty job list 
+		emptyJobList.add(nonConflictingJob);
+		controller = new VolunteerController(volunteer,emptyJobList,null);
+		assertTrue("Fail! There is one Job available",controller.isJobAvailableToSignUp());
+	}
+	
+
 }
