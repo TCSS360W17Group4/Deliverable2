@@ -1,12 +1,19 @@
 package model;
 
+
 import java.util.ArrayList;
+
+import java.io.Serializable;
+
 import java.util.List;
 
 
 
 
-public class ParkManagerController extends AbstractController{
+
+
+public class ParkManagerController extends AbstractController implements Serializable{
+
     
     private final List<Job> myJobs;
     
@@ -36,10 +43,13 @@ public class ParkManagerController extends AbstractController{
         // User Story 2 BR a) Not more than the maximum number of pending jobs at a time.
         // User Story 2 BR d) There can be no more than two jobs on any given day.
         // User Story 2 BR e) A job cannot be scheduled more than one month in the future.
-        if(canAddJob(theJob, myJobs)) {
+        if(myJobController.canAddJob(theJob, myJobs)) {
             myJobController.addJob(theJob, myJobs);
+            return 1;
         }
+        return 0;
     }
+    
     
     /**
      * 

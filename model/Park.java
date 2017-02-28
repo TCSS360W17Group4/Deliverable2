@@ -1,7 +1,8 @@
 package model;
 
+import java.io.Serializable;
 
-public class Park {
+public class Park implements Serializable{
 
 	private int myParkId;
 	private String myName;
@@ -47,5 +48,10 @@ public class Park {
 	
 	public void setMyManagerId(int theManagerId) {
 		this.myManagerId = theManagerId;
+	}
+	
+	public String toString() {
+		return "Park Name: " + getMyName() + " Park City:" + getMyCity();
+		
 	}
 }

@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import model.AbstractUser;
 import model.Job;
 import model.JobController;
 import model.Park;
@@ -18,6 +19,7 @@ public class UrbanParksStaffControllerTest {
 	 private JobController jobController;
 	 private List<Job> myJobs; 
 	 private UrbanParksStaffController urbanParks;
+	 private AbstractUser myUser;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -38,18 +40,8 @@ public class UrbanParksStaffControllerTest {
 			jobController.isStartDateAdded("02/14/17", job1, myJobs);
 			jobController.isStartDateAdded("02/15/17", job2, myJobs);
 		
-			urbanParks = new UrbanParksStaffController(myJobs, null, null, null, jobController);
+			urbanParks = new UrbanParksStaffController(myUser, null, null, null, jobController, myJobs);
 	}
 
-	/**
-	 * {@link model.UrbanParksStaffController#viewCalendar()}
-	 */
-	@Test
-	public void testViewCalendar() {
-		List<Job> pendingJobs = urbanParks.viewCalendar();
-		int pendingJobsSize = pendingJobs.size();
-		int expectedSize = 1;
-		assertEquals(new Integer(expectedSize),new Integer(pendingJobsSize));
-	}
 
 }

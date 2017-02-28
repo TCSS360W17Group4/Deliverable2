@@ -12,6 +12,9 @@
 
 package model;
 
+
+import java.io.Serializable;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -62,8 +65,9 @@ public class UrbanParksStaffController extends AbstractController{
         myJobs = theJobs;
     }
     
-    
+
     // User story 5: As an Urban Parks staff member I want to change the maximum number of pending jobs that are allowed in the system.
+
     /**
      * Changes the maximum number of pending jobs for the park system.
      * 
@@ -73,12 +77,14 @@ public class UrbanParksStaffController extends AbstractController{
         // uses the setter method in JobController class
         myJobController.setMyMaxNumberOfPendingJobs(newMaxJobs);
     }
+
     
     
     
     // User story 4: As an Urban Parks staff member I want to view a one-month calendar of all upcoming jobs.
     // view one month calendar
     // returns a list of upcoming jobs
+
     /**
      * Returns a list of jobs for the next month.
      * 
@@ -98,6 +104,7 @@ public class UrbanParksStaffController extends AbstractController{
         }
         return pendingJobs;
     }
+
     
     // local date will not do what we need it to do
     
@@ -116,5 +123,6 @@ public class UrbanParksStaffController extends AbstractController{
     }
     */
     
+
 
 }

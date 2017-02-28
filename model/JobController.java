@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +17,7 @@ import java.util.Locale;
  * 
  *
  */
-public class JobController {
+public class JobController implements Serializable{
 
 	
 	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 30;
@@ -36,6 +37,7 @@ public class JobController {
 	 */
 	public JobController() {
 		this.myMaxNumberOfPendingJobs = DEFAULT_MAX_NUM_PENDING_JOBS;
+		myJobsList = new ArrayList<Job>();
 	}
 	   
 	public JobController(List<Job> theJobs) {
@@ -86,29 +88,22 @@ public class JobController {
 			
 	}
 	
-	public boolean isParkAdded(ParkManager theManager, Job theJob, Park thePark) {
+	public Park getMySinglePark(ParkManager theManager) {
 		
-		if(theManager.getMyParks().size() == 1) {
-			thePark = theManager.getMyParks().get(0);
-			theJob =  new Job(thePark);
-			theJob.setMyJobManagerId(theManager.getMyUserId());
-			return true;
-		} else {
-			return false;
-		}
-		
-	}
+		return theManager.getMyParks().get(0);
+}
+
+public Park pickAPark(ParkManager theManager, int theManagerChoice) {
+	Park thePark;
+	if (theManagerChoice == 1) {
+		thePark = theManager.getMyParks().get(0);
+	} else  {
+		thePark = theManager.getMyParks().get(1);
+	} 
 	
-	public Park pickAPark(ParkManager theManager, int theManagerChoice) {
-		Park thePark;
-		if (theManagerChoice == 1) {
-			thePark = theManager.getMyParks().get(0);
-		} else  {
-			thePark = theManager.getMyParks().get(1);
-		} 
-		
-		return thePark;
-	}
+	return thePark;
+}
+
 	
 	/**
 	 * assign the starting date of the job
@@ -540,7 +535,7 @@ public class JobController {
      *         False if theJob is scheduled for one month or longer from now..
      */
     public boolean isLessThanOneMonthOut(Job theJob) {
-        return theJob.getMyStartDate.compareTo(LocalDate.now().plusMonths(1)) < 0;
+        return theJob.getMyStartDate().compareTo(LocalDate.now().plusMonths(1)) < 0;
     }
     
     
@@ -622,13 +617,18 @@ public class JobController {
 	 public static long betweenDates(LocalDate firstDate, LocalDate secondDate) {
 		
 	    return  ChronoUnit.DAYS.between(firstDate,secondDate);
-	}
+	 }
 	 
-     
-     
-    
-    
-    
-    
+	 public List<Job> getMyJobsList(){
+	     return myJobsList;
+	 }
+	 
+
+
+	 public Job getJobById(Integer id){
+	     return myJobsList.get(id);
+	     
+	 }
+
 	
 }

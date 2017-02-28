@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
@@ -12,10 +13,10 @@ import java.util.List;
  * 
  * 
  */
-public class Job {
+public class Job implements Serializable {
 
 	private int myJobId;
-	private Date myCreationDate;
+	private LocalDate myCreationDate;
 	private Park myPark;
     
     //private Calendar myCreationDate;
@@ -60,12 +61,23 @@ public class Job {
         this.myVolunteerList = theVolunteerList;
     }
 
+
     
     
     /*public Calendar getMyCreationDate() {
 		return this.myCreationDate;
 	}*/
-	public Date getMyCreationDate() {
+	//public Date getMyCreationDate() {
+    //}
+
+
+
+
+
+
+
+	public LocalDate getMyCreationDate() {
+
 		return this.myCreationDate;
 	}
 
@@ -159,7 +171,7 @@ public class Job {
 		this.myJobId = theJobId;
 	}
 
-	public void setMyCreationDate(Date theCreationDate) {
+	public void setMyCreationDate(LocalDate theCreationDate) {
 		this.myCreationDate = theCreationDate;
 	}
 
