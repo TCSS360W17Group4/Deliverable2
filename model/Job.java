@@ -221,11 +221,24 @@ public class Job implements Serializable {
 	}
     
     
-    /*
+	/*
      * @author Tony Richardson
      * date 2/10/2017
      */
-     public boolean isPending() {
+	
+	// Create a test for
+	// set local date time for test
+	// set a myStartDate with partitions dayBefore, daySame, dayAfter
+	// dayBefore = LocalDate.now.minusDays(1)
+	// daySame = LocalDate.now()
+	// dayAfter = LocalDate.now.plusDays(1)
+	/**
+	 * @author Hess, Brian G
+	 * @date March 1, 2017
+	 * Refactored isPending to isCurrentJobPending
+	 * @return
+	 */
+     public boolean isCurrentJobPending() {
         return myStartDate.compareTo(LocalDate.now()) >= 0;
      }
 }
