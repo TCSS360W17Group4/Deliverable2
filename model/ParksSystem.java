@@ -75,7 +75,7 @@ public class ParksSystem implements Serializable{
 				if(myVolunteers.get(i).getMyEmail().equals(theEMailCredential)) {
 					
 					this.myCurrentUser = (Volunteer)myVolunteers.get(i); 
-					this.myUserController = new VolunteerController((Volunteer)myCurrentUser, this.myJobs,this.myVolunteers);
+					this.myUserController = new VolunteerController((Volunteer)myCurrentUser, this.myJobs);
 					userLoggedIn = true;
 				}
 			}

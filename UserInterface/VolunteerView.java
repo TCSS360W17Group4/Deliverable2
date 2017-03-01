@@ -13,10 +13,10 @@ public class VolunteerView extends HomeView {
 
 	private static final int MAX_USER_INPUT_TRIAL = 3;
 	private static final int OFFSET = 1;
-	private static final String V_FOR_VIEW_COMMAND = "v";
-	private static final String S_FOR_SUBMIT_OR_SINGUP_COMMAND = "s";
-	private static final String L_FOR_LOGOUT_USER_VIEW_COMMAND = "l";
-	private static final String R_FOR_RETURN_PREV_VIEW_FOR_USERS = "r";
+	private static final String V_FOR_VIEW_COMMAND = "V";
+	private static final String S_FOR_SUBMIT_OR_SINGUP_COMMAND = "S";
+	private static final String L_FOR_LOGOUT_USER_VIEW_COMMAND = "L";
+	private static final String R_FOR_RETURN_PREV_VIEW_FOR_USERS = "R";
 	private Volunteer myVolunteer;
 	private VolunteerController myController;
 	private Scanner myReader;
@@ -74,6 +74,9 @@ public class VolunteerView extends HomeView {
 			
 			viewMyJobs();
 			exitOrReturnView();
+		} else {
+			//return home
+			initHome(myReader);
 		}
 	}
 
@@ -140,7 +143,13 @@ public class VolunteerView extends HomeView {
 			 	String userChoice = myReader.nextLine();
 		    	int theId = Integer.parseInt(userChoice);
 		    	
-				if (myController.isSignupForJobSuccesful(theId)) { 
+				//if (myController.isSignupForJobSuccesful(theId)) { 
+					if ( !myController.volunteerHasTheJob(theId) &&
+							!myController.hasMinSignupDaysBeforeJobStartPassed(myController.getSingleJobByGivenId(theId)) &&
+							!myController.isJobFullForSignUp(myController.getSingleJobByGivenId(theId)) &&
+							!myController.hasJobViolateMaxJobPerDayPerVolunteer(theId)
+							
+							) { 
 					myVolunteer.getMyVolunteerJobs().add(new Integer(userChoice));
 					//update current total for the job
 					int currenTotal = (myController.getSingleJobByGivenId(new Integer(theId)).getMyCurrentTotalVolunteers())+1;
@@ -158,6 +167,7 @@ public class VolunteerView extends HomeView {
 						System.out.println("Failed max trial redirecting to main menu...");
 						
 						initHome(myReader);
+						break;
 					} else {
 
 						
@@ -167,11 +177,15 @@ public class VolunteerView extends HomeView {
 								+ "or the job could be full");
 						System.out.println("Try again, add job from available list only");
 						
+						
 					}
+					
+					continue;
 				}
 			} catch (IndexOutOfBoundsException |InputMismatchException | NumberFormatException exception) {
 				
 				System.out.println("Job Id doesnt exist");
+				break;
 			}
 			   
 		}

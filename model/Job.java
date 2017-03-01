@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,6 +47,11 @@ public class Job implements Serializable {
 
     public Job(Park thePark) {
 		myPark = thePark;
+		//this need to be set by default-bug!
+		myVolunteerList = new ArrayList<>();
+		myJobIsPending = true;
+		myJobIsPast = false;
+		
 	}
 
 

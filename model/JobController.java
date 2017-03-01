@@ -48,7 +48,11 @@ public class JobController implements Serializable{
 	
 
 
-	
+	/**
+	 * adds a park to a job directly, if ParkManager has only one park
+	 * 
+	 * @return true if park added to a job for single park case
+	 */
 	public boolean isParkAdded() {
 		
 		if(myJobCreator.getMyParks().size() == 1) {
@@ -62,6 +66,11 @@ public class JobController implements Serializable{
 		
 	}
 	
+	/**
+	 * depending on the ParkManager choice, assign the park to a new job
+	 * 
+	 * @param theManagerChoice one of two parks ParkManager manages
+	 */
 	public void pickAPark(int theManagerChoice) {
 		Park thePark;
 		if (theManagerChoice == 1) {
@@ -75,16 +84,38 @@ public class JobController implements Serializable{
 		myJob.setMyJobManagerId(myJobCreator.getMyUserId());
 	}
 	
-	//this is our assumption-job need to be well in the future to get volunteers--min MIN_JOB_POST_DAY_LENGTH
+    /**
+     * Our assumption - job needs to be several days in the future for volunteers to sign up.
+     * Checks against MIN_JOB_POST_DAY_LENGTH
+     * 
+     * @param theCurrentDate
+     * @param theJobStartDate
+     * @return true if signing up date for the job is not over, false otherwise
+     */
 	public boolean hasJobStartDateAllowVolunteerSignUp(LocalDate theCurrentDate, LocalDate theJobStartDate) {
 		return numOfDaysBetweenTwoDays(theCurrentDate,theJobStartDate)>= MIN_JOB_POST_DAY_LENGTH;
 	}
+	
+	
+	  /**
+     *  checks if a job is scheduled more than the MAX_ALLOWED_DATE_INTO_FUTURE
+     *  
+     * @param currentDate
+     * @param jobStartDate
+     * @return true if the dates meet the business rule
+     * @author Chris
+     */
+    public boolean hasStartDateTooFar(LocalDate currentDate, LocalDate jobStartDate) {
+        return numOfDaysBetweenTwoDays(currentDate,jobStartDate)<= MAX_ALLOWED_DATE_INTO_FUTURE;
+    }
+    
+    
 	/**
-	 * assign the starting date of the job
+	 * Checks if starting date input for a job acceptable against the business
+	 * rules to be added to a job.
 	 * 
-	 * @param theDate the starting date input of the job
-	 * @param theJob the job the starting assigned
-	 * @param theJobs the jobs already exist
+	 * @param theDate the start date to be added
+	 * @return false if the start date for the job is not set, true otherwise
 	 */
 	public boolean isStartDateAdded(String theDate) {
 		boolean dateAdded = false;
@@ -96,22 +127,31 @@ public class JobController implements Serializable{
 			 //MIN_JOB_POST_DAY_LENGTH at least more than MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE
 		
 			if (hasJobStartDateAllowVolunteerSignUp(currentDate, jobStartDate) && 
-					numOfDaysBetweenTwoDays(currentDate,jobStartDate)<= MAX_ALLOWED_DATE_INTO_FUTURE){
+					   hasStartDateTooFar(currentDate,jobStartDate)){
 				//dont have max jobs on start date
-				if(hasMaxJobsNotOnJobsDate(jobStartDate)) {
+				if(hasLessThanMaxJobsOnJobDate(jobStartDate)) {
 					myJob.setMyStartDate(jobStartDate);
 					dateAdded = true;
 				} 
 				
 			}
-		} else {
-			System.out.println("Wrong date");
-		}
+		} 
 		
 		return dateAdded;
 		
 	}
 	
+
+    /**
+     *
+     * Checks a if a job is not longer than the MAX_JOB_LENGTH_IN_DAYS
+     * 
+     * 
+     * @param theDuration of the new job being submitted
+     * @precondition duration should be within the range and a number, otherwise return false
+     * @return true if the job has a valid duration
+     * 
+     */
 	public boolean isJobDurationNumWithinAllowedRange(int theDuration) {
 		
 		
@@ -119,7 +159,15 @@ public class JobController implements Serializable{
 		
 	}
 	
-	//new docmentation needed
+	/**
+	 * calculate the end date based on the duration, and checks if 
+	 * each day during the duration 
+	 * @param theDuration the duration of the job
+	 * @precondition the duration should be valid positive number
+	 * 
+	 * @return true if the job duration pass business rules, false
+	 * otherwise  
+	 */
 	public boolean isEndDateAdded(int theDuration) {
 		
 		boolean dateAdded = false;
@@ -132,7 +180,8 @@ public class JobController implements Serializable{
 		//add duration to startDate
 		LocalDate endDate = myJob.getMyStartDate().plusDays(theDuration);
 		//check for duplicates
-		if(hasDurationDayshasNoMaxJobs(endDate,theDuration)) {
+		//EARLIER PASSING endDate, is a BUG
+		if(hasDurationDayshasNoMaxJobs(myJob.getMyStartDate(),theDuration)) {
 			myJob.setMyEndDate(endDate);
 			dateAdded = true;
 		} else {
@@ -147,7 +196,6 @@ public class JobController implements Serializable{
 	/**
 	 * assign starting time for the job
 	 * 
-	 * @param theJob the job time is assigned
 	 * @param theTime the starting time of the job
 	 */
 	public void addTime(String theTime) {
@@ -160,11 +208,12 @@ public class JobController implements Serializable{
 	/**
 	 * assign string description of the job task
 	 * 
-	 * @param theJob the job description is assigned
 	 * @param theDescription the description of the job
+	 * @precondition expects at least one character input
+	 * @return true if job description added, false otherwise
 	 */
 	public boolean isJobDescriptionAdded(String theDescription) {
-		if (theDescription.length() >= 0) {
+		if (theDescription.length() > 5) {
 			myJob.setMyDescription(theDescription);
 			return true;
 			} else {
@@ -176,9 +225,10 @@ public class JobController implements Serializable{
 	/**
 	 * assign required number of volunteers for light work
 	 * 
-	 * @param theJob the job volunteer number assigned
 	 * @param theNum the number of light work volunteers needed
-	 * @return
+	 * @precondition theNum should be >= 0 and <=MAX_NUM_VOLUNTEERS_PER_JOB
+	 * @return true if light volunteers number is accepted, false otherwise
+	 * @author Dereje Bireda
 	 */
 	public boolean isMaxLightVolNumberValid(int theNum) {
 		boolean numAccepted = false;
@@ -195,9 +245,10 @@ public class JobController implements Serializable{
 	/**
 	 * assign required number of volunteers for medium work
 	 * 
-	 * @param theJob theJob the job volunteer number assigned
-	 * @param theNum the number of medium work volunteers needed
-	 * @return
+	 * @param theNum the number of light work volunteers needed
+	 * @precondition theNum should be >= 0 and (light Volunteer + theNum) <= MAX_NUM_VOLUNTEERS_PER_JOB
+	 * @return true if medium volunteers number is accepted, false otherwise
+	 * @author Dereje Bireda
 	 */
 	public boolean isMaxMediumVolNumValid( int theNum) {
 		boolean numAccepted = false;
@@ -217,10 +268,13 @@ public class JobController implements Serializable{
 	/**
 	 * assign required number of volunteers for heavy work
 	 * 
-	 * @param theJob theJob theJob the job volunteer number assigned
-	 * @param theNum the number of heavy work volunteers needed
+	 * @param theNum the number of light work volunteers needed
+	 * @precondition theNum should be > 0 and 
+	 * (light Volunteer number + medium volunteer number + theNum) <= MAX_NUM_VOLUNTEERS_PER_JOB
+	 * 
+	 * @return true if heavy volunteers number is accepted, false otherwise
+	 * @author Dereje Bireda
 	 */
-
 	public boolean isMaxHeavyVolNumValid(int theNum) {
 		boolean numAccepted = false;
 		int currentTotal = myJob.getMyLightVolunteerNumber() + myJob.getMyMediumVolunteerNumber() + theNum;
@@ -237,10 +291,9 @@ public class JobController implements Serializable{
 	
 
 	/**
-	 * add job id field to the job
+	 * assign a job an id, and add the job
+	 * to system job list
 	 * 
-	 * @param theJob new job to be added
-	 * @param theJobs the jobs that exist already
 	 */
 	//set Job ID/
 	public void addJob() {
@@ -250,11 +303,18 @@ public class JobController implements Serializable{
 		myJobs.add(myJob);
 	}
 	
-		
-
-		//check system job limit per day for start day passed
-	//isDuplicateStartDatePassed is refactored
-		 public boolean hasMaxJobsNotOnJobsDate(LocalDate theDate) {
+	 /**
+     * Checks business rule: A job cannot be longer than the maximum number of days.
+     * 
+     * Checks against the system's total job limit for input day (SYSTEM_MAX_JOBS_IN_ANY_GIVEN_DAY).
+     * Called by hasDurationDayshasNoMaxJobs() once for each day of the new job
+     * @precondition theDate should be valid LocalDate object
+     * 
+     * @param theDate passed from hasDurationDayshasNoMaxJobs()
+     * @return true if there's room for a new job in the system
+     *         false if a job cannot be added because the system is at limit
+     */
+		 public boolean hasLessThanMaxJobsOnJobDate(LocalDate theDate) {
 			
 			 
 			  	boolean dateHasPassed = true;
@@ -276,7 +336,18 @@ public class JobController implements Serializable{
 				return dateHasPassed;
 		 }
 
-		 //system job limit passed for the duration of the days--check each day in the duration
+	    /**
+	     * There can be no more than the maximum number of jobs scheduled on any given day (SYSTEM_MAX_JOBS_IN_ANY_GIVEN_DAY). 
+	     * 
+	     * calls hasLessThanMaxJobsOnJobDate() for each day during the duration of the job
+	     * 
+	     * @param theStartDate of the new submitted job
+	     * @param theDuration of the submitted job
+	     * @precondition valid LocalDate as startDate expected
+	     * 
+	     * @return true if there's room for a new job in the system
+	     *         false if a job cannot be added because the system is at limit
+	     */
 	 public boolean hasDurationDayshasNoMaxJobs(LocalDate theStartDate,int theDuration) {
 		 
 		 boolean dateHasPassed = true;
@@ -284,11 +355,12 @@ public class JobController implements Serializable{
 			 //no need to check already passed in checking start date
 			 return dateHasPassed;
 		 }
-			//loop and call hasMaxJobsNotOnJobsDate the duration time and check each date
+			
 		 for(int i = 0; i < theDuration; i++) {
 			LocalDate checkedDate = theStartDate.plusDays(i);
+	
 			//if it doesnt pass ,exit, the end date not accepted
-			 if(!hasMaxJobsNotOnJobsDate(checkedDate)){
+			 if(!hasLessThanMaxJobsOnJobDate(checkedDate)){
 				 dateHasPassed = false;
 				 break;
 			 }
@@ -300,34 +372,33 @@ public class JobController implements Serializable{
 		 }	
 
 
-	 //???this can go to abstract controller
-	 /**
-	  * checks if the job is older than current date
-	  * 
-	  * @param theJob the job to be checked
-	  * @return true if job is older than the current date
-	  */
-	 //check if job is past
-	 public boolean isMyJobPast(Job theJob){
-		 LocalDate currentDate = LocalDate.now();
-		 //-ve means past,true
-		 return (numOfDaysBetweenTwoDays(currentDate,theJob.getMyEndDate()) < 0);
-			
-	 }
-	 /**
-	  * update job status(past status and pending status)
-	  * 
-	  * @param theJob the job to be updated
-	  */
-	 
-	 public void updateJobPastStatus(Job theJob){
-		 if(isMyJobPast(theJob)) {
-			 theJob.setMyJobIsPast(true);
-			 //past no longer pending too
-			 theJob.setMyJobIsPending(false);
-		 }
-	 }
-	 
+//	 /**
+//	  * checks if the job is older than current date
+//	  * 
+//	  * @param theJob the job to be checked
+//	  * @return true if job is older than the current date
+//	  */
+//	 //check if job is past
+//	 public boolean isMyJobPast(Job theJob){
+//		 LocalDate currentDate = LocalDate.now();
+//		 //-ve means past,true
+//		 return (numOfDaysBetweenTwoDays(currentDate,theJob.getMyEndDate()) < 0);
+//			
+//	 }
+//	 /**
+//	  * update job status(past status and pending status)
+//	  * 
+//	  * @param theJob the job to be updated
+//	  */
+//	 
+//	 public void updateJobPastStatus(Job theJob){
+//		 if(isMyJobPast(theJob)) {
+//			 theJob.setMyJobIsPast(true);
+//			 //past no longer pending too
+//			 theJob.setMyJobIsPending(false);
+//		 }
+//	 }
+//	 
 	 
 	 
 
@@ -387,7 +458,7 @@ public class JobController implements Serializable{
 
 			return localDate;
 			} catch(Exception e) {
-				//return past date so test fails, instead of exception
+			
 				
 				return null;
 			}
@@ -397,7 +468,7 @@ public class JobController implements Serializable{
 	
 	
 	/**
-	 * calcualte the difference between two days 
+	 * calculate the difference between two days 
 	 * Example,given 02/06/2017(first date) and 02/08/2017
 	 *  will return 2(exclude end date), but not 3
 	 * 

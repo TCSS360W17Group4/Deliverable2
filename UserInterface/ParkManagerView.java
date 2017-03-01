@@ -1,6 +1,7 @@
 package UserInterface;
 
 import java.time.LocalDate;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,10 +15,13 @@ import model.ParkManagerController;
 public class ParkManagerView extends HomeView {
 	
 	private static final int MAX_USER_INPUT_TRIAL = 3;
-	private static final String V_FOR_VIEW_COMMAND = "v";
-	private static final String S_FOR_SUBMIT_OR_SINGUP_COMMAND = "s";
+	private static final int OFFSET = 1;
+	private static final int MAX_NUM_VOLUNTEERS_PER_JOB = 10;
+	private static final String V_FOR_VIEW_COMMAND = "V";
+	private static final String S_FOR_SUBMIT_OR_SINGUP_COMMAND = "S";
 	private static final String L_FOR_LOGOUT_USER_VIEW_COMMAND = "L";
-	private static final String R_FOR_RETURN_PREV_VIEW_FOR_USERS = "r";
+	private static final String R_FOR_RETURN_PREV_VIEW_FOR_USERS = "R";
+	private static final int MAX_ALLOWED_DATE_INTO_FUTURE = 75;
 	private  ParkManager myManager;
 	private  JobController jobValidator;
 	private  ParkManagerController myController;
@@ -47,7 +51,7 @@ public class ParkManagerView extends HomeView {
 		if(myController.isNewJobAccepted()) {
 			managerMenu.append(S_FOR_SUBMIT_OR_SINGUP_COMMAND +" Submit a job\n");
 			managerMenu.append(V_FOR_VIEW_COMMAND + " View my Jobs\n");
-			managerMenu.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " logout");
+			managerMenu.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " Logout");
 		} else {
 			managerMenu.append("We are not accepting new job currently\n");
 			managerMenu.append(V_FOR_VIEW_COMMAND+ " View my Jobs\n");
@@ -108,27 +112,50 @@ public class ParkManagerView extends HomeView {
 		} 
 		
 		//assume initial view is solid
-		acceptDateView();
-		acceptEndDateView();
-		acceptDescriptionView();
-		acceptNumOfVolunteers();
-		confirmSubmitView();
+//		if(acceptDateView()){
+//		
+//			if(acceptEndDateView()) {
+//				if(acceptDescriptionView()) {
+//					if(acceptNumOfVolunteers()) {
+//						
+//						if(confirmSubmitView()){
+//							
+//						}
+//					}
+//				}
+//			}
+//			
+//		}
+	
+		if(acceptDateView()  && acceptEndDateView() 
+				&& acceptDescriptionView() && acceptNumOfVolunteers() 
+				&& confirmSubmitView()) {
+			
+			System.out.println("Job added successfully");
+		}
 		
 	
 	}
 	
 	public boolean acceptDateView() {
 
-		System.out.println("Enter dates between " + LocalDate.now() + " and " + LocalDate.now().plusDays(30)+" inclusive");
-		System.out.println("Enter Start date(format MM/dd/yy Eg: 2/10/17 same as Feb 10, 2017");
+		System.out.println("Enter dates between " + LocalDate.now() + " and " +
+		LocalDate.now().plusDays(MAX_ALLOWED_DATE_INTO_FUTURE)+" inclusive");
+		System.out.println("Enter Start date(format MM/dd/yy");
 		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 		
 		    	String date = myReader.nextLine();
 		    	if(!jobValidator.isStartDateAdded(date)) {
-		    		System.out.println("Please enter again");
+		    		if(retries == MAX_USER_INPUT_TRIAL-OFFSET) {
+		    			System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
+		    			
+		    		} else {
+		    		System.out.println("Please enter correct date");
+		    		}
 		    		continue;
 		    	} else {
 		    		return true;
+		    		
 		    	}
 		    	
 		   
@@ -140,27 +167,48 @@ public class ParkManagerView extends HomeView {
 	
 	public boolean acceptEndDateView() {
 		System.out.println("Enter job duration: 1 2 or 3");
-		
+		boolean numAccepted = false;
 		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
+			String jobDuration = myReader.nextLine();
 			
-			int jobDuration = myReader.nextInt();
-			myReader.nextLine();//consume newline break
+			int jobDurationIntValue = 0;
 			
-	    	if(!jobValidator.isEndDateAdded(jobDuration)) {
-	    		System.out.println("Enter again");
+			try {
+			
+				jobDurationIntValue = Integer.parseInt(jobDuration);
+			} catch(InputMismatchException | NumberFormatException ex){
+				
+				numAccepted = false;
+				System.out.println("Unexpected input exiting..");
+				break;
+			}
+		
+		
+			
+			//we have number read this part
+	    	if(jobDurationIntValue < 0 || !jobValidator.isEndDateAdded(jobDurationIntValue)) {
+	    		if(retries == MAX_USER_INPUT_TRIAL-OFFSET) {
+	    			System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
+	    			numAccepted = false;
+	    			break;
+	    		} else {
+	    			System.out.println("Please enter valid duration");
+	    		}
 	    		continue;
 	    	} else {
-	    		return true;
+	    		numAccepted = true;
+	    		break;
 	    	}
 	    	
 	   
 		}
 	
 	
-		return false;
+		return numAccepted;
 	}
 
 	public boolean acceptDescriptionView() {
+		
 		System.out.println("Enter job Description:");
 		
 		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
@@ -168,7 +216,13 @@ public class ParkManagerView extends HomeView {
 			String jobDescription = myReader.nextLine();
 
 	    	if(!jobValidator.isJobDescriptionAdded(jobDescription)) {
-	    		System.out.println("Enter again");
+	    		if(retries == MAX_USER_INPUT_TRIAL-OFFSET) {
+	    			System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
+	    			break;
+	    			
+	    		} else {
+	    			System.out.println("Please enter valid description");
+	    		}
 	    		continue;
 	    	} else {
 	    		return true;
@@ -182,55 +236,111 @@ public class ParkManagerView extends HomeView {
 	}
 
 	public boolean acceptNumOfVolunteers() {
-		//not complete
-		boolean allNumAdded = false;
-		System.out.println("Enter max volunteers for each category: Total less than 30");
+	
+		boolean numAccepted = false;
+		System.out.println("Enter Volunteers number required: light + medium + heavy <= " + MAX_NUM_VOLUNTEERS_PER_JOB);
 		
 		//each question has max 3 trials
 		
+		
 		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 			System.out.println("Light: ");
-			int light = myReader.nextInt();
-			if(!jobValidator.isMaxLightVolNumberValid(light)) {
-				System.out.println("Enter valid number again");
+			int lightIntValue = 0;
+			try {
+				String light = myReader.nextLine();
+				lightIntValue = Integer.parseInt(light);
+			} catch(InputMismatchException | NumberFormatException ex){
+				System.out.println("Failed: Unexpected input exiting..");
+				numAccepted = false;
+				break;
+			}
+			
+			if(!jobValidator.isMaxLightVolNumberValid(lightIntValue)) {
+				
+				if(retries == MAX_USER_INPUT_TRIAL-OFFSET) {
+					System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
+	    			numAccepted = false;
+	    			break;
+	    		} else {
+
+					System.out.println("Enter valid max light volunteer number");
+	    		}
+	    	
 	    		continue;
 			} else {
-				allNumAdded = true;
+				numAccepted = true;
 				break;//go to medium
 			}
 		}	
 		
-		
-		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
-			System.out.println("Medium: ");
-			int med = myReader.nextInt();
-			
-			if(!jobValidator.isMaxMediumVolNumValid(med)) {
-				System.out.println("Enter valid number again");
-	    		continue;
-			} else {
-				allNumAdded = true;
-				break;//go to heavy
-			}
-		}	
-		
+		//start getting medium volunteer number
+		if (numAccepted) {//previous category accepted we check this
+			for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
+				System.out.println("Medium: ");
+				int medIntValue =0;
+				try {
+					String med = myReader.nextLine();
+					medIntValue = Integer.parseInt(med);
+				} catch(InputMismatchException ex){
+					
+					numAccepted = false;
+					System.out.println("Failed: Unexpected input exiting..");
+					break;
+				}
+				if(!jobValidator.isMaxMediumVolNumValid(medIntValue)) {
+					if(retries == MAX_USER_INPUT_TRIAL-OFFSET) {
+						System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
+		    			numAccepted = false;
+		    		} else {
+		    			System.out.println("Enter valid max medium volunteer number");
+		    		}
+		    	
+				
+		    		continue;
+				} else {
+					numAccepted = true;
+					break;//go to heavy
+				}
+			}	
+		}
 
-		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
-			System.out.println("Heavy: ");
-			int heavy = myReader.nextInt();
-			myReader.nextLine();
-			if(!jobValidator.isMaxHeavyVolNumValid(heavy)) {
-				System.out.println("Enter valid number again");
-	    		continue;
-			} else {
-				allNumAdded = true;
-				break;
-			}
-		}	
-			
-		return allNumAdded;
+		//start getting medium volunteer number
+		if(numAccepted) {//previous categeory accepted we check this
+			for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
+				System.out.println("Heavy: ");
+				int heavyIntValue = 0;
+				
+				try {
+					String heavy = myReader.nextLine();
+					heavyIntValue = Integer.parseInt(heavy);
+				} catch(InputMismatchException ex){
+					
+					numAccepted = false;
+					System.out.println("Failed: Unexpected input exiting..");
+					break;
+				}
+				
+				
+				if(!jobValidator.isMaxHeavyVolNumValid(heavyIntValue)) {
+					if(retries == MAX_USER_INPUT_TRIAL-OFFSET) {
+						System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
+		    			numAccepted = false;
+		    		
+		    		} else {
+		    			System.out.println("Enter valid max heavy number of volunteer");
+		    		}
+		    		continue;
+				} else {
+					numAccepted = true;
+					break;
+				}
+			}	
+				
+		
+		}
+		
+		return numAccepted;
 	}
-	
 	
 	public boolean confirmSubmitView() {
 		boolean jobSubSuccess = false;

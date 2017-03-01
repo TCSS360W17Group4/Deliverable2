@@ -30,7 +30,7 @@ public class JobControllerTest {
 		myJobs = new ArrayList<Job>(); 
 		Job job1 = new Job(new Park());
 		jobController = new JobController(null, myJobs, null);
-		 theController = new VolunteerController(null, myJobs, null);
+		 theController = new VolunteerController(null, myJobs);
 		
 	}
 

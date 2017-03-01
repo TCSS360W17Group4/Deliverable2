@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
+
 public class VolunteerController extends AbstractController {
 	
    
@@ -11,24 +12,26 @@ public class VolunteerController extends AbstractController {
 	private static final int MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY = 1;
 	private Volunteer myUser;    
     private List<Job>myJobs;
-    private List<Volunteer>myVolunteers;
+   // private List<Volunteer>myVolunteers;
     
    
     
     public VolunteerController(Volunteer theUser, 
-           List<Job> theJobs, List<Volunteer> theVolunteers) { 
+           List<Job> theJobs) { 
     	
         super(theJobs,theUser);
         
         this.myUser = theUser;
         this.myJobs = theJobs;
-        this.myVolunteers = theVolunteers;
+       // this.myVolunteers = theVolunteers;
         
     }
 
     /**
+     * Checks if pending Job for current user of the controller
+     * is empty or not.
      * 
-     * @return true if jobs available to signup, false otherwise
+     * @return true if controller user has pending jobs 
      */
     public boolean isJobAvailableToSignUp() {
     	List<Job> pendingJobs = this.getMyPendingJobsForVolunteer();
@@ -40,36 +43,36 @@ public class VolunteerController extends AbstractController {
 	  * Query for volunteers
 	  **************************/
 	 
-	 /**
-	  * checks sign up for job is successful or not
-	  * 
-	  * @param theVolunteerId the volunteering currently signing up for the job
-	  * @param theJobId the job id the volunteer choose to sign up
-	  * @return true if volunteer successfully sign up for a job, otherwise false
-	  */
-	 
-	 public boolean isSignupForJobSuccesful(int theJobId) {
-		 
-		 boolean signUpSuccess = true;
-		
-		 
-		 		if (myVolunteers.get(myUser.getMyUserId()).getMyBlackballStatus() || 
-		 		        volunteerHasTheJob(theJobId) || 
-		 				isSignUpDayPassed(myJobs.get(theJobId)) || 
-		 				isJobFullForSignUp(myJobs.get(theJobId)) ||
-		 				hasJobViolateMaxJobPerDayPerVolunteer(theJobId)) {
-		 		
-		 			signUpSuccess = false;
-		 		 
-		 		} else {
-		 		
-
-		 			signUpSuccess = true;
-                   	 			
-                }
-		 		
-		 		return signUpSuccess;
-	 }
+//	 /**
+//	  * checks sign up for job is successful or not
+//	  * 
+//	  * @param theVolunteerId the volunteering currently signing up for the job
+//	  * @param theJobId the job id the volunteer choose to sign up
+//	  * @return true if volunteer successfully sign up for a job, otherwise false
+//	  */
+//	 
+//	 public boolean isSignupForJobSuccesful(int theJobId) {
+//		 
+//		 boolean signUpSuccess = true;
+//		
+//		 
+//		 		if (myVolunteers.get(myUser.getMyUserId()).getMyBlackballStatus() || 
+//		 		        volunteerHasTheJob(theJobId) || 
+//		 				isSignUpDayPassed(myJobs.get(theJobId)) || 
+//		 				isJobFullForSignUp(myJobs.get(theJobId)) ||
+//		 				hasJobViolateMaxJobPerDayPerVolunteer(theJobId)) {
+//		 		
+//		 			signUpSuccess = false;
+//		 		 
+//		 		} else {
+//		 		
+//
+//		 			signUpSuccess = true;
+//                   	 			
+//                }
+//		 		
+//		 		return signUpSuccess;
+//	 }
 	 
 	 
 	 /**
@@ -89,7 +92,7 @@ public class VolunteerController extends AbstractController {
 				if(!jobChecked.getMyJobIsPast()) {
 					//job is not full and signing up day not passed and 
 					//the volunteer does not have the job
-					if(!isSignUpDayPassed(jobChecked) &&
+					if(!hasMinSignupDaysBeforeJobStartPassed(jobChecked) &&
 							!isJobFullForSignUp(jobChecked) &&
 							//this volunteer specific
 							!volunteerHasTheJob( jobChecked.getMyJobId())) {
@@ -154,19 +157,19 @@ public class VolunteerController extends AbstractController {
 		}
 		
 		/**
-		 *  checks each days of the new job with current 
-		 *  calendar days of the volunteer
+		 *  Checks if the duration of the new job overlap with calendar days
+		 *  the volunteer already signed up for 
 		 *  
 		 * @param theNewJobId to be signed up
 		 * @return true if the new job id violates MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY
 		 * 
-		 * @throws ArrayIndexOutOfBoundsException
-		 * @throws IndexOutOfBoundsException
-		 * @throws InputMismatchException
+		 * @throws ArrayIndexOutOfBoundsException passing negative id
+		 * @throws IndexOutOfBoundsException adding id not yet assigned
+		 * @throws InputMismatchException the id must be an integer when parsed
 		 */
 	 //check MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY, exclude end date in calculation
 	 public boolean hasJobViolateMaxJobPerDayPerVolunteer(int theNewJobId) 
-			 throws ArrayIndexOutOfBoundsException,IndexOutOfBoundsException,InputMismatchException {
+			 throws ArrayIndexOutOfBoundsException,IndexOutOfBoundsException{
 		 
 		 boolean maxDayViolated = false;
 		 
@@ -210,48 +213,20 @@ public class VolunteerController extends AbstractController {
 	
 	
 	 /**
-	  * checks if the volunteer already has the job
+	  * checks if the volunteer has already signed up for the job
 	  * 
 	  * @param theVolunteerId volunteer checked if already signed up
 	  * @param theJobId the job checked 
-	  * @return true if the volunteer has the job, false otherwise
+	  * @return true if the volunteer has the job id, false otherwise
+	  * @precondition the id should be positive number to get expected
+	  * result
 	  */
 	public boolean volunteerHasTheJob( int theJobId) {
 		 List<Integer> currentJobsList = myUser.getMyVolunteerJobs();
-		 return currentJobsList.contains(new Integer(theJobId));
+	
+		   return currentJobsList.contains(new Integer(theJobId));
+		
 	}
 	
-	
-//	
-//	/**
-//	 * Checks if Volunteer already has a job with the same date
-//	 * 
-//	 * @param theNewJobId the new job to be signed up for
-//	 * @param theVolunteerId the volunteer signing for the job
-//	 * @return true if volunteer has no job with that date, false otherwise
-//	 */
-//	
-//	public boolean duplicateSignUpIsPassed(int theNewJobId) {
-//		
-//		List<Integer> currentJobsIds = myVolunteers.get(myUser.getMyUserId()).getMyVolunteerJobs();
-//		
-//		for(int i = 0; i < currentJobsIds.size(); i++) {
-//			
-//			Job prevJob = myJobs.get(currentJobsIds.get(i));
-//			Job newJob = myJobs.get(theNewJobId);
-//			
-//			//the volunteer has no start and end date
-//			if(!prevJob.getMyStartDate().equals(newJob.getMyStartDate()) &&
-//					!prevJob.getMyEndDate().equals(newJob.getMyEndDate())) {
-//				return true;
-//				
-//			}
-//			
-//		}
-//		
-//		return false;
-//	}
-//	
-
 
 }

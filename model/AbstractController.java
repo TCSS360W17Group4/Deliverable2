@@ -29,6 +29,7 @@ public abstract class AbstractController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final int MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE = 2; 
 	private static final int DEFAULT_MAX_NUM_PENDING_JOBS = 20;
+	private static final int MIN_STRING_LENGTH_DISPLAYED = 20;
 
 	
     private  List<Job> myJobs;
@@ -55,7 +56,7 @@ public abstract class AbstractController implements Serializable {
     			 job.setMyJobIsPending(false);
     		 }
     		 
-    		 if(isSignUpDayPassed(job) && isJobFullForSignUp(job)){
+    		 if(hasMinSignupDaysBeforeJobStartPassed(job) && isJobFullForSignUp(job)){
     			 job.setMyJobIsPending(false);
     		 }
     	}
@@ -84,7 +85,7 @@ public abstract class AbstractController implements Serializable {
 			 	Job jobChecked = myJobs.get(i);
 				if(!jobChecked.getMyJobIsPast()) {
 					//job is not full and signing up day not passed
-					if(!isSignUpDayPassed(jobChecked) &&
+					if(!hasMinSignupDaysBeforeJobStartPassed(jobChecked) &&
 							!isJobFullForSignUp(jobChecked)) {
 						//add it to pending
 						pendingJobs.add(jobChecked);
@@ -130,48 +131,53 @@ public abstract class AbstractController implements Serializable {
     	 return ChronoUnit.DAYS.between(LocalDate.now(), theJob.getMyStartDate()) < MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE;
     }
     
-    /**
-	  * Checks a job has passed signing up date, 
-	  * i.e must be more than three days from current
-	  * 
-	  * @param theJob the job to be checked
-	  * @return true if job still available for sign up, false otherwise
-	  */
+//    /**
+//	  * Checks a job has passed signing up date, 
+//	  * i.e must be more than three days from current
+//	  * 
+//	  * @param theJob the job to be checked
+//	  * @return true if job still available for sign up, false otherwise
+//	  */
 	//signup day passed = job is past or sign up date less than 2 days to job start time
-	 public boolean isSignUpDayPassed(Job theJob) {
-		 //LocalDate currentDate = LocalDate.now();
-		 //CHECK NOT PAST
-		 if(!isMyJobPast(theJob)){
-		 //job is no longer open for sign up
-
-			 //make it different method
-			 return hasMinSignupDaysBeforeJobStartPassed(theJob);
-		 }
-		 
-		 //no need to check exit
-		 return false;
-		 
-	 }
+//	 public boolean isSignUpDayPassed(Job theJob) {
+//		 //LocalDate currentDate = LocalDate.now();
+//		 //CHECK NOT PAST
+//		 if(!isMyJobPast(theJob)){
+//		 //job is no longer open for sign up
+//			 return hasMinSignupDaysBeforeJobStartPassed(theJob);
+//		 }
+//		 
+//		 //no need to check exit
+//		 return false;
+//		 
+//	 }
 	 
+    /**
+     * Format job description length to MIN_STRING_LENGTH_DISPLAYED length
+     * 
+     * @param theJob
+     * @return formatted string
+     */
 	 public String truncateJobDescriptionForDisplay(Job theJob) {
 		 String shortDescription = "";
-		 if(!(theJob.getMyDescription().length() < 20)){
-				shortDescription = theJob.getMyDescription().substring(0, 20);
+		 if(!(theJob.getMyDescription().length() < MIN_STRING_LENGTH_DISPLAYED)){
+				shortDescription = theJob.getMyDescription().substring(0, MIN_STRING_LENGTH_DISPLAYED);
 			} else {
 				 shortDescription = theJob.getMyDescription();
 			}
 		 
 		 return shortDescription;
 	 }
-	 //???This can go to volunteers 
+	
 	 /**
 	  * checks if job reached full capacity for volunteering
 	  * 
 	  * @param theJob the job to be checked 
 	  * @return true if job reached maximum volunteer limit, false otherwise
+	  * @throws NullPointerException if null is passed as a job
 	  */
 	
-	 public static boolean isJobFullForSignUp(Job theJob) {
+	 public boolean isJobFullForSignUp(Job theJob) {
 		 
 		 int totalVolunteersNeeded = totalVolunteersPerJob(theJob);
 		 int currentTotal = theJob.getMyCurrentTotalVolunteers();
@@ -230,20 +236,20 @@ public abstract class AbstractController implements Serializable {
 		// return (betweenDates(currentDate,theJob.getMyEndDate()) < 0);
 			 
 	 }
-	 /**
-	  * update job status(past status and pending status)
-	  * 
-	  * @param theJob the job to be updated
-	  */
-	 
-	 public void updateJobPastStatus(Job theJob){
-		 if(isMyJobPast(theJob)) {
-			 theJob.setMyJobIsPast(true);
-			 //past no longer pending too
-			 theJob.setMyJobIsPending(false);
-		 }
+//	 /**
+//	  * update job status(past status and pending status)
+//	  * 
+//	  * @param theJob the job to be updated
+//	  */
+//	 
+//	 public void updateJobPastStatus(Job theJob){
+//		 if(isMyJobPast(theJob)) {
+//			 theJob.setMyJobIsPast(true);
+//			 //past no longer pending too
+//			 theJob.setMyJobIsPending(false);
+//		 }
 
-	 }
+	// }
 	 
 	public AbstractUser getMyUser() {
 
@@ -251,6 +257,7 @@ public abstract class AbstractController implements Serializable {
 	}
 
 
+	
 	public String convertLocalDatetToReadableString(LocalDate theDate) {
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
@@ -266,6 +273,13 @@ public abstract class AbstractController implements Serializable {
 	public void logout() {
 		this.pageRedirected = true;
 	}
+	
+	/**
+	 * write theSystem object to bin file
+	 * 
+	 * @param theSystem
+	 * @param theOuts
+	 */
 	public void writeToFile(ParksSystem theSystem, ObjectOutputStream theOuts)  {
 	
 		
@@ -280,13 +294,16 @@ public abstract class AbstractController implements Serializable {
 	
 				theOuts.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 			
 				e1.printStackTrace();
 			}
 		}
 	}
 	 
+	/**
+	 * 
+	 * @return true if a user is logged out
+	 */
 	 public boolean getIsPageRedicrected() {
 		 
 		 return this.pageRedirected;
