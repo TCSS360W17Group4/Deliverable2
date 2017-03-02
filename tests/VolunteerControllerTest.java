@@ -90,13 +90,10 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#hasJobViolateMaxJobPerDayPerVolunteer(int)}
 	 */
 	@Test
-	public void hasJobViolatedMaxJobPerDayPerVolunteer_AddingJobWithNoPreviousJobs() {
+	public void hasJobViolatedMaxJobPerDayPerVolunteer_AddingJobWithNoPreviousJobs_ReturnedFalse() {
 		
 		assertFalse("Fail! with no jobs adding a job", 
 				controller.hasJobViolateMaxJobPerDayPerVolunteer(nonConflictingJob.getMyJobId()));
-		
-		
-		
 	}
 	
 	
@@ -108,7 +105,7 @@ public class VolunteerControllerTest {
 	 *
 	 */
 	@Test
-	public void hasJobViolatedMaxJobPerDayPerVolunteer_WithAddingAboveLimitPerDay(){
+	public void hasJobViolatedMaxJobPerDayPerVolunteer_WithAddingAboveLimitPerDay_ReturnedTrue(){
 		//add first job
 		volunteer.getMyVolunteerJobs().add(JOB_ID_WITH_NO_CONFLICTING_DATE);
 		
@@ -120,27 +117,7 @@ public class VolunteerControllerTest {
 	
 	
 
-	/**
-	 * @author Dereje Bireda
-	 * 
-	 *{@link model.VolunteerController#hasJobViolateMaxJobPerDayPerVolunteer(int)}
-	 */
-	@Test(expected = ArrayIndexOutOfBoundsException.class)
-	public void hasJobViolatedMaxJobPerDayPerVolunteer_ExpectingPositiveIntegerId() {
-		
-				controller.hasJobViolateMaxJobPerDayPerVolunteer(INVALID_JOB_ID_NEGATIVE_VALUE);
-	}
-	
-	/**
-	 * @author Dereje Bireda
-	 * 
-	 *{@link model.VolunteerController#hasJobViolateMaxJobPerDayPerVolunteer(int)}
-	 */
-	@Test(expected = IndexOutOfBoundsException.class)
-	public void hasJobViolatedMaxJobPerDayPerVolunteer_AddingNOTUSED_JobId() {
-		volunteer.getMyVolunteerJobs().add(JOB_ID_WITH_NO_CONFLICTING_DATE);
-			controller.hasJobViolateMaxJobPerDayPerVolunteer(NOT_USED_JOB_ID);
-	}
+
 	/**
 	 * @author Dereje Bireda
 	 * 
@@ -148,7 +125,7 @@ public class VolunteerControllerTest {
 	 */
 	
 	@Test
-	public void hasMinSignupDaysBeforeJobStartPassed_SignupWhenJobIsPast() {
+	public void hasMinSignupDaysBeforeJobStartPassed_SignupWhenJobIsPast_ReturnedTrue() {
 		Job pastJob = new Job(new Park());
 		
 		pastJob.setMyStartDate(myCurrentDate.minusDays(ONE_DAY_OFFSET));
@@ -166,7 +143,7 @@ public class VolunteerControllerTest {
 	 */
 	
 	@Test
-	public void hasMinSignupDaysBeforeJobStartPassed_JobHasAtLeastMinDaysForSignup() {
+	public void hasMinSignupDaysBeforeJobStartPassed_JobHasAtLeastMinDaysForSignup_ReturnedFalse() {
 		Job futureJobStillOpen = new Job(new Park());
 	
 		futureJobStillOpen.setMyStartDate(myCurrentDate.plusDays(MIN_NUM_DAYS_FOR_JOB_SIGNUP));
@@ -185,7 +162,7 @@ public class VolunteerControllerTest {
 	 */
 	
 	@Test
-	public void hasMinSignupDaysBeforeJobStartPassed_JobStartDateBelowMinDaysFoSignup() {
+	public void hasMinSignupDaysBeforeJobStartPassed_JobStartDateBelowMinDaysFoSignup_ReturnedTrue() {
 		Job futureJobClosed = new Job(new Park());
 
 	
@@ -205,7 +182,7 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#isJobFullForSignUp(Job)}
 	 */
 	@Test
-	public void isJobFullForSignUp_JobAlreadyHasMaxVolunteerAllowed() {
+	public void isJobFullForSignUp_JobAlreadyHasMaxVolunteerAllowed_ReturnedTrue() {
 		Job fullJob = new Job(new Park());
 		int numberOfVolunteersRequested = 2;
 		int numberOfCurrentVolunteers = 2;
@@ -224,7 +201,7 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#isJobFullForSignUp(Job)}
 	 */
 	@Test
-	public void isJobFullForSignUp_JobHasOneSpotTofill() {
+	public void isJobFullForSignUp_JobHasOneSpotTofill_ReturnedFalse() {
 		Job fullJob = new Job(new Park());
 		//volunteers number with two cases
 		int numberOfVolunteersRequested = 2;
@@ -240,18 +217,7 @@ public class VolunteerControllerTest {
 	}
 	
 	
-	/**
-	 * @author Dereje Bireda
-	 * 
-	 *{@link model.VolunteerController#isJobFullForSignUp(Job)}
-	 */
-	@Test(expected = NullPointerException.class)
-	public void isJobFullForSignUp_NullPassedAsParameter() {
 
-		assertFalse("Fail!Job is Null",
-					controller.isJobFullForSignUp(null));
-	}
-	
 
 	/**
 	 * @author Dereje Bireda
@@ -259,7 +225,7 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#volunteerHasTheJob(Job)}
 	 */
 	@Test
-	public void volunteerHasTheJob_JobIsPreviouslySignedup() {
+	public void volunteerHasTheJob_JobIsPreviouslySignedup_ReturnedTrue() {
 		
 		int jobId = 1;
 		Job volunteerJob = new Job(new Park());
@@ -280,7 +246,7 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#volunteerHasTheJob(Job)}
 	 */
 	@Test
-	public void volunteerHasTheJob_VolunteerFirstTimeSignupForTheJob() {
+	public void volunteerHasTheJob_VolunteerFirstTimeSignupForTheJob_ReturnedFalse() {
 		
 		int jobId = 1;
 		Job newJob = new Job(new Park());
@@ -297,7 +263,7 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#isJobAvailableToSignUp()}
 	 */
 	@Test
-	public void isJobAvailableToSignUp_WhenJobListIsEmpty() {
+	public void isJobAvailableToSignUp_WhenJobListIsEmpty_ReturnedFalse() {
 		//reset controller with empty job list 
 		controller = new VolunteerController(volunteer,emptyJobList);
 		assertFalse("Fail! no jobs available",controller.isJobAvailableToSignUp());
@@ -309,7 +275,7 @@ public class VolunteerControllerTest {
 	 *{@link model.VolunteerController#isJobAvailableToSignUp()}
 	 */
 	@Test
-	public void isJobAvailableToSignUp_WhenThereIsAJobForSignUp() {
+	public void isJobAvailableToSignUp_WhenThereIsAJobForSignUp_ReturnedTrue() {
 		//reset controller with empty job list 
 		emptyJobList.add(nonConflictingJob);
 		controller = new VolunteerController(volunteer,emptyJobList);

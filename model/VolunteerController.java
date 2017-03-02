@@ -1,9 +1,17 @@
 package model;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 
+
+/**
+ * VolunteerController does queries on behalf of the Volunteer
+ * holds the volunteer who control the Controller, 
+ * list of system jobs
+ * 
+ * @author Dereje Bireda
+ *
+ */
 
 public class VolunteerController extends AbstractController {
 	
@@ -11,9 +19,7 @@ public class VolunteerController extends AbstractController {
 	private static final long serialVersionUID = 1L;
 	private static final int MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY = 1;
 	private Volunteer myUser;    
-    private List<Job>myJobs;
-   // private List<Volunteer>myVolunteers;
-    
+    private List<Job>myJobs;    
    
     
     public VolunteerController(Volunteer theUser, 
@@ -22,16 +28,22 @@ public class VolunteerController extends AbstractController {
         super(theJobs,theUser);
         
         this.myUser = theUser;
-        this.myJobs = theJobs;
-       // this.myVolunteers = theVolunteers;
-        
+        this.myJobs = theJobs;        
     }
 
     /**
      * Checks if pending Job for current user of the controller
      * is empty or not.
      * 
-     * @return true if controller user has pending jobs 
+     * @precondition must be called on properly initialized controller
+     * Eg. VolunteerController which holds list of jobs and 
+     * current User(Eg.Volunteer)
+     * 
+     * @return true if the current user of the VolunteerController 
+     * has the job, false otherwise
+     *
+     * @author Dereje Bireda
+     * 
      */
     public boolean isJobAvailableToSignUp() {
     	List<Job> pendingJobs = this.getMyPendingJobsForVolunteer();
@@ -43,37 +55,6 @@ public class VolunteerController extends AbstractController {
 	  * Query for volunteers
 	  **************************/
 	 
-//	 /**
-//	  * checks sign up for job is successful or not
-//	  * 
-//	  * @param theVolunteerId the volunteering currently signing up for the job
-//	  * @param theJobId the job id the volunteer choose to sign up
-//	  * @return true if volunteer successfully sign up for a job, otherwise false
-//	  */
-//	 
-//	 public boolean isSignupForJobSuccesful(int theJobId) {
-//		 
-//		 boolean signUpSuccess = true;
-//		
-//		 
-//		 		if (myVolunteers.get(myUser.getMyUserId()).getMyBlackballStatus() || 
-//		 		        volunteerHasTheJob(theJobId) || 
-//		 				isSignUpDayPassed(myJobs.get(theJobId)) || 
-//		 				isJobFullForSignUp(myJobs.get(theJobId)) ||
-//		 				hasJobViolateMaxJobPerDayPerVolunteer(theJobId)) {
-//		 		
-//		 			signUpSuccess = false;
-//		 		 
-//		 		} else {
-//		 		
-//
-//		 			signUpSuccess = true;
-//                   	 			
-//                }
-//		 		
-//		 		return signUpSuccess;
-//	 }
-	 
 	 
 	 /**
 	  * Search for available jobs for a volunteer to sign up for
@@ -81,6 +62,10 @@ public class VolunteerController extends AbstractController {
 	  * @param theJobs theJobs the jobs to be searched
 	  * @param volunteerId volunteer id the pending jobs searched for
 	  * @return a list of jobs that are pending for given volunteer
+	  * @precondition must be called on properly initialized controller
+	  * which holds the list of jobs
+	  * 
+	  * @author Dereje Bireda
 	  */
 	 //get pending jobs(open for sign up + is not full)
 	 //volunteer specific job pending query
@@ -107,8 +92,13 @@ public class VolunteerController extends AbstractController {
 	 }
 	 
 		/**
+		 * gets a list of upcoming jobs for volunteer
 		 * 
-		 * @return
+		 * @return list of jobs not completed by volunteer
+		 * @precondition must be called on properly initialized controller
+		 * which holds the list of jobs, and current user,i.e the volunteer
+		 * @author Dereje Bireda
+		 * 
 		 */
 		//jobs a volunteer currently  signed up 
 		public List<Job> getVolunteerUpcomingJobs() {
@@ -118,6 +108,7 @@ public class VolunteerController extends AbstractController {
 			for(int i = 0; i < currentJobsIds.size(); i++) {
 				Job checkedJob = myJobs.get(currentJobsIds.get(i));
 				//if not past job add it
+				
 				if(!checkedJob.getMyJobIsPast()) {
 					signupJobs.add(checkedJob);
 				}
@@ -127,8 +118,14 @@ public class VolunteerController extends AbstractController {
 		}
 		
 		/**
+		 * gets booked or occupied calendar days for a volunteer
 		 * 
 		 * @return a list of calendar days the volunteer signed up for
+		 * @precondition must be called on properly initialized controller
+	     * which holds the list of jobs, and current user of the controller,
+	     *  i.e the volunteer
+	     *  
+	     * @author Dereje Bireda
 		 */
 		public List<LocalDate> bookedUpcomingJobsCalendarDaysForVolunteer() {
 		
@@ -162,14 +159,14 @@ public class VolunteerController extends AbstractController {
 		 *  
 		 * @param theNewJobId to be signed up
 		 * @return true if the new job id violates MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY
+		 * @precondition theNewJobId should be >=0 and it should be among a list of available 
+		 * jobs for sign up
 		 * 
-		 * @throws ArrayIndexOutOfBoundsException passing negative id
-		 * @throws IndexOutOfBoundsException adding id not yet assigned
-		 * @throws InputMismatchException the id must be an integer when parsed
+		 * @author Dereje Bireda
+		 * 
 		 */
 	 //check MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY, exclude end date in calculation
-	 public boolean hasJobViolateMaxJobPerDayPerVolunteer(int theNewJobId) 
-			 throws ArrayIndexOutOfBoundsException,IndexOutOfBoundsException{
+	 public boolean hasJobViolateMaxJobPerDayPerVolunteer(int theNewJobId) {
 		 
 		 boolean maxDayViolated = false;
 		 
@@ -215,7 +212,6 @@ public class VolunteerController extends AbstractController {
 	 /**
 	  * checks if the volunteer has already signed up for the job
 	  * 
-	  * @param theVolunteerId volunteer checked if already signed up
 	  * @param theJobId the job checked 
 	  * @return true if the volunteer has the job id, false otherwise
 	  * @precondition the id should be positive number to get expected

@@ -19,7 +19,7 @@ public class ParksSystem implements Serializable{
 
 	
 	private static final long serialVersionUID = 1L;
-	//private  AbstractUser myCurrentUser;
+
 	private  List<Job> myJobs;
 	private  List<Volunteer> myVolunteers;
 	private  List<ParkManager> myParkManagers;
@@ -27,11 +27,10 @@ public class ParksSystem implements Serializable{
 	private boolean pageRedirected;;
 	private AbstractUser myCurrentUser;
 	private JobController myJobController;
-	//private JobController myJobController;
 	private AbstractController myUserController;
 	
 	public ParksSystem(){
-	    //myCurrentUser = new AbstractUser();
+	    
 	    myJobs = new ArrayList<Job>();
 	    myVolunteers = new ArrayList<Volunteer>();
 	    myParkManagers = new ArrayList<ParkManager>();
@@ -48,10 +47,11 @@ public class ParksSystem implements Serializable{
 	
 	/**
 	 * loads the current user to the system, if it it exist
-	 * 
+	 * using a email as an input
 	 * 
 	 * @param theEMailCredential the email credential
 	 * @return true if current user object created
+	 * @author Dereje Bireda
 	 */
 	
 	public boolean loginSuccessful(String theEMailCredential) {
@@ -100,6 +100,7 @@ public class ParksSystem implements Serializable{
 	 * @param users the list of users
 	 * @param theId the id to be checked
 	 * @return true if that id exist for a user
+	 * @author Dereje Bireda
 	 */
 	public <E> boolean isIdExist(List<E> users, int theId) {
 

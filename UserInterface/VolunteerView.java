@@ -100,7 +100,6 @@ public class VolunteerView extends HomeView {
 
     public String viewMyJobs() {
         String result = "\n";
-        //SimpleDateFormat myFormat = new SimpleDateFormat("EEE, MMM d, yy"); //example: Wed, Jul 4, '01
         Job tempJob;
         List<Integer> currentJobs = myVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
         System.out.println("\t\tPark\t\t\tDate\t\tDescription");
@@ -143,7 +142,6 @@ public class VolunteerView extends HomeView {
 			 	String userChoice = myReader.nextLine();
 		    	int theId = Integer.parseInt(userChoice);
 		    	
-				//if (myController.isSignupForJobSuccesful(theId)) { 
 					if ( !myController.volunteerHasTheJob(theId) &&
 							!myController.hasMinSignupDaysBeforeJobStartPassed(myController.getSingleJobByGivenId(theId)) &&
 							!myController.isJobFullForSignUp(myController.getSingleJobByGivenId(theId)) &&
@@ -151,10 +149,12 @@ public class VolunteerView extends HomeView {
 							
 							) { 
 					myVolunteer.getMyVolunteerJobs().add(new Integer(userChoice));
+					
 					//update current total for the job
 					int currenTotal = (myController.getSingleJobByGivenId(new Integer(theId)).getMyCurrentTotalVolunteers())+1;
 					Job jobAdded = myController.getSingleJobByGivenId(new Integer(theId));
 					jobAdded.setMyCurrentTotalVolunteers(currenTotal);
+					
 					//add volunteer to Job arrayList of volunteers
 					jobAdded.getMyVolunteerList().add(myVolunteer.getMyUserId());
 					System.out.println("You have successfully signed up for the job");

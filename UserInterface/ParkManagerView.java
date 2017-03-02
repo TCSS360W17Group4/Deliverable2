@@ -16,6 +16,7 @@ public class ParkManagerView extends HomeView {
 	
 	private static final int MAX_USER_INPUT_TRIAL = 3;
 	private static final int OFFSET = 1;
+	private static final int MIN_JOB_POST_DAY_LENGTH = 3; 
 	private static final int MAX_NUM_VOLUNTEERS_PER_JOB = 10;
 	private static final String V_FOR_VIEW_COMMAND = "V";
 	private static final String S_FOR_SUBMIT_OR_SINGUP_COMMAND = "S";
@@ -111,21 +112,6 @@ public class ParkManagerView extends HomeView {
 		
 		} 
 		
-		//assume initial view is solid
-//		if(acceptDateView()){
-//		
-//			if(acceptEndDateView()) {
-//				if(acceptDescriptionView()) {
-//					if(acceptNumOfVolunteers()) {
-//						
-//						if(confirmSubmitView()){
-//							
-//						}
-//					}
-//				}
-//			}
-//			
-//		}
 	
 		if(acceptDateView()  && acceptEndDateView() 
 				&& acceptDescriptionView() && acceptNumOfVolunteers() 
@@ -139,18 +125,25 @@ public class ParkManagerView extends HomeView {
 	
 	public boolean acceptDateView() {
 
-		System.out.println("Enter dates between " + LocalDate.now() + " and " +
+		System.out.println("Enter dates between " + LocalDate.now().plusDays(MIN_JOB_POST_DAY_LENGTH) + " and " +
 		LocalDate.now().plusDays(MAX_ALLOWED_DATE_INTO_FUTURE)+" inclusive");
-		System.out.println("Enter Start date(format MM/dd/yy");
+		System.out.println("Enter Start date(format MM/dd/yy)");
 		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
 		
 		    	String date = myReader.nextLine();
-		    	if(!jobValidator.isStartDateAdded(date)) {
+		    	//initially done inside isStartDdateAdded
+		    	LocalDate startDate = JobController.convertStringToDate(date);
+		    	
+		    	if(!jobValidator.isStartDateAdded(startDate)) {
 		    		if(retries == MAX_USER_INPUT_TRIAL-OFFSET) {
 		    			System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
 		    			
 		    		} else {
-		    		System.out.println("Please enter correct date");
+		    		System.out.println("Re-enter correct date: Reasons for failur\n"
+		    				+ "Date enter doesnt allow volunteer to sign up\n"
+		    				+ "date picked already has max limit of jobs\n"
+		    				+ "the date is too far to signup."
+		    				+ "Or invalid date input");
 		    		}
 		    		continue;
 		    	} else {

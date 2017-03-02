@@ -10,9 +10,10 @@ import java.util.Locale;
 
 
 /**
- * JobController handles job creation,
+ * JobController handles job validation when job is created
  * 
- * @author Dereje
+ * 
+ * @author Dereje Bireda
  * 
  *
  */
@@ -37,6 +38,12 @@ public class JobController implements Serializable{
 	
 	
 
+	/**
+	 * 
+	 * @param theJob the new job to be created
+	 * @param theJobs a list of existing jobs
+	 * @param theCreator the user who is creating the job
+	 */
 	public JobController(Job theJob, List<Job>theJobs, ParkManager theCreator) {
 		this.myJob = theJob;
 		this.myJobs = theJobs;
@@ -116,21 +123,20 @@ public class JobController implements Serializable{
 	 * 
 	 * @param theDate the start date to be added
 	 * @return false if the start date for the job is not set, true otherwise
+	 * @precondition expects valid date object 
 	 */
-	public boolean isStartDateAdded(String theDate) {
+	public boolean isStartDateAdded(LocalDate theDate) {
 		boolean dateAdded = false;
-		
-		LocalDate jobStartDate = convertStringToDate(theDate);
 	
-		if(jobStartDate != null) {
+		if(theDate != null) {
 			LocalDate currentDate = LocalDate.now();
 			 //MIN_JOB_POST_DAY_LENGTH at least more than MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE
 		
-			if (hasJobStartDateAllowVolunteerSignUp(currentDate, jobStartDate) && 
-					   hasStartDateTooFar(currentDate,jobStartDate)){
+			if (hasJobStartDateAllowVolunteerSignUp(currentDate, theDate) && 
+					   hasStartDateTooFar(currentDate,theDate)){
 				//dont have max jobs on start date
-				if(hasLessThanMaxJobsOnJobDate(jobStartDate)) {
-					myJob.setMyStartDate(jobStartDate);
+				if(hasLessThanMaxJobsOnJobDate(theDate)) {
+					myJob.setMyStartDate(theDate);
 					dateAdded = true;
 				} 
 				
@@ -370,36 +376,6 @@ public class JobController implements Serializable{
 				
 				return dateHasPassed;
 		 }	
-
-
-//	 /**
-//	  * checks if the job is older than current date
-//	  * 
-//	  * @param theJob the job to be checked
-//	  * @return true if job is older than the current date
-//	  */
-//	 //check if job is past
-//	 public boolean isMyJobPast(Job theJob){
-//		 LocalDate currentDate = LocalDate.now();
-//		 //-ve means past,true
-//		 return (numOfDaysBetweenTwoDays(currentDate,theJob.getMyEndDate()) < 0);
-//			
-//	 }
-//	 /**
-//	  * update job status(past status and pending status)
-//	  * 
-//	  * @param theJob the job to be updated
-//	  */
-//	 
-//	 public void updateJobPastStatus(Job theJob){
-//		 if(isMyJobPast(theJob)) {
-//			 theJob.setMyJobIsPast(true);
-//			 //past no longer pending too
-//			 theJob.setMyJobIsPending(false);
-//		 }
-//	 }
-//	 
-	 
 	 
 
 	 

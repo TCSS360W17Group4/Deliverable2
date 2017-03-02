@@ -3,7 +3,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * ParkManagerController does queries on behalf of the ParkManager
+ * holds the ParkManager who control the Controller, 
+ * list of system jobs, and volunteers
+ * 
+ * @author Dereje Bireda
+ *
+ */
 
 public class ParkManagerController extends AbstractController implements Serializable{
     
@@ -33,6 +40,11 @@ public class ParkManagerController extends AbstractController implements Seriali
 	 * @param theVolunteers the volunteers to be searched
 	 * @param theManagerId the id used to filter the volunteers
 	 * @return list of volunteers signed up for specific manager
+	 * @precondition must be called in properly initialized controller,
+	 * i.e ParkManagerController, which holds the volunteers list, job list
+	 * for the system
+	 * 
+	 * @author Dereje Bireda
 	 */
 	public List<Volunteer> getVolunteersByManagerId() {
 		List<Job> managerJobs = getJobsByManagerId();
@@ -60,10 +72,11 @@ public class ParkManagerController extends AbstractController implements Seriali
 	/**
 	 * Search for jobs by a manager id
 	 * 
-	 * @param theJobs all the jobs that already exist
-	 * @param theManagerId the id of the manager
-	 * 
 	 * @return a list of jobs by specified manager id
+	 * @precondition must be called in properly initialized controller,
+	 * i.e ParkManagerController, which holds current ParkManager with its id
+	 *  
+	 * @author Dereje Bireda
 	 */
 	 //get jobs by manager Id
 	 public List<Job> getJobsByManagerId() {
