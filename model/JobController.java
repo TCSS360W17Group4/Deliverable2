@@ -186,7 +186,6 @@ public class JobController implements Serializable{
 		//add duration to startDate
 		LocalDate endDate = myJob.getMyStartDate().plusDays(theDuration);
 		//check for duplicates
-		//EARLIER PASSING endDate, is a BUG
 		if(hasDurationDayshasNoMaxJobs(myJob.getMyStartDate(),theDuration)) {
 			myJob.setMyEndDate(endDate);
 			dateAdded = true;

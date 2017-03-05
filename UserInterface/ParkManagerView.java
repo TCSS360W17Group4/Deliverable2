@@ -101,19 +101,8 @@ public class ParkManagerView extends HomeView {
 	}
 	
 	public void sumbitJobView(){
-		//park name and city, job manager id
-		
-		if(!jobValidator.isParkAdded()){
-			System.out.println("Enter 1: for " + myManager.getMyParks().get(0)
-					+ " enter 2 for " + myManager.getMyParks().get(0));
-			int userChoice = myReader.nextInt();
-			
-			jobValidator.pickAPark(userChoice);
-		
-		} 
-		
 	
-		if(acceptDateView()  && acceptEndDateView() 
+		if(acceptParkView() && acceptDateView()  && acceptEndDateView() 
 				&& acceptDescriptionView() && acceptNumOfVolunteers() 
 				&& confirmSubmitView()) {
 			
@@ -122,7 +111,53 @@ public class ParkManagerView extends HomeView {
 		
 	
 	}
-	
+	public boolean acceptParkView() {
+		boolean parkAdded = false;
+		if(!jobValidator.isParkAdded()){
+			System.out.println("Enter 1: for " + myManager.getMyParks().get(0).getMyName() + "\n"
+					+ " Or enter 2 for " + myManager.getMyParks().get(1).getMyName());
+			
+			for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
+				String parkChoice = myReader.nextLine();
+				
+				int parkChoiceNum = 0;
+				
+				try {
+				
+					parkChoiceNum = Integer.parseInt(parkChoice);
+					if(parkChoiceNum <= 0) {
+						parkAdded = false;
+						System.out.println("Please enter number 1 or 2");
+						continue;
+					} else {
+						jobValidator.pickAPark(parkChoiceNum);
+						parkAdded = true;
+						break;
+					}
+				} catch(InputMismatchException | NumberFormatException ex){
+					
+					if(retries == MAX_USER_INPUT_TRIAL-OFFSET) {
+		    			System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
+		    			parkAdded = false;
+		    			break;
+		    		} else {
+		    			System.out.println("Please enter number 1 or 2");
+		    		}
+		    		continue;
+				}
+			
+			}
+				
+		
+		} else {
+			//park manager has only 1 park
+			parkAdded = true;
+		}
+		
+		
+		return parkAdded;
+		
+	}
 	public boolean acceptDateView() {
 
 		System.out.println("Enter dates between " + LocalDate.now().plusDays(MIN_JOB_POST_DAY_LENGTH) + " and " +
@@ -355,14 +390,14 @@ public class ParkManagerView extends HomeView {
 	public void viewManagerJobs(){
 		List<Job>managerJobs = myController.getJobsByManagerId();
 		StringBuilder managerJobsString = new StringBuilder();
-		managerJobsString.append("Job Id-----Job Description-------Start Date-------End Date-----Current Volunters # \n");
+		managerJobsString.append("Job Id-----Job Description(Park Name)-------Start Date-------End Date-----Current Volunters # \n");
 		
 		String shortDescription = "";
 		for(int i = 0; i < managerJobs.size(); i++) {
 			
 			shortDescription = myController.truncateJobDescriptionForDisplay(managerJobs.get(i));
 			
-			managerJobsString.append(managerJobs.get(i).getMyJobId() +" ------------ " + shortDescription + "------" +
+			managerJobsString.append(managerJobs.get(i).getMyJobId() +" ------------ " + shortDescription + "(" + managerJobs.get(i).getMyPark().getMyName() + ")"+ "------" +
 		         managerJobs.get(i).getMyStartDate()+ " ------- "+ managerJobs.get(i).getMyEndDate()+" ----- "
 					+ managerJobs.get(i).getMyCurrentTotalVolunteers() + " \n");
 			

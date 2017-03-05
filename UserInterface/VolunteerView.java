@@ -98,8 +98,8 @@ public class VolunteerView extends HomeView {
 		
 	}
 
-    public String viewMyJobs() {
-        String result = "\n";
+    public void viewMyJobs() {
+       // String result = "\n";
         Job tempJob;
         List<Integer> currentJobs = myVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
         System.out.println("\t\tPark\t\t\tDate\t\tDescription");
@@ -118,10 +118,10 @@ public class VolunteerView extends HomeView {
             }
             
         } catch (NullPointerException e) {
-            return "\nError: no jobs found for you\n";
+           System.out.println("\nError: no jobs found for you\n");
         }
         
-        return result;
+       // return result;
     }
     
    
@@ -164,9 +164,8 @@ public class VolunteerView extends HomeView {
 					
 					if ( retries == MAX_USER_INPUT_TRIAL - OFFSET) {
 						
-						System.out.println("Failed max trial redirecting to main menu...");
+						System.out.println("Failed max trial ...");
 						
-						initHome(myReader);
 						break;
 					} else {
 
@@ -176,16 +175,26 @@ public class VolunteerView extends HomeView {
 								+ "you have the another job on the same date\n"
 								+ "or the job could be full");
 						System.out.println("Try again, add job from available list only");
-						
+						continue;
 						
 					}
 					
-					continue;
+					
 				}
 			} catch (IndexOutOfBoundsException |InputMismatchException | NumberFormatException exception) {
 				
-				System.out.println("Job Id doesnt exist");
-				break;
+	
+				if ( retries == MAX_USER_INPUT_TRIAL - OFFSET) {
+					
+					System.out.println("Failed max trial redirecting to main menu...");
+					
+					initHome(myReader);
+					break;
+				} else {
+					System.out.println("Job Id doesnt exist. Enter id from job list!");
+					continue;
+				}
+				
 			}
 			   
 		}
