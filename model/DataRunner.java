@@ -118,8 +118,8 @@ public class DataRunner {
 		j2.setMyCreationDate(myCurrentDate.minusDays(3));
 		j2.setMyCurrentTotalVolunteers(10);
 		j2.setMyDescription("Coastal cleanup Day-beaches, lakes and rivers");
-		j2.setMyStartDate(myCurrentDate.plusDays(3));
-		j2.setMyEndDate(myCurrentDate.plusDays(5));
+		j2.setMyStartDate(myCurrentDate.minusDays(3));
+		j2.setMyEndDate(myCurrentDate.minusDays(5));
 		j2.setMyLightVolunteerNumber(0);
 		j2.setMyMediumVolunteerNumber(10);
 		j2.setMyHeavyVolunteerNumber(0);
@@ -337,6 +337,7 @@ public class DataRunner {
 		j.setMyLightVolunteerNumber(0);
 		j.setMyMediumVolunteerNumber(10);
 		j.setMyHeavyVolunteerNumber(0);
+	
 		j.setMyJobId(myJobs.size());
 		j.setMyJobIsPast(false);
 		j.setMyJobIsPending(true);
