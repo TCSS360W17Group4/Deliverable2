@@ -105,7 +105,7 @@ public class JobController implements Serializable{
 	
 	
 	  /**
-     *  checks if a job is scheduled more than the MAX_ALLOWED_DATE_INTO_FUTURE
+     *  Checks business rule:checks if a job is scheduled more than the MAX_ALLOWED_DATE_INTO_FUTURE
      *  
      * @param currentDate
      * @param jobStartDate
@@ -150,7 +150,7 @@ public class JobController implements Serializable{
 
     /**
      *
-     * Checks a if a job is not longer than the MAX_JOB_LENGTH_IN_DAYS
+     * Checks business rule:Checks a if a job is not longer than the MAX_JOB_LENGTH_IN_DAYS
      * 
      * 
      * @param theDuration of the new job being submitted
@@ -342,7 +342,7 @@ public class JobController implements Serializable{
 		 }
 
 	    /**
-	     * There can be no more than the maximum number of jobs scheduled on any given day (SYSTEM_MAX_JOBS_IN_ANY_GIVEN_DAY). 
+	     * Checks business rule:There can be no more than the maximum number of jobs scheduled on any given day (SYSTEM_MAX_JOBS_IN_ANY_GIVEN_DAY). 
 	     * 
 	     * calls hasLessThanMaxJobsOnJobDate() for each day during the duration of the job
 	     * 
