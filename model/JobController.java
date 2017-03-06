@@ -228,14 +228,25 @@ public class JobController implements Serializable{
 		
 	}
 	/**
-	 * assign required number of volunteers for light work
+	 * assign required number of volunteers for light work 
+     * and returns true if light volunteer number was updated
 	 * 
 	 * @param theNum the number of light work volunteers needed
 	 * @precondition theNum should be >= 0 and <=MAX_NUM_VOLUNTEERS_PER_JOB
 	 * @return true if light volunteers number is accepted, false otherwise
 	 * @author Dereje Bireda
+     * @author Tony Richardson
 	 */
 	public boolean isMaxLightVolNumberValid(int theNum) {
+        int sumOfVolunteerTypes = theNum +
+                                  myJob.getMyMediumVolunteerNumber() +
+                                  myJob.getMyHeavyVolunteerNumber();
+        boolean numAccepted = sumOfVolunteerTypes <= MAX_NUM_VOLUNTEERS_PER_JOB;
+        if(numAccepted) {
+            myJob.setMyLightVolunteerNumber(theNum);
+        }
+        return numAccepted;
+        /*
 		boolean numAccepted = false;
 		if(theNum <=MAX_NUM_VOLUNTEERS_PER_JOB && theNum >=0) {
 			myJob.setMyLightVolunteerNumber(theNum);
@@ -245,17 +256,30 @@ public class JobController implements Serializable{
 		}
 		
 		return numAccepted;
+        */
 	}
+    
 	
 	/**
-	 * assign required number of volunteers for medium work
+	 * assign required number of volunteers for medium work 
+     * and returns true if medium volunteer number was updated
 	 * 
 	 * @param theNum the number of light work volunteers needed
 	 * @precondition theNum should be >= 0 and (light Volunteer + theNum) <= MAX_NUM_VOLUNTEERS_PER_JOB
 	 * @return true if medium volunteers number is accepted, false otherwise
 	 * @author Dereje Bireda
+     * @author Tony Richardson
 	 */
 	public boolean isMaxMediumVolNumValid( int theNum) {
+        int sumOfVolunteerTypes = myJob.getMyLightVolunteerNumber() +
+                                  theNum +
+                                  myJob.getMyHeavyVolunteerNumber();
+        boolean numAccepted = sumOfVolunteerTypes <= MAX_NUM_VOLUNTEERS_PER_JOB;
+        if(numAccepted) {
+            myJob.setMyMediumVolunteerNumber(theNum);
+        }
+        return numAccepted;
+        /*
 		boolean numAccepted = false;
 		int currentTotal = myJob.getMyLightVolunteerNumber() + theNum;
 		
@@ -268,10 +292,12 @@ public class JobController implements Serializable{
 		}
 		
 		return numAccepted;
+        */
 	}
 	
 	/**
-	 * assign required number of volunteers for heavy work
+	 * assign required number of volunteers for heavy work 
+     * and returns true if heavy volunteer number was updated
 	 * 
 	 * @param theNum the number of light work volunteers needed
 	 * @precondition theNum should be > 0 and 
@@ -279,8 +305,18 @@ public class JobController implements Serializable{
 	 * 
 	 * @return true if heavy volunteers number is accepted, false otherwise
 	 * @author Dereje Bireda
+     * @author Tony Richardson
 	 */
 	public boolean isMaxHeavyVolNumValid(int theNum) {
+        int sumOfVolunteerTypes = myJob.getMyLightVolunteerNumber() +
+                                  myJob.getMyMediumVolunteerNumber() +
+                                  theNum;
+        boolean numAccepted = sumOfVolunteerTypes <= MAX_NUM_VOLUNTEERS_PER_JOB;
+        if(numAccepted) {
+            myJob.setMyHeavyVolunteerNumber(theNum);
+        }
+        return numAccepted;
+        /*
 		boolean numAccepted = false;
 		int currentTotal = myJob.getMyLightVolunteerNumber() + myJob.getMyMediumVolunteerNumber() + theNum;
 		if(currentTotal > 0 && currentTotal <= MAX_NUM_VOLUNTEERS_PER_JOB ) {
@@ -291,7 +327,7 @@ public class JobController implements Serializable{
 		}
 		
 		return numAccepted;
-
+        */
 	}
 	
 
