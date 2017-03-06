@@ -174,10 +174,10 @@ public class ParkManagerView extends HomeView {
 		    			System.out.println("Failed " + MAX_USER_INPUT_TRIAL+ "times exiting..");
 		    			
 		    		} else {
-		    		System.out.println("Re-enter correct date: Reasons for failur\n"
-		    				+ "Date enter doesnt allow volunteer to sign up\n"
+		    		System.out.println("Re-enter correct date: Reasons for failure\n"
+		    				+ "Date entered doesn't allow volunteer to sign up\n"
 		    				+ "date picked already has max limit of jobs\n"
-		    				+ "the date is too far to signup."
+		    				+ "the date is too far int the future to signup.\n"
 		    				+ "Or invalid date input");
 		    		}
 		    		continue;
@@ -387,22 +387,72 @@ public class ParkManagerView extends HomeView {
 		return jobSubSuccess;
 	}
 	
+    /**
+     * 
+     * @author Tony Richardson
+     * I did not write the whole function. I just reworked the printing format.
+     */
 	public void viewManagerJobs(){
+        int jobIdSection = 11;
+        int descriptionSection = 50;
+        int startDateSection = 17;
+        int endDateSection = 17;
+        int currentVolunteersSection = 20;
 		List<Job>managerJobs = myController.getJobsByManagerId();
 		StringBuilder managerJobsString = new StringBuilder();
-		managerJobsString.append("Job Id-----Job Description(Park Name)-------Start Date-------End Date-----Current Volunters # \n");
+        
+        
+        managerJobsString.append("Job Id");
+        managerJobsString.append(nDashes(jobIdSection - "Job Id".length()));
+        managerJobsString.append("Job Description(Park Name)");
+        managerJobsString.append(nDashes(descriptionSection - "Job Description(Park Name)".length()));
+        managerJobsString.append("Start Date");
+        managerJobsString.append(nDashes(startDateSection - "Start Date".length()));
+        managerJobsString.append("End Date");
+        managerJobsString.append(nDashes(endDateSection - "End Date".length()));
+        managerJobsString.append("Current Volunteers # \n");
+        
+        
+		//managerJobsString.append("Job Id-----Job Description(Park Name)-------Start Date-------End Date-----Current Volunters # \n");
 		
+        
 		String shortDescription = "";
 		for(int i = 0; i < managerJobs.size(); i++) {
 			
 			shortDescription = myController.truncateJobDescriptionForDisplay(managerJobs.get(i));
 			
+            managerJobsString.append(managerJobs.get(i).getMyJobId());
+            //                                                            gets number of digits in job id
+            managerJobsString.append(nDashes(jobIdSection - String.valueOf(managerJobs.get(i).getMyJobId()).length()));
+            managerJobsString.append(shortDescription);
+            managerJobsString.append('(');
+            managerJobsString.append(managerJobs.get(i).getMyPark().getMyName());
+            managerJobsString.append(')');
+            // the 2 is for the 2 parenthesis added
+            managerJobsString.append(nDashes(descriptionSection - (shortDescription.length() + managerJobs.get(i).getMyPark().getMyName().length() + 2)));
+            managerJobsString.append(managerJobs.get(i).getMyStartDate());
+            managerJobsString.append(nDashes(startDateSection - managerJobs.get(i).getMyStartDate().toString().length()));
+            managerJobsString.append(managerJobs.get(i).getMyEndDate());
+            managerJobsString.append(nDashes(endDateSection - managerJobs.get(i).getMyEndDate().toString().length()));
+            managerJobsString.append(managerJobs.get(i).getMyCurrentTotalVolunteers());
+            managerJobsString.append('\n');
+            
+            
+            /*
 			managerJobsString.append(managerJobs.get(i).getMyJobId() +" ------------ " + shortDescription + "(" + managerJobs.get(i).getMyPark().getMyName() + ")"+ "------" +
 		         managerJobs.get(i).getMyStartDate()+ " ------- "+ managerJobs.get(i).getMyEndDate()+" ----- "
 					+ managerJobs.get(i).getMyCurrentTotalVolunteers() + " \n");
-			
+			*/
 		}
 		System.out.println(managerJobsString);
 		
 	}
+    
+    private String nDashes(int numDashes) {
+        StringBuilder sb = new StringBuilder(numDashes);
+        for(int i = 0; i < numDashes; i++) {
+            sb.append('-');
+        }
+        return sb.toString();
+    }
 }

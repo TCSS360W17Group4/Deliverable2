@@ -202,19 +202,40 @@ public class VolunteerView extends HomeView {
     
     /**
      * 
+     * @author Tony Richardson
+     * I did not write the whole function. I just reworked the printing format.
+     *
      * @return true jobs displayed false otherwise 
      */
     
     public boolean showAvailableJobs() {
-    	
+    	int jobIdSection = 8;
+        int currentTotalVolunteersSection = 26;
+        int jobDescriptionSection = 25;
+        int dateSection = 27;
+        int citySection = 20;
+        //int parkSection = 35;
+        
+        
     	boolean jobsAvailable = true;
     	
     	StringBuilder jobSignUpString = new StringBuilder();
     	StringBuilder output = new StringBuilder();
     	
-    	jobSignUpString.append("Job Id-----current total Volunteers-------Job Description-------"
-    			+ "-----------Start Date------EndDate-------City----Park\n");
-    	
+        jobSignUpString.append("Job Id");
+        jobSignUpString.append(nDashes(jobIdSection - "Job Id".length()));
+        jobSignUpString.append("Current Total Volunteers");
+        jobSignUpString.append(nDashes(currentTotalVolunteersSection - "Current Total Volunteers".length()));
+        jobSignUpString.append("Job Description");
+        jobSignUpString.append(nDashes(jobDescriptionSection - "Job Description".length()));
+        jobSignUpString.append("Start Date----End Date");
+        jobSignUpString.append(nDashes(dateSection - "Start Date----End Date".length()));
+        jobSignUpString.append("City");
+        jobSignUpString.append(nDashes(citySection - "City".length()));
+        jobSignUpString.append("Park\n");
+        
+        
+        
     	System.out.println(jobSignUpString);
     	List<Job> pendingJobs = myController.getMyPendingJobsForVolunteer();
     	String shortDescription = "";
@@ -224,24 +245,56 @@ public class VolunteerView extends HomeView {
     		jobsAvailable = false;
     		return jobsAvailable;
     	}
-    	
-    	
+        
+        /*
+    	// gets number of digits in job id and passes it to the nDashes method
+            managerJobsString.append(nDashes(jobIdSection - String.valueOf(pendingJobs.get(i).getMyJobId()).length()));
+    	*/
+        
+        
     	//loop if pending jobs has 1 job at least?? check that
     	for(int i = 0; i < pendingJobs.size(); i++) {
     		shortDescription = myController.truncateJobDescriptionForDisplay(pendingJobs.get(i));
     		
+            output.append(pendingJobs.get(i).getMyJobId());
+            output.append(nDashes(jobIdSection - String.valueOf(pendingJobs.get(i).getMyJobId()).length()));
+            output.append(pendingJobs.get(i).getMyCurrentTotalVolunteers());
+            output.append(nDashes(currentTotalVolunteersSection - String.valueOf(pendingJobs.get(i).getMyCurrentTotalVolunteers()).length()));
+            output.append(shortDescription);
+            output.append(nDashes(jobDescriptionSection - shortDescription.length()));
+            output.append(pendingJobs.get(i).getMyStartDate());
+            output.append(" to ");
+            output.append(pendingJobs.get(i).getMyEndDate());
+            int datelength = pendingJobs.get(i).getMyStartDate().toString().length() + 
+                             " to ".length() + 
+                             pendingJobs.get(i).getMyEndDate().toString().length();
+            output.append(nDashes(dateSection - datelength));
+            output.append(pendingJobs.get(i).getMyPark().getMyCity());
+            output.append(nDashes(citySection - pendingJobs.get(i).getMyPark().getMyCity().length()));
+            output.append(pendingJobs.get(i).getMyPark().getMyName());
+            output.append('\n');
+            
+            /*
     				output.append(pendingJobs.get(i).getMyJobId() + "---"+ 
     				 pendingJobs.get(i).getMyCurrentTotalVolunteers()+"-------" + shortDescription
     				        + " --- " + pendingJobs.get(i).getMyStartDate() + " to " + 
     				pendingJobs.get(i).getMyEndDate() + " --- "+ 
     				            pendingJobs.get(i).getMyPark().getMyCity() + "------- " + 
     				pendingJobs.get(i).getMyPark().getMyName() + " \n");
-    		
+    		*/
     		
     	}
     	//output final list of jobs
     	System.out.println(output);
     	
     	return jobsAvailable;
+    }
+    
+    private String nDashes(int numDashes) {
+        StringBuilder sb = new StringBuilder(numDashes);
+        for(int i = 0; i < numDashes; i++) {
+            sb.append('-');
+        }
+        return sb.toString();
     }
 }
