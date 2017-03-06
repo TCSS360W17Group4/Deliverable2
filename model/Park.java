@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class Park implements Serializable{
 
+	
+	private static final long serialVersionUID = 1L;
 	private int myParkId;
 	private String myName;
 	private String myCity;
@@ -48,10 +50,5 @@ public class Park implements Serializable{
 	
 	public void setMyManagerId(int theManagerId) {
 		this.myManagerId = theManagerId;
-	}
-	
-	public String toString() {
-		return "Park Name: " + getMyName() + " Park City:" + getMyCity();
-		
 	}
 }

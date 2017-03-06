@@ -1,111 +1,112 @@
 package UserInterface;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Scanner;
 
 import model.Job;
-import model.JobController;
-import model.Park;
-import model.ParkManagerController;
-import model.ParksSystem;
 import model.Volunteer;
 import model.VolunteerController;
 
-public class VolunteerView {
+public class VolunteerView extends HomeView {
 
-    private ParksSystem mySystem;
-    private JobController myJobController;
-    private Volunteer myCurrentVolunteer;
-    
+	private static final int MAX_USER_INPUT_TRIAL = 3;
+	private static final int OFFSET = 1;
+	private static final String V_FOR_VIEW_COMMAND = "V";
+	private static final String S_FOR_SUBMIT_OR_SINGUP_COMMAND = "S";
+	private static final String L_FOR_LOGOUT_USER_VIEW_COMMAND = "L";
+	private static final String R_FOR_RETURN_PREV_VIEW_FOR_USERS = "R";
+	private Volunteer myVolunteer;
+	private VolunteerController myController;
+	private Scanner myReader;
+	
+	
+	public VolunteerView(VolunteerController theController, Volunteer theUser){
+	
+		super();
+		this.myController = theController;
+		this.myVolunteer = theUser;
+	
+		HomeHeaderTitle();
+	}
+	
+	private void HomeHeaderTitle() {
+		System.out.println("Today, " + myController.convertLocalDatetToReadableString(LocalDate.now())+
+				" Welcome to UParks " + myVolunteer.getMyName());
+	   
+	}
+	
+	
+	public void initHome(Scanner theScanner){
+		myReader = theScanner;
+		
+		StringBuilder volunteerMenu = new StringBuilder();
+		volunteerMenu.append("Choose the command option, and press enter:\n");
+		if(myController.isJobAvailableToSignUp()) {
+			volunteerMenu.append(S_FOR_SUBMIT_OR_SINGUP_COMMAND + " Sign up for a job\n");
+			if (!myVolunteer.getMyVolunteerJobs().isEmpty()) {
+				volunteerMenu.append(V_FOR_VIEW_COMMAND + " View my jobs\n");
+			}
+			volunteerMenu.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " logout");
+		} else {
+			volunteerMenu.append("No jobs available for sign up\n");
+			volunteerMenu.append(V_FOR_VIEW_COMMAND + " View my Jobs\n");
+			//show the jobs already created and 1 option
+			volunteerMenu.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " logout");
+		}
+		System.out.println(volunteerMenu);
+		String userChoice = myReader.nextLine();
+		
+	
+		showChoosenCommand(userChoice);
+	}
 
-    public VolunteerView(ParksSystem theSystem, VolunteerController theVolunteerController){
-        mySystem = theSystem;
-        myCurrentVolunteer = (Volunteer) theVolunteerController.getMyUser();
-        myJobController = new JobController(mySystem.getMyJobs());
-    }
-    
+	public void showChoosenCommand(String userInput) {
+		
+		if(userInput.equalsIgnoreCase(S_FOR_SUBMIT_OR_SINGUP_COMMAND)) {
+			signUpForJobView();
+			exitOrReturnView();
+	
+		}  else if(userInput.equalsIgnoreCase(L_FOR_LOGOUT_USER_VIEW_COMMAND)) {
+			myController.logout();
+		} else if (userInput.equalsIgnoreCase(V_FOR_VIEW_COMMAND)) {
+			
+			viewMyJobs();
+			exitOrReturnView();
+		} else {
+			//return home
+			initHome(myReader);
+		}
+	}
 
-    
-    
-    
-    public void run() {
-        String result = "";
-        String command;
+	public void exitOrReturnView() {
+		
+		StringBuilder exitString = new StringBuilder();
+		exitString.append("What would you like to do?\n");
+		exitString.append(R_FOR_RETURN_PREV_VIEW_FOR_USERS + " Return to prior menu\n");
+		exitString.append(L_FOR_LOGOUT_USER_VIEW_COMMAND + " Logout");
+		
+		System.out.println(exitString);
+		String userInput = myReader.nextLine();
+		if (userInput.equalsIgnoreCase(L_FOR_LOGOUT_USER_VIEW_COMMAND)) {
+			myController.logout();
+		} else if(userInput.equalsIgnoreCase(R_FOR_RETURN_PREV_VIEW_FOR_USERS)) {
+			initHome(myReader);
+		}
+		
+		
+	}
 
-        result = ProcessInput("HELP");
-        System.out.println(result + "\n");
-        do
-        {
-            System.out.printf("Enter a Command >");
-            command = CommandLine.myScanner.nextLine();
-            result = ProcessInput(command);
-            System.out.println(result + "\n");
-            
-        } while (!( command.equalsIgnoreCase("QUIT") || command.equalsIgnoreCase("Q") ) );
-        
-        //if user quit, do a ParksSystem.logout() call
-        
-    }
-    
-    
-    
-    
-    public String ProcessInput(String theString) {
-        String[] tokens = theString.split(" ");
-        String result = "";
-        if (tokens[0].equalsIgnoreCase("HELP") || tokens[0].equalsIgnoreCase("H") ) {
-            System.out.printf("\tWelcome, Volunteer %s\n",myCurrentVolunteer.getMyName());
-            //result="\tWelcome, Volunteer\n";
-            result="\t-------------------\n";
-            result+="\t1 Search for Jobs \t\t(SCH) \n";
-            result+="\t2 Volunteer for a Job\t\t(VOL) \n";
-            result+="\t3 View My Current Jobs\t\t(CUR)\n";
-            result+="\t4 View Past Jobs\t\t(PST) \n";
-            result+="\tHELP(H)\n";
-            result+="\tQUIT(Q)\n";
-            result+="\n\n\tExample: type 3 or CUR and press Enter\n";
-        
-        } else if (tokens[0].equalsIgnoreCase("1") || tokens[0].equalsIgnoreCase("SCH") ) {
-            //do the user story routine
-            
-        } else if (tokens[0].equalsIgnoreCase("2") || tokens[0].equalsIgnoreCase("VOL") ) {
-            //not implemented
-            result += SignUpForAJob(); 
-            
-        } else if (tokens[0].equalsIgnoreCase("3") || tokens[0].equalsIgnoreCase("CUR") ) {
-            result += ViewMyJobs();
-            
-        } else if (tokens[0].equalsIgnoreCase("4") || tokens[0].equalsIgnoreCase("PST") ) {
-            //not a required user story
-            
-        } else if (tokens[0].equalsIgnoreCase("QUIT") || tokens[0].equalsIgnoreCase("Q") ) {
-            mySystem.logout();
-            result += "Logging Out";
-            
-        } else {
-            result += "Unrecognized Command";
-            
-        }
-        
-        return result;
-    }
-    
-    
-
-    
-    //As a Volunteer I want to view a listing of the jobs I am signed up for.
-    public String ViewMyJobs() {
-        String result = "\n";
-        //SimpleDateFormat myFormat = new SimpleDateFormat("EEE, MMM d, yy"); //example: Wed, Jul 4, '01
+    public void viewMyJobs() {
+       // String result = "\n";
         Job tempJob;
-        List<Integer> currentJobs = myCurrentVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
+        List<Integer> currentJobs = myVolunteer.getMyVolunteerJobs();  //need all the ids for the jobs the user signed up for
         System.out.println("\t\tPark\t\t\tDate\t\tDescription");
         Integer counter = 1;
         try {
             for (Integer i : currentJobs ) {
-                tempJob = myJobController.getJobById(i);  //going through every job in the list, getting the job
+                tempJob = myController.getSingleJobByGivenId(i);  //going through every job in the list, getting the job
                 LocalDate tempDate = tempJob.getMyStartDate();
                 //jobs will show with Name of Park, the Start Date, and the Description
                 System.out.printf("%d)\t%s\t%s\t%s\n", 
@@ -117,71 +118,183 @@ public class VolunteerView {
             }
             
         } catch (NullPointerException e) {
-            return "\nError: no jobs found for you\n";
+           System.out.println("\nError: no jobs found for you\n");
         }
         
-        return result;
+       // return result;
     }
     
-    
+   
+ 
+    public void signUpForJobView(){
+    	
+    	System.out.println("Please choose number to sign up for a job\n");
+    	
+    	showAvailableJobs();
+    	
+   
+    	
+		for (int retries = 0;retries < MAX_USER_INPUT_TRIAL; retries++) {
+			
+		
+			try {
+				
+			 	String userChoice = myReader.nextLine();
+		    	int theId = Integer.parseInt(userChoice);
+		    	
+					if ( !myController.volunteerHasTheJob(theId) &&
+							!myController.hasMinSignupDaysBeforeJobStartPassed(myController.getSingleJobByGivenId(theId)) &&
+							!myController.isJobFullForSignUp(myController.getSingleJobByGivenId(theId)) &&
+							!myController.hasJobViolateMaxJobPerDayPerVolunteer(theId)
+							
+							) { 
+					myVolunteer.getMyVolunteerJobs().add(new Integer(userChoice));
+					
+					//update current total for the job
+					int currenTotal = (myController.getSingleJobByGivenId(new Integer(theId)).getMyCurrentTotalVolunteers())+1;
+					Job jobAdded = myController.getSingleJobByGivenId(new Integer(theId));
+					jobAdded.setMyCurrentTotalVolunteers(currenTotal);
+					
+					//add volunteer to Job arrayList of volunteers
+					jobAdded.getMyVolunteerList().add(myVolunteer.getMyUserId());
+					System.out.println("You have successfully signed up for the job");
+					break;
+			
+				}  else {
+					
+					if ( retries == MAX_USER_INPUT_TRIAL - OFFSET) {
+						
+						System.out.println("Failed max trial ...");
+						
+						break;
+					} else {
 
-    //User story: As a Volunteer I want to volunteer for a job.
-    public String SignUpForAJob() {
-        String result = "";
+						
+						System.out.println("Signup failed. Reasons:You may have the job already, \n"
+								+ "sign up date passed for the job,\n "
+								+ "you have the another job on the same date\n"
+								+ "or the job could be full");
+						System.out.println("Try again, add job from available list only");
+						continue;
+						
+					}
+					
+					
+				}
+			} catch (IndexOutOfBoundsException |InputMismatchException | NumberFormatException exception) {
+				
+	
+				if ( retries == MAX_USER_INPUT_TRIAL - OFFSET) {
+					
+					System.out.println("Failed max trial redirecting to main menu...");
+					
+					initHome(myReader);
+					break;
+				} else {
+					System.out.println("Job Id doesnt exist. Enter id from job list!");
+					continue;
+				}
+				
+			}
+			   
+		}
+    }
+    
+    /**
+     * 
+     * @author Tony Richardson
+     * I did not write the whole function. I just reworked the printing format.
+     *
+     * @return true jobs displayed false otherwise 
+     */
+    
+    public boolean showAvailableJobs() {
+    	int jobIdSection = 8;
+        int currentTotalVolunteersSection = 26;
+        int jobDescriptionSection = 25;
+        int dateSection = 27;
+        int citySection = 20;
+        //int parkSection = 35;
         
-        List<Job> pendingJobs = new ArrayList<Job>();
-        System.out.println("\n\t\tPark\t\t\tDate\t\tDescription");
-        Integer counter = 1;
-        ArrayList<Job> someJobs = (ArrayList<Job>)myJobController.getMyJobsList();
         
-        //this is not the best, or even a good way of doing this
-        try {
-            for (Job j : myJobController.getMyPendingJobs(mySystem.getMyJobs())) {
-                if (j.isPending() && 
-                    // compares start date to current date right now
-                    //j.getMyStartDate().compareTo(j.getMyStartDate().now()) > 0 &&
-                    // compares start date to date of one month from right now
-                    j.getMyStartDate().compareTo(LocalDate.now().plusMonths(1)) <= 0) {
-                    pendingJobs.add(j);
-                    //should print to screen now
-                    LocalDate tempDate = j.getMyStartDate();
-                    System.out.printf("%d)\t%s\t%s\t%s\n", 
-                            counter,
-                            j.getMyPark().getMyName(),    
-                            tempDate.toString(),
-                            j.getMyDescription());
-                    counter++;
-                }
-            }
-        } catch (NullPointerException e) {
-            return "\nError: no jobs found for you\n";
+    	boolean jobsAvailable = true;
+    	
+    	StringBuilder jobSignUpString = new StringBuilder();
+    	StringBuilder output = new StringBuilder();
+    	
+        jobSignUpString.append("Job Id");
+        jobSignUpString.append(nDashes(jobIdSection - "Job Id".length()));
+        jobSignUpString.append("Current Total Volunteers");
+        jobSignUpString.append(nDashes(currentTotalVolunteersSection - "Current Total Volunteers".length()));
+        jobSignUpString.append("Job Description");
+        jobSignUpString.append(nDashes(jobDescriptionSection - "Job Description".length()));
+        jobSignUpString.append("Start Date----End Date");
+        jobSignUpString.append(nDashes(dateSection - "Start Date----End Date".length()));
+        jobSignUpString.append("City");
+        jobSignUpString.append(nDashes(citySection - "City".length()));
+        jobSignUpString.append("Park\n");
+        
+        
+        
+    	System.out.println(jobSignUpString);
+    	List<Job> pendingJobs = myController.getMyPendingJobsForVolunteer();
+    	String shortDescription = "";
+    	
+    	if(pendingJobs.isEmpty()) {
+    		System.out.println("There are no jobs available currently");
+    		jobsAvailable = false;
+    		return jobsAvailable;
+    	}
+        
+        /*
+    	// gets number of digits in job id and passes it to the nDashes method
+            managerJobsString.append(nDashes(jobIdSection - String.valueOf(pendingJobs.get(i).getMyJobId()).length()));
+    	*/
+        
+        
+    	//loop if pending jobs has 1 job at least?? check that
+    	for(int i = 0; i < pendingJobs.size(); i++) {
+    		shortDescription = myController.truncateJobDescriptionForDisplay(pendingJobs.get(i));
+    		
+            output.append(pendingJobs.get(i).getMyJobId());
+            output.append(nDashes(jobIdSection - String.valueOf(pendingJobs.get(i).getMyJobId()).length()));
+            output.append(pendingJobs.get(i).getMyCurrentTotalVolunteers());
+            output.append(nDashes(currentTotalVolunteersSection - String.valueOf(pendingJobs.get(i).getMyCurrentTotalVolunteers()).length()));
+            output.append(shortDescription);
+            output.append(nDashes(jobDescriptionSection - shortDescription.length()));
+            output.append(pendingJobs.get(i).getMyStartDate());
+            output.append(" to ");
+            output.append(pendingJobs.get(i).getMyEndDate());
+            int datelength = pendingJobs.get(i).getMyStartDate().toString().length() + 
+                             " to ".length() + 
+                             pendingJobs.get(i).getMyEndDate().toString().length();
+            output.append(nDashes(dateSection - datelength));
+            output.append(pendingJobs.get(i).getMyPark().getMyCity());
+            output.append(nDashes(citySection - pendingJobs.get(i).getMyPark().getMyCity().length()));
+            output.append(pendingJobs.get(i).getMyPark().getMyName());
+            output.append('\n');
+            
+            /*
+    				output.append(pendingJobs.get(i).getMyJobId() + "---"+ 
+    				 pendingJobs.get(i).getMyCurrentTotalVolunteers()+"-------" + shortDescription
+    				        + " --- " + pendingJobs.get(i).getMyStartDate() + " to " + 
+    				pendingJobs.get(i).getMyEndDate() + " --- "+ 
+    				            pendingJobs.get(i).getMyPark().getMyCity() + "------- " + 
+    				pendingJobs.get(i).getMyPark().getMyName() + " \n");
+    		*/
+    		
+    	}
+    	//output final list of jobs
+    	System.out.println(output);
+    	
+    	return jobsAvailable;
+    }
+    
+    private String nDashes(int numDashes) {
+        StringBuilder sb = new StringBuilder(numDashes);
+        for(int i = 0; i < numDashes; i++) {
+            sb.append('-');
         }
-        
-        result+="\n\tEnter a Job number from above >";
-        System.out.printf(result);
-        Job tempJob = new Job(new Park());  
-        
-        try {
-            Integer i;
-            String command = CommandLine.myScanner.nextLine();
-            i = Integer.valueOf(command) - 1;
-            if (i < someJobs.size() ) {
-                tempJob = pendingJobs.get(i);  //need to sign up for this job. the volunteer has to be added to the job, and the job needs to be added to the volunteer
-                ArrayList<Integer> tempInts = (ArrayList<Integer>) tempJob.getMyVolunteerList();
-                tempInts.add(myCurrentVolunteer.getMyUserId() ); //hnow the job has a reference to the volunteer
-                tempInts = (ArrayList<Integer>) myCurrentVolunteer.getMyVolunteerJobs();
-                tempInts.add(myCurrentVolunteer.getMyUserId() ); //now the volunteer has a reference to the job
-            } else {
-                System.out.println("Not a valid job number.");
-                return "";
-            }
-                
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        
-        
-        
-        return "\nSuccessfully Signed Up for Job at\t" + tempJob.getMyPark().getMyName();
+        return sb.toString();
     }
 }

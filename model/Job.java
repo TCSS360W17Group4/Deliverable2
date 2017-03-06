@@ -3,9 +3,7 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,15 +13,12 @@ import java.util.List;
  */
 public class Job implements Serializable {
 
+	
+	private static final long serialVersionUID = 1L;
+	
 	private int myJobId;
 	private LocalDate myCreationDate;
 	private Park myPark;
-    
-    //private Calendar myCreationDate;
-    //private Calendar myStartDate;
-	//private Calendar myEndDate;
-    //private Calendar myTime;
-    
 	private LocalDate myStartDate;
 	private LocalDate myEndDate;
 	private LocalTime myTime;
@@ -38,19 +33,6 @@ public class Job implements Serializable {
 	
 	private List<Integer> myVolunteerList;
 	
-    
-    public Job(Park thePark) {
-		myPark = thePark;
-	}
-    
-
-     /*
-    public Job(Park thePark, ) {
-        // sets creation date for time and date right now
-        myCreationDate = new GregorianCalendar();
-    }*/
-    
-    
 	public List<Integer> getMyVolunteerList() {
         return myVolunteerList;
     }
@@ -62,22 +44,19 @@ public class Job implements Serializable {
     }
 
 
-    
-    
-    /*public Calendar getMyCreationDate() {
-		return this.myCreationDate;
-	}*/
-	//public Date getMyCreationDate() {
-    //}
 
-
-
-
+    public Job(Park thePark) {
+		myPark = thePark;
+		//this need to be set by default-bug!
+		myVolunteerList = new ArrayList<>();
+		myJobIsPending = true;
+		myJobIsPast = false;
+		
+	}
 
 
 
 	public LocalDate getMyCreationDate() {
-
 		return this.myCreationDate;
 	}
 
@@ -102,25 +81,19 @@ public class Job implements Serializable {
 	}
 
 
-    /*public Calendar getMyStartDate() {
-		return myStartDate;
-	}*/
+
 	public LocalDate getMyStartDate() {
 		return myStartDate;
 	}
 
 
-    /*public Calendar getMyEndDate() {
-		return myEndDate;
-	}*/
+
 	public LocalDate getMyEndDate() {
 		return myEndDate;
 	}
 
 
-    /*public Calendar getMyTime() {
-		return myTime;
-	}*/
+
 	public LocalTime getMyTime() {
 		return myTime;
 	}
@@ -182,24 +155,19 @@ public class Job implements Serializable {
 	}
 
 
-    /*public void setMyStartDate(Calendar theStartDate) {
-		this.myStartDate = theStartDate;
-	}*/
+
 	public void setMyStartDate(LocalDate theStartDate) {
-	    this.myStartDate = theStartDate;
+		this.myStartDate = theStartDate;
 	}
 
-	/*public void setMyEndDate(Calendar theEndDate) {
-		this.myEndDate = theEndDate;
-	}*/
+
+
 	public void setMyEndDate(LocalDate theEndDate) {
 		this.myEndDate = theEndDate;
 	}
 
 
-	/*public void setMyTime(Calendar theTime) {
-		this.myTime = theTime;
-	}*/
+
 	public void setMyTime(LocalTime theTime) {
 		this.myTime = theTime;
 	}

@@ -1,79 +1,98 @@
 package model;
-
-
-import java.util.ArrayList;
-
 import java.io.Serializable;
-
+import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
+/**
+ * ParkManagerController does queries on behalf of the ParkManager
+ * holds the ParkManager who control the Controller, 
+ * list of system jobs, and volunteers
+ * 
+ * @author Dereje Bireda
+ *
+ */
 
 public class ParkManagerController extends AbstractController implements Serializable{
-
     
-    private final List<Job> myJobs;
-    
-    public ParkManagerController(ParkManager theUser, 
-            List<Volunteer> theVolunteers, List<ParkManager> theParkManagers,
-            List<UrbanParksStaff> theUrbanParksStaff,
-            JobController theJobController,
-            List<Job> theJobs) { 
-        super(theUser, theVolunteers, theParkManagers, theUrbanParksStaff, theJobController);
+	
+	private static final long serialVersionUID = 1L;
+	private List<Job>myJobs;
+	private List<Volunteer>myVolunteers;
+	private ParkManager myUser;
+	
+	
+    public ParkManagerController(List<Job>theJobs, ParkManager theUser, List<Volunteer>theVolunteers) { 
+        super(theJobs, theUser);
         myJobs = theJobs;
+        myVolunteers = theVolunteers;
+        myUser = theUser;
         
     }
     
-    
-    /**
-     * Assume job was created correctly and all job fields are valid.
-     * 
-     * 
-     * @author Tony Richardson
-     * Date 2017/02/10
-     * 
-     * User story 2: As a Park Manager I want to submit a new job.
-     * 
-     * @return 1 if job submitted successfully, 0 if job not submitted
-     */
-    public int submitNewJob(Job theJob) {
-        // User Story 2 BR a) Not more than the maximum number of pending jobs at a time.
-        // User Story 2 BR d) There can be no more than two jobs on any given day.
-        // User Story 2 BR e) A job cannot be scheduled more than one month in the future.
-        if(myJobController.canAddJob(theJob, myJobs)) {
-            myJobController.addJob(theJob, myJobs);
-            return 1;
-        }
-        return 0;
-    }
-    
-    
-    /**
-     * 
-     * @author Tony Richardson
-     * Date 2017/02/10
-     * 
-     * User story 3: 
-     * As a Park Manager I want to view a numbered list of Volunteers for a job (past or present) in the parks that I manage.
-     * 
-     * @param theJob It contains a list of volunteers signed up for it. The volunteers will be returned.
-     * 
-     * @returns A list of volunteers for the given job.
-     */
-    public List<Volunteer> viewVolunteers(Job theJob) {
-        List<Integer> volunteerId = theJob.getMyVolunteerList();
-        List<Volunteer> volunteerList = new ArrayList<Volunteer>();
-        for(int i = 0; i < myVolunteers.size(); i++) {
-            // checks to see if the volunteerId in myVolunteers list is in
-            // the list of volunteer ids in the job
-            if(volunteerId.contains(myVolunteers.get(i).getMyUserId())) {
-                volunteerList.add(myVolunteers.get(i));
-            }
-        }
-        return volunteerList;
-    }
+    /***********************
+	 * Searches for Park Managers
+	 *******************/
+	
+	/**
+	 * search for list of Volunteers for a job (past or present)
+	 * with specific manager id
+	 * 
+	 * @param theVolunteers the volunteers to be searched
+	 * @param theManagerId the id used to filter the volunteers
+	 * @return list of volunteers signed up for specific manager
+	 * @precondition must be called in properly initialized controller,
+	 * i.e ParkManagerController, which holds the volunteers list, job list
+	 * for the system
+	 * 
+	 * @author Dereje Bireda
+	 */
+	public List<Volunteer> getVolunteersByManagerId() {
+		List<Job> managerJobs = getJobsByManagerId();
+		List<Volunteer> managerVolunteers = new ArrayList<>();
+		
+		for(int i = 0; i < managerJobs.size(); i++) {
+			
+			int currentJobId = managerJobs.get(i).getMyJobId();
+			
+			for(int j = 0; j < myVolunteers.size(); j++) {
+				//list of jobs vol volunteered
+				List<Integer> currentVolJobIds = myVolunteers.get(j).getMyVolunteerJobs();
+				//check if the job id belong to current manager id
+				if(currentVolJobIds.contains(currentJobId)) {
+					//add to volunteers under manager list
+					managerVolunteers.add(myVolunteers.get(j));
+					
+				}
+			}
+		}
+		
+		return managerVolunteers;
+	}
+	
+	/**
+	 * Search for jobs by a manager id
+	 * 
+	 * @return a list of jobs by specified manager id
+	 * @precondition must be called in properly initialized controller,
+	 * i.e ParkManagerController, which holds current ParkManager with its id
+	 *  
+	 * @author Dereje Bireda
+	 */
+	 //get jobs by manager Id
+	 public List<Job> getJobsByManagerId() {
+		 List<Job> managerJobs = new ArrayList<Job>(); 
+		 
+		 for (int i = 0; i < myJobs.size(); i++) {
+			 	Job jobChecked = myJobs.get(i);
+				if(jobChecked.getMyJobManagerId()== myUser.getMyUserId()) {
+						//add it to manager Jobs
+						managerJobs.add(jobChecked);
+					
+				}
+				
+			}
+		 
+		 return managerJobs;
+	 }
 	
 }

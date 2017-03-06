@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,38 +16,28 @@ import java.util.List;
  */
 public class DataRunner {
 
-	private AbstractUser myCurrentUser;
+	
 	private static List<Job> myJobs;
 	private static List<Volunteer> myVolunteers;
 	private static List<ParkManager> myParkManagers;
-	private static List<UrbanParksStaff> myUrbanStaff;
+	private static LocalDate myCurrentDate;
+
 	public static void main(String[] args) {
 		 myJobs = new ArrayList<Job>();
 		 myVolunteers = new ArrayList<Volunteer>();
 		    myParkManagers = new ArrayList<ParkManager>();
-		    myUrbanStaff = new ArrayList<UrbanParksStaff>();
+		    myCurrentDate = LocalDate.now();
 		  
 		
 		ParksSystem uParks = new ParksSystem();
-		//urban parks--total 2																																					
-		UrbanParksStaff ub0 = new UrbanParksStaff();
-		ub0.setMyAddress("61st Ave Smith St.");ub0.setMyEmail("jerry0@up.com");ub0.setMyName("Justin Frazier");ub0.setMyPhone("(747)111-6643");ub0.setMyType(UserType.Staff);ub0.setMyUserId(0);ub0.setMyUserName("stf0");
+	
 		
-		UrbanParksStaff ub1 = new UrbanParksStaff();
-		ub1.setMyAddress("Lakeside Blv. S");ub1.setMyEmail("jerry0@up.com");ub1.setMyName("Eugene Henryr");ub1.setMyPhone("(220)491-535");ub1.setMyType(UserType.Staff);ub1.setMyUserId(1);ub1.setMyUserName("stf1");
-		
-		/*
-		 * add Urban staff to the arraylist
-		 */
 
-		myUrbanStaff.add(ub0);myUrbanStaff.add(ub1);
-		
-		uParks.setMyUrbanStaff(myUrbanStaff);
 		//parks total 4
 		Park p0 = new Park();p0.setMyCity("Seattle");p0.setMyManagerId(0);p0.setMyName("Alki Beach and Park");p0.setMyParkId(0);
 		Park p1 = new Park();p1.setMyCity("Renton");p1.setMyManagerId(2);p1.setMyName("Gene Coulon memorial Beach Park");p1.setMyParkId(1);
 		Park p2 = new Park();p2.setMyCity("Seatac");p2.setMyManagerId(1);p2.setMyName("Angel lake Park");p2.setMyParkId(2);
-		Park p3 = new Park();p3.setMyCity("Federal Way");p3.setMyManagerId(2);p3.setMyName("DashPoint");p3.setMyParkId(3);
+		Park p3 = new Park();p3.setMyCity("Federal Way");p3.setMyManagerId(3);p3.setMyName("DashPoint");p3.setMyParkId(3);
 		
 		
 		//park managers--total 3
@@ -59,50 +49,55 @@ public class DataRunner {
 		ParkManager pm1 = new ParkManager();
 		List<Park> pm1Parks = new ArrayList<>();
 		pm1Parks.add(p2);
-        pm1.setMyAddress("63321 S West James St.");pm1.setMyEmail("charles1@angel.com");;pm1.setMyName("Charles J. Riley");pm1.setMyPhone("111-222-4444");pm1.setMyType(UserType.Manager);pm1.setMyUserId(1);pm1.setMyUserName("mgr1");pm1.setMyParks(pm1Parks);
+        pm1.setMyAddress("63321 S West James St.");pm1.setMyEmail("charles1@angel.com");pm1.setMyName("Charles J. Riley");pm1.setMyPhone("111-222-4444");pm1.setMyType(UserType.Manager);pm1.setMyUserId(1);pm1.setMyUserName("mgr1");pm1.setMyParks(pm1Parks);
         
 		ParkManager pm2 = new ParkManager();
 		List<Park> pm2Parks = new ArrayList<>();
 		pm2Parks.add(p1);pm2Parks.add(p3);
-		pm2.setMyAddress("19408 Int Blvd");pm2.setMyEmail("jessica2@coulon.com");;pm2.setMyName("Jessica S. Hill");pm2.setMyPhone("111-222-5555");pm2.setMyType(UserType.Manager);pm2.setMyUserId(2);pm2.setMyUserName("mgr2");pm2.setMyParks(pm2Parks);
+		pm2.setMyAddress("19408 Int Blvd");pm2.setMyEmail("jessica2@coulon.com");pm2.setMyName("Jessica S. Hill");pm2.setMyPhone("111-222-5555");pm2.setMyType(UserType.Manager);pm2.setMyUserId(2);pm2.setMyUserName("mgr2");pm2.setMyParks(pm2Parks);
+		
+		ParkManager pm3 = new ParkManager();
+		List<Park> pm3Parks = new ArrayList<>();
+		pm3Parks.add(p3);
+		pm3.setMyAddress("320th St. Pacific Hwy");pm3.setMyEmail("mark@dash.com");pm3.setMyName("Mark L. Thom");pm3.setMyPhone("425-345-0045");pm3.setMyType(UserType.Manager);pm3.setMyUserId(3);pm3.setMyUserName("mgr3");pm3.setMyParks(pm3Parks);
 		/*
 		 * add managers to the arraylist
 		 */
-		myParkManagers.add(pm0);myParkManagers.add(pm1);myParkManagers.add(pm2);
+		myParkManagers.add(pm0);myParkManagers.add(pm1);myParkManagers.add(pm2);myParkManagers.add(pm3);
 		
 		uParks.setMyParkManagers(myParkManagers);
 		
 		//Jobs
-		//past job
+		//job with 9 vol, still available for sign up 
 		Job j0 = new Job(p0);
 		List<Integer> j0Vol = new ArrayList<>();
-		j0Vol.add(1);j0Vol.add(2);j0Vol.add(3);j0Vol.add(4);j0Vol.add(5);j0Vol.add(6);j0Vol.add(7);j0Vol.add(8);
-		j0.setMyCreationDate(JobController.convertStringToDate("02/05/17"));
-		j0.setMyCurrentTotalVolunteers(8);
+		j0Vol.add(1);j0Vol.add(2);j0Vol.add(3);j0Vol.add(4);j0Vol.add(5);j0Vol.add(6);j0Vol.add(7);j0Vol.add(8);j0Vol.add(9);
+		j0.setMyCreationDate(myCurrentDate.minusDays(10));
+		j0.setMyCurrentTotalVolunteers(9);
 		j0.setMyDescription("Free Lunch Program for kids-need guides and energetic volunteers who plays with the kids");
-		j0.setMyStartDate(JobController.convertStringToDate("02/09/17"));
-		j0.setMyEndDate(JobController.convertStringToDate("02/10/17"));
-		j0.setMyLightVolunteerNumber(2);
+		j0.setMyStartDate(myCurrentDate.plusDays(3));
+		j0.setMyEndDate(myCurrentDate.plusDays(5));
+		j0.setMyLightVolunteerNumber(4);
 		j0.setMyMediumVolunteerNumber(5);
 		j0.setMyHeavyVolunteerNumber(1);
 		j0.setMyJobId(0);
-		j0.setMyJobIsPast(true);
-		j0.setMyJobIsPending(false);
+		j0.setMyJobIsPast(false);
+		j0.setMyJobIsPending(true);
 		j0.setMyJobManagerId(0);
 		j0.setMyPark(p0);
 		j0.setMyVolunteerList(j0Vol);
 		j0.setMyTime(JobController.convertStringToTime("09:35"));
 		
-		//1 already full job
+		//1 5 volunteers job
 		Job j1 = new Job(p0);
 		List<Integer> j1Vol = new ArrayList<>();
-		j1Vol.add(1);j1Vol.add(2);
-		j1.setMyCreationDate(JobController.convertStringToDate("02/10/17"));
+		j1Vol.add(4);j1Vol.add(5);
+		j1.setMyCreationDate(myCurrentDate.minusDays(10));
 		j1.setMyCurrentTotalVolunteers(2);
 		j1.setMyDescription("volunteer reception and registration");
-		j1.setMyStartDate(JobController.convertStringToDate("02/17/17"));
-		j1.setMyEndDate(JobController.convertStringToDate("02/18/17"));
-		j1.setMyLightVolunteerNumber(2);
+		j1.setMyStartDate(myCurrentDate.plusDays(3));
+		j1.setMyEndDate(myCurrentDate.plusDays(5));
+		j1.setMyLightVolunteerNumber(3);
 		j1.setMyMediumVolunteerNumber(0);
 		j1.setMyHeavyVolunteerNumber(0);
 		j1.setMyJobId(1);
@@ -113,57 +108,245 @@ public class DataRunner {
 		j1.setMyVolunteerList(j1Vol);
 		j1.setMyTime(JobController.convertStringToTime("08:00"));
 		
-		//job with 29 volunteers
+		//job with 10 volunteers, past
 		Job j2 = new Job(p0);
-		List<Integer> j1Vo2 = new ArrayList<>();
-		j1Vo2.add(1);j1Vo2.add(2);
-		for (int i = 1 ; i <= 29; i++) {
-			j1Vo2.add(i);
+		List<Integer> j2Vo1 = new ArrayList<>();
+	
+		for (int i = 1 ; i <= 10; i++) {
+			j2Vo1.add(i);
 		}
-		j2.setMyCreationDate(JobController.convertStringToDate("02/10/17"));
-		j2.setMyCurrentTotalVolunteers(2);
+		j2.setMyCreationDate(myCurrentDate.minusDays(3));
+		j2.setMyCurrentTotalVolunteers(10);
 		j2.setMyDescription("Coastal cleanup Day-beaches, lakes and rivers");
-		j2.setMyStartDate(JobController.convertStringToDate("02/17/17"));
-		j2.setMyEndDate(JobController.convertStringToDate("02/18/17"));
+		j2.setMyStartDate(myCurrentDate.plusDays(3));
+		j2.setMyEndDate(myCurrentDate.plusDays(5));
 		j2.setMyLightVolunteerNumber(0);
-		j2.setMyMediumVolunteerNumber(30);
+		j2.setMyMediumVolunteerNumber(10);
 		j2.setMyHeavyVolunteerNumber(0);
 		j2.setMyJobId(2);
-		j2.setMyJobIsPast(false);
-		j2.setMyJobIsPending(true);
+		j2.setMyJobIsPast(true);
+		j2.setMyJobIsPending(false);
 		j2.setMyJobManagerId(0);
 		j2.setMyPark(p0);
-		j2.setMyVolunteerList(j1Vo2);
+		j2.setMyVolunteerList(j2Vo1);
 		j2.setMyTime(JobController.convertStringToTime("09:35"));
 		
-		//very long future date job..for showing calendar 
-		//demo creating job with this or volunteers volunteering 
+		//job 3 
 		Job j3 = new Job(p3);
 		List<Integer> j3Vo2 = new ArrayList<>();
-		j3Vo2.add(9);j3Vo2.add(10);j3Vo2.add(11);j3Vo2.add(12);
+		j3Vo2.add(1);j3Vo2.add(2);j3Vo2.add(3);j3Vo2.add(4);
 		
-		j3.setMyCreationDate(JobController.convertStringToDate("02/10/17"));
-		j3.setMyCurrentTotalVolunteers(2);
+		j3.setMyCreationDate(myCurrentDate.minusDays(3));
+		j3.setMyCurrentTotalVolunteers(4);
 		j3.setMyDescription("recycling, tree trimming, lawn mowing, trail maintenance");
-		j3.setMyStartDate(JobController.convertStringToDate("03/07/17"));
-		j3.setMyEndDate(JobController.convertStringToDate("03/08/17"));
+		j3.setMyStartDate(myCurrentDate.plusDays(3));
+		j3.setMyEndDate(myCurrentDate.plusDays(5));
 		j3.setMyLightVolunteerNumber(0);
-		j3.setMyMediumVolunteerNumber(30);
+		j3.setMyMediumVolunteerNumber(10);
 		j3.setMyHeavyVolunteerNumber(0);
 		j3.setMyJobId(3);
 		j3.setMyJobIsPast(false);
 		j3.setMyJobIsPending(true);
 		j3.setMyJobManagerId(2);
-		j3.setMyPark(p3);
+		j3.setMyPark(p1);
 		j3.setMyVolunteerList(j3Vo2);
 		j3.setMyTime(JobController.convertStringToTime("09:00"));
+		
 		
 		/*
 		 * add jobs to main arraylist total 4
 		 */
 		myJobs.add(j0);myJobs.add(j1); myJobs.add(j2);myJobs.add(j3);
+		
 		//volunteer list with their jobs
 		uParks.setMyJobs(myJobs);
+		//loop and add jobs
+		for (int i =0; i < 4; i++) {
+			int id = myJobs.size()-1;
+			id+=1;
+			
+			Job j = new Job(p3);
+			List<Integer> jVo2 = new ArrayList<>();
+			
+			j.setMyCreationDate(myCurrentDate.minusDays(3));
+			j.setMyCurrentTotalVolunteers(0);
+			j.setMyDescription("tree trimming, and mulching of flowerbeds");
+			j.setMyStartDate(myCurrentDate.plusDays(10+i));
+			j.setMyEndDate(myCurrentDate.plusDays(11+i));
+			j.setMyLightVolunteerNumber(0);
+			j.setMyMediumVolunteerNumber(10);
+			j.setMyHeavyVolunteerNumber(0);
+			j.setMyJobId(id);
+			j.setMyJobIsPast(false);
+			j.setMyJobIsPending(true);
+			j.setMyJobManagerId(i);
+			Park park;
+			if(i == 0) {
+				park = p0;
+				j.setMyDescription("Litter removal");
+			} else if (i == 1) {
+				park = p1;
+				j.setMyDescription("wear animal costume and play with kids age 3-8");
+			} else if(i == 2){
+				park = p2;
+				j.setMyDescription("watering plants");
+			} else {//(i == 3)
+				
+				park = p3;
+				j.setMyDescription("green waste removal and planting");
+			}
+				
+			j.setMyPark(park);
+			j.setMyVolunteerList(jVo2);
+			j.setMyTime(JobController.convertStringToTime("10:00"));
+			myJobs.add(j);
+		}
+		for (int i =0; i < 4; i++) {
+			int id = myJobs.size()-1;
+			id+=1;
+		 
+			Job j = new Job(p3);
+			List<Integer> jVo2 = new ArrayList<>();
+			
+			j.setMyCreationDate(myCurrentDate.minusDays(3));
+			j.setMyCurrentTotalVolunteers(0);
+		
+			j.setMyStartDate(myCurrentDate.plusDays(10+i));
+			j.setMyEndDate(myCurrentDate.plusDays(11+i));
+			j.setMyLightVolunteerNumber(0);
+			j.setMyMediumVolunteerNumber(10);
+			j.setMyHeavyVolunteerNumber(0);
+			j.setMyJobId(id);
+			j.setMyJobIsPast(false);
+			j.setMyJobIsPending(true);
+			j.setMyJobManagerId(i);
+			Park park;
+			if(i == 0) {
+				park = p0;
+				j.setMyDescription("Greeting park visitors");
+			} else if (i == 1) {
+				park = p1;
+				j.setMyDescription("General cleanup of park grounds");
+			} else if(i == 2){
+				park = p2;
+				j.setMyDescription("weed management");
+			} else {//(i == 3)
+				park = p3;
+				j.setMyDescription("painting trails,picnic tables");
+			}
+				
+			j.setMyPark(park);
+			j.setMyVolunteerList(jVo2);
+			j.setMyTime(JobController.convertStringToTime("09:00"));
+			myJobs.add(j);
+		}
+		
+		for (int i =0; i < 4; i++) {
+			int id = myJobs.size()-1;
+			id+=1;
+		
+			Job j = new Job(p3);
+			List<Integer> jVo2 = new ArrayList<>();
+			
+			j.setMyCreationDate(myCurrentDate.minusDays(3));
+			j.setMyCurrentTotalVolunteers(0);
+			j.setMyDescription("tree trimming, and mulching of flowerbeds");
+			j.setMyStartDate(myCurrentDate.plusDays(10+i));
+			j.setMyEndDate(myCurrentDate.plusDays(11+i));
+			j.setMyLightVolunteerNumber(0);
+			j.setMyMediumVolunteerNumber(10);
+			j.setMyHeavyVolunteerNumber(0);
+			j.setMyJobId(id);
+			j.setMyJobIsPast(false);
+			j.setMyJobIsPending(true);
+			j.setMyJobManagerId(i);
+			Park park;
+			if(i == 0) {
+				park = p0;
+				j.setMyDescription("Litter removal");
+			} else if (i == 1) {
+				park = p1;
+				j.setMyDescription("wear animal costume and play with kids age 3-8");
+			} else if(i == 2){
+				park = p2;
+				j.setMyDescription("watering plants");
+			} else {//(i == 3)
+				
+				park = p3;
+				j.setMyDescription("green waste removal and planting");
+			}
+				
+			j.setMyPark(park);
+			j.setMyVolunteerList(jVo2);
+			j.setMyTime(JobController.convertStringToTime("10:00"));
+			myJobs.add(j);
+		}
+		
+		for (int i =0; i < 2; i++) {
+			int id = myJobs.size()-1;
+			id+=1;
+		
+			Job j = new Job(p3);//park changes below
+			List<Integer> jVo2 = new ArrayList<>();
+			
+			j.setMyCreationDate(myCurrentDate.minusDays(3));
+			j.setMyCurrentTotalVolunteers(0);
+			j.setMyDescription("tree trimming, and mulching of flowerbeds");
+			j.setMyStartDate(myCurrentDate.plusDays(15+i));
+			j.setMyEndDate(myCurrentDate.plusDays(16+i));
+			j.setMyLightVolunteerNumber(5);
+			j.setMyMediumVolunteerNumber(0);
+			j.setMyHeavyVolunteerNumber(0);
+			j.setMyJobId(id);
+			j.setMyJobIsPast(false);
+			j.setMyJobIsPending(true);
+			j.setMyJobManagerId(i);
+			Park park;
+			if(i == 0) {
+				park = p0;
+				j.setMyDescription("soil replenishment, ");
+			} else if (i == 1) {
+				park = p1;
+				j.setMyDescription("Greeting park visitors");
+			} else if(i == 2){
+				park = p2;
+				j.setMyDescription("watering plants, and pruning");
+			} else {//(i == 3)
+				
+				park = p3;
+				j.setMyDescription("line Control");
+			}
+				
+			j.setMyPark(park);
+			j.setMyVolunteerList(jVo2);
+			j.setMyTime(JobController.convertStringToTime("10:00"));
+			myJobs.add(j);
+		}
+		
+		
+		
+		//job too late for sign up
+		Job j = new Job(p0);
+		List<Integer> jVo2 = new ArrayList<>();
+	
+		j.setMyCreationDate(myCurrentDate.minusDays(3));
+		j.setMyCurrentTotalVolunteers(0);
+		j.setMyDescription("weed management,soil replenishment");
+		j.setMyStartDate(myCurrentDate.plusDays(1));
+		j.setMyEndDate(myCurrentDate.plusDays(2));
+		j.setMyLightVolunteerNumber(0);
+		j.setMyMediumVolunteerNumber(10);
+		j.setMyHeavyVolunteerNumber(0);
+		j.setMyJobId(myJobs.size());
+		j.setMyJobIsPast(false);
+		j.setMyJobIsPending(true);
+		j.setMyJobManagerId(0);
+		j.setMyPark(p0);
+		j.setMyVolunteerList(jVo2);
+		j.setMyTime(JobController.convertStringToTime("09:00"));
+		myJobs.add(j);
+		
+		
 		String[] names = { "Carolyn Griffin","Elizabeth Banks","Helen Montgomery","Sarah Richards","Nancy Simmons","Jeremy Kennedy","Robin Howard"
 		,"Lisa Cunningham","Harold Ruiz","Carl Thompson","Terry Rose","Kathryn Carter","Judith Jacobs","Willie Arnold","Henry Fuller","Antonio Ramirez"
 		,"Craig Berry","Paul Matthews","Craig Carter","Bobby Baker","Antonio Watkins","Kevin Diaz","Linda Coleman","Ryan Taylor","Howard Freeman"
@@ -201,11 +384,28 @@ public class DataRunner {
 		myVolunteers.add(vol0);
 		
 		
-		//job id 2 vol
+		//creating volunteers with different attributes
+		//11-29 has no job 
 		for(int i = 1; i <= 29;i++) {
 			Volunteer vol = new Volunteer();
 			List<Integer>volJobs = new ArrayList<>();
-			volJobs.add(2);//1 to 29 id vol has 2 jobid
+	
+		
+			if(i >=1 && i <=9) {
+				volJobs.add(0);//1 to 9 has job 0
+				volJobs.add(2);// 1- 9 has job 2 too
+			}
+			if(i == 4 || i == 5) {
+				volJobs.add(1);//4 and 5 has job 1
+			}
+			if(i == 10) {
+				volJobs.add(2);//10 has job 2
+			}
+			
+			if(i >=1 && i <=4) {
+				volJobs.add(3);//1 to 4 has job 3
+			}
+			
 			vol.setMyAddress(address[i]);
 			vol.setMyBlackballStatus(false);
 			vol.setMyEmail(email[i]);
@@ -222,62 +422,7 @@ public class DataRunner {
 			myVolunteers.add(vol);//volunteers added here,
 		}
 		
-		//list of volunteers we alreayd have add different job id to different list of volunteers
-		//job id 0 vol
-		for(int i = 1; i <= 8;i++) {
-			Volunteer vol = new Volunteer();
-			List<Integer>volJobs = new ArrayList<>();
-			volJobs.add(0);//1 to 8 has job id 0
-			vol.setMyAddress(address[i]);
-			vol.setMyBlackballStatus(false);
-			vol.setMyEmail(email[i]);
-			vol.setMyName(names[i]);
-			vol.setMyPhone(phones[i]);
-			vol.setMyType(UserType.Volunteer);
-			vol.setMyUserId(i);
-			String username = "vol"+i;
-			vol.setMyUserName(username);
-			vol.setMyVolunteerJobs(volJobs);
-			
-			
-		}
-		
-		//job id 1 vol
-		for(int i = 1; i <= 2;i++) {
-			Volunteer vol = new Volunteer();
-			List<Integer>volJobs = new ArrayList<>();
-			volJobs.add(1);//1 and 2 has job id 1
-			vol.setMyAddress(address[i]);
-			vol.setMyBlackballStatus(false);
-			vol.setMyEmail(email[i]);
-			vol.setMyName(names[i]);
-			vol.setMyPhone(phones[i]);
-			vol.setMyType(UserType.Volunteer);
-			vol.setMyUserId(i);
-			String username = "vol"+i;
-			vol.setMyUserName(username);
-			vol.setMyVolunteerJobs(volJobs);
-			
-		
-		}
-		//job id 3 vol
-		for(int i = 9; i <= 12;i++) {
-			Volunteer vol = new Volunteer();
-			List<Integer>volJobs = new ArrayList<>();
-			volJobs.add(3);//9,10,11, 12 has job id 3
-			vol.setMyAddress(address[i]);
-			vol.setMyBlackballStatus(false);
-			vol.setMyEmail(email[i]);
-			vol.setMyName(names[i]);
-			vol.setMyPhone(phones[i]);
-			vol.setMyType(UserType.Volunteer);
-			vol.setMyUserId(i);
-			String username = "vol"+i;
-			vol.setMyUserName(username);
-			vol.setMyVolunteerJobs(volJobs);
-			
-		
-		}
+	
 		
 		uParks.setMyVolunteers(myVolunteers);
 		/**************************
@@ -288,10 +433,10 @@ public class DataRunner {
 		
 			 writeToFile(uParks);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 //	
