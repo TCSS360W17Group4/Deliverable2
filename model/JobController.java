@@ -105,6 +105,7 @@ public class JobController implements Serializable{
 	
 	
 	  /**
+     *  Checks business rule: A job cannot be scheduled more than the maximum allowed date into the future
      *  checks if a job is scheduled more than the MAX_ALLOWED_DATE_INTO_FUTURE
      *  
      * @param currentDate
@@ -150,6 +151,7 @@ public class JobController implements Serializable{
 
     /**
      *
+     * Checks business rule: A job cannot be longer than the maximum number of days
      * Checks a if a job is not longer than the MAX_JOB_LENGTH_IN_DAYS
      * 
      * 
@@ -186,7 +188,6 @@ public class JobController implements Serializable{
 		//add duration to startDate
 		LocalDate endDate = myJob.getMyStartDate().plusDays(theDuration);
 		//check for duplicates
-		//EARLIER PASSING endDate, is a BUG
 		if(hasDurationDayshasNoMaxJobs(myJob.getMyStartDate(),theDuration)) {
 			myJob.setMyEndDate(endDate);
 			dateAdded = true;
@@ -229,6 +230,7 @@ public class JobController implements Serializable{
 		
 	}
 	/**
+	 * Checks business rule: Not more than the maximum number of volunteers for any job
 	 * assign required number of volunteers for light work
 	 * 
 	 * @param theNum the number of light work volunteers needed
@@ -249,6 +251,7 @@ public class JobController implements Serializable{
 	}
 	
 	/**
+	 * Checks business rule: Not more than the maximum number of volunteers for any job
 	 * assign required number of volunteers for medium work
 	 * 
 	 * @param theNum the number of light work volunteers needed
@@ -272,6 +275,7 @@ public class JobController implements Serializable{
 	}
 	
 	/**
+	 * Checks business rule: Not more than the maximum number of volunteers for any job
 	 * assign required number of volunteers for heavy work
 	 * 
 	 * @param theNum the number of light work volunteers needed
@@ -310,7 +314,7 @@ public class JobController implements Serializable{
 	}
 	
 	 /**
-     * Checks business rule: A job cannot be longer than the maximum number of days.
+     * Checks business rule: There can be no more than the maximum number of jobs scheduled on any given day
      * 
      * Checks against the system's total job limit for input day (SYSTEM_MAX_JOBS_IN_ANY_GIVEN_DAY).
      * Called by hasDurationDayshasNoMaxJobs() once for each day of the new job
@@ -342,18 +346,18 @@ public class JobController implements Serializable{
 				return dateHasPassed;
 		 }
 
-	    /**
-	     * There can be no more than the maximum number of jobs scheduled on any given day (SYSTEM_MAX_JOBS_IN_ANY_GIVEN_DAY). 
-	     * 
-	     * calls hasLessThanMaxJobsOnJobDate() for each day during the duration of the job
-	     * 
-	     * @param theStartDate of the new submitted job
-	     * @param theDuration of the submitted job
-	     * @precondition valid LocalDate as startDate expected
-	     * 
-	     * @return true if there's room for a new job in the system
-	     *         false if a job cannot be added because the system is at limit
-	     */
+    /**
+     * Checks business rule:There can be no more than the maximum number of jobs scheduled on any given day 
+     * 
+     * calls hasLessThanMaxJobsOnJobDate() for each day during the duration of the job, that function enforces the rule
+     * 
+     * @param theStartDate of the new submitted job
+     * @param theDuration of the submitted job
+     * @precondition valid LocalDate as startDate expected
+     * 
+     * @return true if there's room for a new job in the system
+     *         false if a job cannot be added because the system is at limit
+     */
 	 public boolean hasDurationDayshasNoMaxJobs(LocalDate theStartDate,int theDuration) {
 		 
 		 boolean dateHasPassed = true;
@@ -464,4 +468,5 @@ public class JobController implements Serializable{
 			this.myMaxNumberOfPendingJobs = theMaxPendingJobsAllowed;
 	 }
 	
+	 
 }

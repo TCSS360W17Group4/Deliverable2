@@ -154,6 +154,9 @@ public class VolunteerController extends AbstractController {
 		}
 		
 		/**
+		 *  Checks business rule: A volunteer cannot sign up for more than one job on any given day.
+		 *  Checks against MAX_ALLOWED_JOB_PER_VOLUNTEER_PER_DAY
+		 *  
 		 *  Checks if the duration of the new job overlap with calendar days
 		 *  the volunteer already signed up for 
 		 *  

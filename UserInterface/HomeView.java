@@ -7,7 +7,7 @@ import model.ParksSystem;
 
 public class HomeView {
 	
-	private static final String Q_FOR_QUIT_SYSTEM_COMMAND = "q";
+	private static final String Q_FOR_QUIT_SYSTEM_COMMAND = "Q";
 	private static final int OFFSET = 1;
 	private static final int MAX_USER_INPUT_TRIAL = 3;
 	private static Scanner myReader;

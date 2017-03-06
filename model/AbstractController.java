@@ -65,14 +65,20 @@ public abstract class AbstractController implements Serializable {
     			 job.setMyJobIsPending(false);
     		 }
     		 
-    		 if(hasMinSignupDaysBeforeJobStartPassed(job) && isJobFullForSignUp(job)){
+    		 if(hasMinSignupDaysBeforeJobStartPassed(job)){
     			 job.setMyJobIsPending(false);
     		 }
+    		 
+    		 if(!isMyJobPast(job) && isJobFullForSignUp(job)){
+    			 job.setMyJobIsPending(false);
+    		 }
+    		 
     	}
     }
     
     /**
-	 * Checks if new jobs can be added
+	 * Checks business rule: Not more than the maximum number of pending jobs at a time
+	 * Checks against DEFAULT_MAX_NUM_PENDING_JOBS
 	 * 
 	 * @precondition must be called properly initialized
 	 * user controller-Eg. VolunteerController, which holds
@@ -83,7 +89,7 @@ public abstract class AbstractController implements Serializable {
 	 */
 
 	 public boolean isNewJobAccepted() {
-		 List<Job> pendingJobs = getMyPendingJobs();
+		 List<Job> pendingJobs = getSystemPendingJobs();
 		 
 		 return pendingJobs.size() < DEFAULT_MAX_NUM_PENDING_JOBS;
 	 }
@@ -92,26 +98,25 @@ public abstract class AbstractController implements Serializable {
 	  * generates a list of pending jobs for the System in 
 	  * general
 	  * 
-	  * @return list of jobs currently open to sign up
+	  * @return list of jobs not completed or closed(present jobs)
 	  * @precondition must be called properly initialized
 	  * user controller-Eg. VolunteerController, with a list
 	  * of jobs
 	  * @author Dereje Bireda
 	  */
-	 //get pending jobs(open for sign up + is not full)
-	 //this query not volunteer specific but general
-	 public List<Job> getMyPendingJobs() {
+	 //Revised: get pending jobs for system is job that is not past
+	 public List<Job> getSystemPendingJobs() {
 		 List<Job> pendingJobs = new ArrayList<Job>(); 
 		 
 		 for (int i = 0; i < myJobs.size(); i++) {
 			 	Job jobChecked = myJobs.get(i);
 				if(!jobChecked.getMyJobIsPast()) {
 					//job is not full and signing up day not passed
-					if(!hasMinSignupDaysBeforeJobStartPassed(jobChecked) &&
-							!isJobFullForSignUp(jobChecked)) {
+					//if(!hasMinSignupDaysBeforeJobStartPassed(jobChecked)) //&&
+							//!isJobFullForSignUp(jobChecked)) {
 						//add it to pending
 						pendingJobs.add(jobChecked);
-					}
+					//}
 				}
 				
 			}
@@ -134,8 +139,8 @@ public abstract class AbstractController implements Serializable {
     
     
  /**
-  * checks violation of min days in advance 
-  *  required before job sign up
+  * Checks business rule: A volunteer may sign up only if the job is at least a minimum number of calendar days from the current date.
+  * Checks against MIN_DIFFERENCE_BETWEEN_JOB_SIGNUP_JOB_START_DATE.
   * 
   * @param theJob the job checked for sign up
   * @precondition theJob should be a proper job object
